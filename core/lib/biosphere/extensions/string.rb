@@ -2,17 +2,22 @@ module Biosphere
   module Extensions
     module StringExtensions
 
-      def normal()  stylize(:normal);    end
-      def red()     stylize(:red);       end
-      def green()   stylize(:green);     end
-      def yellow()  stylize(:yellow);    end
-      def blue()    stylize(:blue);      end
-      def magenta() stylize(:magenta);   end
-      def cyan()    stylize(:cyan);      end
-      def bold()    stylize(:bold);      end
-      def blink()   stylize(:blink);     end
+      def normal()  stylize(:normal);  end
+      def red()     stylize(:red);     end
+      def green()   stylize(:green);   end
+      def yellow()  stylize(:yellow);  end
+      def blue()    stylize(:blue);    end
+      def magenta() stylize(:magenta); end
+      def cyan()    stylize(:cyan);    end
+      def bold()    stylize(:bold);    end
+      def blink()   stylize(:blink);   end
 
-      protected
+      # Thanks ActiveSupport
+      def underscore
+        self.gsub(/::/, '/').gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').gsub(/([a-z\d])([A-Z])/,'\1_\2').tr("-", "_").downcase
+      end
+
+      private
 
       def stylize(style)
         start_code = case style

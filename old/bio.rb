@@ -24,17 +24,6 @@ module Biosphere
       result.valid? ? result : nil
     end
 
-    def ensure_directory(path)
-      path = File.expand_path(path)
-      unless File.directory?(path)
-        if runtime.privileged?
-          system("sudo -u #{config.user.name} mkdir -p #{config.paths.config}") || raise("Could not create directory #{path} for user #{config.user.name}")
-        else
-          FileUtils.mkdir_p(path)
-        end
-      end
-    end
-
     def ensure_file(path)
       path = File.expand_path(path)
       ensure_directory(File.dirname(path))

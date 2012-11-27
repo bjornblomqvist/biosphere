@@ -18,17 +18,21 @@ module Biosphere
     end
 
     def exists?
-      lib_path.exist?
+      gem_path.exist?
+    end
+
+    def executables_path
+      gem_path.join('bin')
     end
 
     private
 
-    def lib_path
-      self.class.gem_libs_path.join(name_and_version)
+    def gem_path
+      self.class.gems_path.join(name_and_version)
     end
 
     def install
-      arguments = ['install', name, '--install-dir', self.class.gems_path, '--no-ri', '--no-rdoc']
+      arguments = ['install', name, '--install-dir', self.class.rubygems_path, '--no-ri', '--no-rdoc']
       if version
         arguments << '--version'
         arguments << version
@@ -44,12 +48,12 @@ module Biosphere
       Pathname.new BIOSPHERE_GEM_EXECUTABLE_PATH
     end
 
-    def self.gems_path
+    def self.rubygems_path
       Pathname.new BIOSPHERE_VENDOR_GEMS_PATH
     end
 
-    def self.gem_libs_path
-      gems_path.join('gems')
+    def self.gems_path
+      rubygems_path.join('gems')
     end
 
   end

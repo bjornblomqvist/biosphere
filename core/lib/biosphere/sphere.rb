@@ -2,6 +2,7 @@ require 'biosphere/error'
 require 'biosphere/log'
 require 'biosphere/manager'
 require 'pathname'
+require 'ostruct'
 require 'yaml'
 
 module Biosphere
@@ -30,6 +31,10 @@ module Biosphere
       manager.perform
     end
 
+    def config
+      OpenStruct.new raw_config
+    end
+
     private
 
     def path
@@ -46,7 +51,7 @@ module Biosphere
     end
 
     def manager_name
-      config['manager'] || 'manual'
+      config.manager || 'manual'
     end
 
     def ensure_valid_name!
@@ -57,7 +62,7 @@ module Biosphere
       end
     end
 
-    def config
+    def raw_config
       if config_file.readable?
         YAML.load config_file.read
       else

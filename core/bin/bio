@@ -17,6 +17,11 @@ require 'biosphere'
 
 include Biosphere
 
+if Runtime.privileged?
+  Log.error 'I refuse to run with superuser privileges.'.red
+  exit 99
+end
+
 begin
   Action.perform(ARGV.first)
 

@@ -13,7 +13,7 @@ module Biosphere
     end
 
     def self.register(object)
-      object_name = object.class.name.underscore.split('/').last
+      object_name = object.name.underscore.split('/').last
       Log.debug "Registering #{name} #{object_name.inspect}..."
       instance.store[object_name] = object
     end

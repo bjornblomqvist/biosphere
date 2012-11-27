@@ -9,4 +9,4 @@ module Biosphere
   end
 end
 
-Biosphere::Manager.register Biosphere::Managers::Manual.new
+Biosphere::Manager.register Biosphere::Managers::Manual

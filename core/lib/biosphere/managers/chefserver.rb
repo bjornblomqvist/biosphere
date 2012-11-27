@@ -25,4 +25,4 @@ module Biosphere
   end
 end
 
-Biosphere::Manager.register Biosphere::Managers::Chefserver.new
+Biosphere::Manager.register Biosphere::Managers::Chefserver

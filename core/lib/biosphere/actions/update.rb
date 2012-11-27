@@ -14,4 +14,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Update.new
+Biosphere::Action.register Biosphere::Actions::Update

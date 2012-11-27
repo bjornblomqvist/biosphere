@@ -42,7 +42,7 @@ module Biosphere
         Log.error message
         raise Errors::InvalidSphereName, message
       end
-      manager.class.new :sphere => self
+      manager.new :sphere => self
     end
 
     def manager_name

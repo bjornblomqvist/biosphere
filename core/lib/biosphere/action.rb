@@ -7,7 +7,7 @@ module Biosphere
     def self.perform(name)
       name = 'help' unless name
       if action = store[name]
-        action.perform
+        action.new.perform
       else
         Log.separator
         Log.error "  Unknown action: #{name}".red

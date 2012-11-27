@@ -11,3 +11,4 @@ vendor/*
 !spheres/.gitkeep
 !tmp/.gitkeep
 !vendor/.gitkeep
+!vendor/gems/.gitkeep

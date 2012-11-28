@@ -1,4 +1,5 @@
 require 'biosphere/extensions/string'
+require 'biosphere/runtime'
 require 'singleton'
 
 module Biosphere
@@ -48,15 +49,15 @@ module Biosphere
     private
 
     def debug_mode
-      ARGV.include? '--debug'
+      Runtime.debug_mode?
     end
 
     def silent_mode
-      ARGV.include? '--silent'
+      Runtime.silent_mode?
     end
 
     def batch_mode
-      ARGV.include? '--batch'
+      Runtime.batch_mode?
     end
 
     def say(message, mode=nil)

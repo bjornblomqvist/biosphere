@@ -1,6 +1,7 @@
 require 'biosphere/error'
 require 'biosphere/log'
 require 'biosphere/manager'
+require 'biosphere/resources/filesystem'
 require 'pathname'
 require 'ostruct'
 require 'yaml'
@@ -34,6 +35,10 @@ module Biosphere
 
       def config
         OpenStruct.new raw_config
+      end
+
+      def cache_path
+        Filesystem.ensure_directory path.join('cache')
       end
 
       private

@@ -11,7 +11,7 @@ module Biosphere
         @version = options[:version]
       end
 
-      def ensure
+      def ensure_installed
         unless exists?
           Log.info "Installing gem #{name} version #{version}..."
           install

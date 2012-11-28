@@ -7,3 +7,4 @@ require 'biosphere/managers/chefserver'
 require 'biosphere/manager'
 
 require 'biosphere/error'
+require 'biosphere/runtime'

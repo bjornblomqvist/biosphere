@@ -1,11 +1,9 @@
 .DS_Store
 
 augmentations/*
-cache/*
 spheres/*
 vendor/*
 
 !augmentations/.gitkeep
-!cache/spheres/.gitkeep
 !spheres/.gitkeep
 !vendor/gems/.gitkeep

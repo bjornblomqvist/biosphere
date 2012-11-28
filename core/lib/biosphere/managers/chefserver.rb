@@ -1,5 +1,5 @@
 require 'biosphere/managers/default'
-require 'biosphere/gem'
+require 'biosphere/resources/gem'
 
 module Biosphere
   module Managers
@@ -22,7 +22,7 @@ module Biosphere
       end
 
       def chef_gem
-        @chef_gem ||= Gem.new(:name => :chef, :version => chef_version)
+        @chef_gem ||= Resources::Gem.new(:name => :chef, :version => chef_version)
       end
 
       def chef_version

@@ -17,7 +17,7 @@ require 'biosphere'
 
 include Biosphere
 
-if Runtime.privileged?
+if Process.uid == 0
   Log.error 'I refuse to run with superuser privileges.'.red
   exit 99
 end

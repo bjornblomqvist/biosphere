@@ -1,12 +1,12 @@
 require 'biosphere/action'
-require 'biosphere/sphere'
+require 'biosphere/resources/sphere'
 
 module Biosphere
   module Actions
     class Spheres
 
       def perform
-        Sphere.all.each do |sphere|
+        Resources::Sphere.all.each do |sphere|
           Log.info sphere.name
         end
       end

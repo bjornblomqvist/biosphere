@@ -1,6 +1,7 @@
 require 'biosphere/managers/default'
 require 'biosphere/resources/gem'
 require 'biosphere/resources/filesystem'
+require 'biosphere/resources/command'
 require 'biosphere/runtime'
 
 module Biosphere
@@ -18,40 +19,44 @@ module Biosphere
       private
 
       def run_chef
-        Log.debug "Command to run: #{chef_command_arguments.join(' ')}"
+        Log.info "Running chef to update sphere #{sphere.name.bold}..."
+        chef_command.run
 
       end
 
-      def chef_command_arguments
-        result = ["GEM_HOME=#{Resources::Gem.rubygems_path}", BIOSPHERE_RUBY_EXECUTABLE_PATH, chef_client_executable_path, '--config', chef_knife_config_path]
-        result << '--log_level debug' if Runtime.debug_mode?
-        result
+      def chef_command
+        env_vars = { 'GEM_HOME' => Resources::Gem.rubygems_path }
+        arguments = [chef_client_executable_path, '--config', chef_knife_config_path]
+        Resources::Command.new :show_output => true, :env_vars => env_vars, :executable => BIOSPHERE_RUBY_EXECUTABLE_PATH, :arguments => arguments
       end
 
       def ensure_knife_config
-        Resources::Filesystem.write_to_file chef_knife_config_path, knife_config
+        Resources::Filesystem.write_to_file chef_knife_config_path, knife_config_template
       end
 
       def knife_config
-        #options= default_knife_options.merge!(sphere.config)
-        <<-END
-          chef_server_url "#{sphere.config.server_endpoint}"
-          validation_key "#{sphere.config.validation_key_path}"
-          node_name "#{sphere.config.client_name}"
-          client_key "#{chef_client_key_path.join(sphere.config.client_name + '.pem')}"
-          file_cache_path  "#{chef_cache_path}"
-          file_backup_path "#{chef_backups_path}"
-          cache_options({ :path => "#{chef_checksums_path}"})
-        END
+        {
+          :chef_server_url => 'localhost',
+          :validation_key  => '/dev/null',
+          :node_name       => 'default_node_name.biosphere',
+          :run_list        => 'recipe[biosphere]',
+          :log_level       => (Runtime.debug_mode? ? :debug : :info),
+          :verbose_logging => (Runtime.debug_mode? ? true : false),
+        }.merge(sphere.config.to_h)
       end
 
-      def default_knife_options
-        {
-          'server_endpoint'     => 'localhost',
-          'validation_key_path' => '/dev/null',
-          'client_name'         => 'biosphere_client',
-          'run_list'            => 'recipe[biosphere]',
-        }
+      def knife_config_template
+        <<-END
+          cache_options :path => "#{chef_checksums_path}"
+          chef_server_url "#{knife_config[:chef_server_url]}"
+          client_key "#{chef_client_key_path.join(knife_config[:node_name] + '.pem')}"
+          file_backup_path "#{chef_backups_path}"
+          file_cache_path  "#{chef_cache_path}"
+          node_name "#{knife_config[:node_name]}"
+          validation_key "#{knife_config[:validation_key]}"
+          log_level #{knife_config[:log_level].to_sym.inspect}
+          verbose_logging #{knife_config[:verbose_logging].inspect}
+        END
       end
 
       def chef_client_key_path

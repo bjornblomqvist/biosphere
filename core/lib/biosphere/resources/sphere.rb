@@ -17,6 +17,13 @@ end
 module Biosphere
   module Resources
     class Sphere
+
+      class Config < OpenStruct
+        def to_h
+          @table.dup
+        end
+      end
+
       attr_reader :name
 
       def initialize(name)
@@ -34,7 +41,7 @@ module Biosphere
       end
 
       def config
-        OpenStruct.new raw_config
+        Config.new raw_config
       end
 
       def cache_path

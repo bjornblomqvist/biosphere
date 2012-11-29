@@ -38,7 +38,7 @@ module Biosphere
           arguments << '--version'
           arguments << version
         end
-        Resources::Command.run(self.class.gem_executable_path, arguments)
+        Resources::Command.run :executable => self.class.gem_executable_path, :arguments => arguments
       end
 
       def name_and_version

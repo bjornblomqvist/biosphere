@@ -11,6 +11,7 @@ module Biosphere
 
       def perform
         Log.debug "Manager #{name} will now update sphere #{sphere.name}..."
+        Log.info "Updating sphere #{sphere.name}..."
         ensure_chef
         ensure_knife_config
         run_chef

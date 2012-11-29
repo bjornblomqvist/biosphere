@@ -45,11 +45,11 @@ module Biosphere
         @env_vars.each do |key, value|
           result << %{#{key.to_s.upcase}="#{value.to_s.gsub('"', '\"')}"}
         end
-        result.join(' ')
+        result.empty? ? nil : result.join(' ')
       end
 
       def command
-        [env_vars, executable, arguments].join(' ')
+        [env_vars, executable, arguments].compact.join(' ')
       end
 
       def run

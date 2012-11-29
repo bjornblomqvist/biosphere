@@ -2,6 +2,7 @@ require 'biosphere/error'
 require 'biosphere/log'
 require 'biosphere/manager'
 require 'biosphere/resources/directory'
+require 'biosphere/resources/file'
 require 'biosphere/extensions/ostruct'
 require 'pathname'
 require 'yaml'
@@ -33,6 +34,7 @@ module Biosphere
 
       def create
         ensure_path
+        ensure_config_file
       end
 
       def update
@@ -56,16 +58,41 @@ module Biosphere
 
       def ensure_path
         if path.exist?
-          Log.info "Sphere #{name.inspect} already exists at #{path}"
+          Log.info "Sphere #{name.inspect} already exists at #{path}".yellow
         else
-          Log.info "Creating new sphere #{name.inspect} at #{path}"
-          Directory.ensure path
+          Log.info "Creating new sphere #{name.inspect} at #{path}".green
+          Resources::Directory.ensure path
         end
+      end
+
+      def ensure_config_file
+        if config_file_path.exist?
+          Log.info "Sphere #{name.inspect} already has a config file at #{config_file_path}".yellow
+        else
+          Log.info "Creating new example config file for sphere #{name.inspect} at #{config_file_path}".green
+          Resources::File.write config_file_path, config_example_template
+        end
+      end
+
+      def config_example_template
+        result = <<-END
+          # In this YAML file you can configure how the sphere #{name.inspect} is updated.
+          # To manage this file manually, simply leave this file empty or delete it.
+          #
+          # To have a chef server manage this sphere, uncomment the following lines.
+          #
+          # chefserver:
+          #   chef_server_url: https://chefserver.example.com
+          #   validation_key: ~/Documents/validation.pem
+          #   node_name: bobs_macbook.biosphere
+          #
+        END
+        result.split("\n").map(&:strip).join("\n")
       end
 
       def manager
         unless manager = Manager.find(manager_name)
-          message = %{The sphere #{name.to_s.inspect} has defined the manager #{manager_name.inspect} in its config file (#{config_file}). But that manager could not be found by Biosphere::Manager.}.red
+          message = %{The sphere #{name.to_s.inspect} has defined the manager #{manager_name.inspect} in its config file (#{config_file_path}). But that manager could not be found by Biosphere::Manager.}.red
           Log.error message
           raise Errors::InvalidSphereName, message
         end
@@ -73,7 +100,8 @@ module Biosphere
       end
 
       def manager_name
-        config.manager || 'manual'
+        best_guess = config.to_h.keys.first.to_s
+        best_guess.empty? ? 'manual' : best_guess
       end
 
       def ensure_valid_name!
@@ -85,18 +113,18 @@ module Biosphere
       end
 
       def raw_config
-        if config_file.readable?
-          YAML.load config_file.read
+        if config_file_path.readable?
+          YAML.load config_file_path.read
         else
-          Log.debug "The sphere #{name.inspect} has no YAML configuration file (#{config_file}). Using default (i.e. empty) configuration."
+          Log.debug "The sphere #{name.inspect} has no YAML configuration file (#{config_file_path}). Using default (i.e. empty) configuration."
           {}
         end
       rescue ArgumentError
-        Log.error "The sphere #{name.inspect} has an invalid YAML configuration file: (#{config_file})"
+        Log.error "The sphere #{name.inspect} has an invalid YAML configuration file: (#{config_file_path})"
         exit 50
       end
 
-      def config_file
+      def config_file_path
         path.join(config_file_name)
       end
 

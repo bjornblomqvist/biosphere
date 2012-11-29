@@ -1,9 +1,9 @@
 require 'biosphere/error'
 require 'biosphere/log'
 require 'biosphere/manager'
-require 'biosphere/resources/filesystem'
+require 'biosphere/resources/directory'
+require 'biosphere/extensions/ostruct'
 require 'pathname'
-require 'ostruct'
 require 'yaml'
 
 module Biosphere
@@ -18,11 +18,7 @@ module Biosphere
   module Resources
     class Sphere
 
-      class Config < OpenStruct
-        def to_h
-          @table.dup
-        end
-      end
+      Config = Class.new(OpenStruct)
 
       attr_reader :name
 
@@ -35,6 +31,10 @@ module Biosphere
         sphere_paths.sort.map { |sphere_path| new(sphere_path.basename) }
       end
 
+      def create
+        ensure_path
+      end
+
       def update
         Log.debug "Initializing update of sphere #{name}..."
         manager.perform
@@ -45,13 +45,22 @@ module Biosphere
       end
 
       def cache_path
-        Filesystem.ensure_directory path.join('cache')
+        Directory.ensure path.join('cache')
+      end
+
+      def path
+        self.class.spheres_path.join(name)
       end
 
       private
 
-      def path
-        self.class.spheres_path.join(name)
+      def ensure_path
+        if path.exist?
+          Log.info "Sphere #{name.inspect} already exists at #{path}"
+        else
+          Log.info "Creating new sphere #{name.inspect} at #{path}"
+          Directory.ensure path
+        end
       end
 
       def manager

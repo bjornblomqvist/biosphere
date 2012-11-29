@@ -7,15 +7,30 @@ module Biosphere
     end
 
     def debug_mode?
-      ARGV.include? '--debug'
+      parse
+      @debug_mode
     end
 
     def silent_mode?
-      ARGV.include? '--silent'
+      parse
+      @silent_mode
     end
 
     def batch_mode?
-      ARGV.include? '--batch'
+      parse
+      @batch_mode
+    end
+
+    def arguments
+      @arguments ||= ARGV.dup
+    end
+
+    private
+
+    def parse
+      @debug_mode  ||= !!arguments.delete('--debug')
+      @silent_mode ||= !!arguments.delete('--silent')
+      @batch_mode  ||= !!arguments.delete('--batch')
     end
 
   end

@@ -1,6 +1,7 @@
 require 'biosphere/managers/default'
 require 'biosphere/resources/gem'
-require 'biosphere/resources/filesystem'
+require 'biosphere/resources/directory'
+require 'biosphere/resources/file'
 require 'biosphere/resources/command'
 require 'biosphere/runtime'
 
@@ -14,7 +15,6 @@ module Biosphere
         ensure_knife_config
         run_chef
       end
-
 
       private
 
@@ -31,7 +31,7 @@ module Biosphere
       end
 
       def ensure_knife_config
-        Resources::Filesystem.write_to_file chef_knife_config_path, knife_config_template
+        Resources::File.write chef_knife_config_path, knife_config_template
       end
 
       def knife_config
@@ -60,19 +60,19 @@ module Biosphere
       end
 
       def chef_client_key_path
-        Resources::Filesystem.ensure_directory workdir_path.join('client_keys')
+        Resources::Directory.ensure workdir_path.join('client_keys')
       end
 
       def chef_checksums_path
-        Resources::Filesystem.ensure_directory chef_workdir_path.join('checksums')
+        Resources::Directory.ensure chef_workdir_path.join('checksums')
       end
 
       def chef_cache_path
-        Resources::Filesystem.ensure_directory chef_workdir_path.join('cache')
+        Resources::Directory.ensure chef_workdir_path.join('cache')
       end
 
       def chef_backups_path
-        Resources::Filesystem.ensure_directory chef_workdir_path.join('backups')
+        Resources::Directory.ensure chef_workdir_path.join('backups')
       end
 
       def chef_knife_config_path
@@ -80,11 +80,11 @@ module Biosphere
       end
 
       def chef_workdir_path
-        Resources::Filesystem.ensure_directory workdir_path.join('cache')
+        Resources::Directory.ensure workdir_path.join('cache')
       end
 
       def workdir_path
-        Resources::Filesystem.ensure_directory sphere.cache_path.join('chef')
+        Resources::Directory.ensure sphere.cache_path.join('chef')
       end
 
       def chef_client_executable_path

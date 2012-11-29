@@ -7,6 +7,7 @@ module Biosphere
     def self.perform(name)
       name = 'help' unless name
       if action = store[name]
+        Log.debug "Loading action #{name.inspect}..."
         action.new.perform
       else
         Log.separator

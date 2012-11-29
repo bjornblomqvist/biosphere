@@ -1,4 +1,5 @@
-require 'biosphere/actions/spheres'
+require 'biosphere/actions/activate'
+require 'biosphere/actions/sphere'
 require 'biosphere/actions/update'
 require 'biosphere/action'
 

@@ -3,7 +3,7 @@ require 'biosphere/resources/sphere'
 
 module Biosphere
   module Actions
-    class Spheres
+    class Activate
 
       def perform
         Resources::Sphere.all.each do |sphere|
@@ -15,4 +15,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Spheres
+Biosphere::Action.register Biosphere::Actions::Activate

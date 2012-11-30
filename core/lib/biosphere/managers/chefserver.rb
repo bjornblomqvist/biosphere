@@ -26,7 +26,7 @@ module Biosphere
       end
 
       def chef_command
-        env_vars = { 'GEM_HOME' => Resources::Gem.rubygems_path }
+        env_vars = { 'GEM_HOME' => Resources::Gem.rubygems_path, 'BIOSPHERE_HOME' => BIOSPHERE_HOME }
         arguments = [chef_client_executable_path, '--config', chef_knife_config_path]
         arguments += ['--override-runlist', knife_config[:override_runlist]] if knife_config[:override_runlist]
         Resources::Command.new :show_output => true, :env_vars => env_vars, :executable => BIOSPHERE_RUBY_EXECUTABLE_PATH, :arguments => arguments

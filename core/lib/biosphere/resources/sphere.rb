@@ -93,6 +93,14 @@ module Biosphere
           #     node_name: bobs_macbook.biosphere
           #     # override_runlist: "role[biosphere]"  # Uncomment this one to override the runlist assigned to you by the chef server.
           #
+          # This following one uses chef-solo.
+          # It has pretty much the same options as chefserver (except validation_key, chef_server_url, and override_runlist)
+          #
+          # manager:
+          #   chefsolo:
+          #     cookbook_path: "~/Documents/my_cookbooks"
+          #     runlist: "role[biosphere]"
+          #
         END
         result.split("\n").map(&:strip).join("\n")
       end

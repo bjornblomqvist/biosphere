@@ -8,7 +8,7 @@ module Biosphere
       end
 
       def perform
-        Log.info "Not updating sphere #{sphere.name.bold} because it is handled manually."
+        Log.info "Not updating sphere #{sphere.name.bold} because #{self.class.name} does not implement anything useful."
       end
 
       private

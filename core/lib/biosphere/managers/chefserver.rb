@@ -28,6 +28,7 @@ module Biosphere
       def chef_command
         env_vars = { 'GEM_HOME' => Resources::Gem.rubygems_path }
         arguments = [chef_client_executable_path, '--config', chef_knife_config_path]
+        arguments += ['--override-runlist', knife_config[:override_runlist]] if knife_config[:override_runlist]
         Resources::Command.new :show_output => true, :env_vars => env_vars, :executable => BIOSPHERE_RUBY_EXECUTABLE_PATH, :arguments => arguments
       end
 
@@ -37,27 +38,27 @@ module Biosphere
 
       def knife_config
         {
-          :chef_server_url => 'localhost',
-          :validation_key  => '/dev/null',
-          :node_name       => 'default_node_name.biosphere',
-          :run_list        => 'recipe[biosphere]',
-          :log_level       => (Runtime.debug_mode? ? :debug : :info),
-          :verbose_logging => (Runtime.debug_mode? ? true : false),
+          :chef_server_url  => 'localhost',
+          :validation_key   => '/dev/null',
+          :node_name        => 'default_node_name.biosphere',
+          :log_level        => (Runtime.debug_mode? ? :debug : :info),
+          :verbose_logging  => (Runtime.debug_mode? ? true : false),
         }.merge(config.to_h)
       end
 
       def knife_config_template
-        <<-END
-          cache_options :path => "#{chef_checksums_path}"
-          chef_server_url "#{knife_config[:chef_server_url]}"
-          client_key "#{chef_client_key_path.join(knife_config[:node_name] + '.pem')}"
+        result = <<-END
+          cache_options    :path => "#{chef_checksums_path}"
+          chef_server_url  "#{knife_config[:chef_server_url]}"
+          client_key       "#{chef_client_key_path.join(knife_config[:node_name] + '.pem')}"
           file_backup_path "#{chef_backups_path}"
           file_cache_path  "#{chef_cache_path}"
-          node_name "#{knife_config[:node_name]}"
-          validation_key "#{knife_config[:validation_key]}"
-          log_level #{knife_config[:log_level].to_sym.inspect}
-          verbose_logging #{knife_config[:verbose_logging].inspect}
+          log_level        #{knife_config[:log_level].to_sym.inspect}
+          node_name        "#{knife_config[:node_name]}"
+          validation_key   "#{knife_config[:validation_key]}"
+          verbose_logging  #{knife_config[:verbose_logging].inspect}
         END
+        result.split("\n").map(&:strip).join("\n")
       end
 
       def chef_client_key_path

@@ -84,12 +84,14 @@ module Biosphere
           # To manage this file manually, simply leave this file empty or delete it.
           #
           # To have a chef server manage this sphere, uncomment the following lines.
+          # They are essentialy passed on to knife, see http://wiki.opscode.com/display/chef/Knife#Knife-Knifeconfiguration
           #
           # manager:
           #   chefserver:
           #     chef_server_url: https://chefserver.example.com
           #     validation_key: ~/Documents/validation.pem
           #     node_name: bobs_macbook.biosphere
+          #     # override_runlist: "role[biosphere]"  # Uncomment this one to override the runlist assigned to you by the chef server.
           #
         END
         result.split("\n").map(&:strip).join("\n")

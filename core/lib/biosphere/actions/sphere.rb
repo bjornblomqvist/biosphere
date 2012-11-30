@@ -13,10 +13,11 @@ module Biosphere
       Options = Class.new(OpenStruct)
 
       def perform
-        if options.to_h.empty? || options.help
-          help
-        elsif options.create
-          create
+        return help if Runtime.help_mode?
+        subcommand = Runtime.arguments.shift
+        case subcommand
+        when 'create' then create(Runtime.arguments.shift)
+        else               help
         end
       end
 
@@ -25,12 +26,12 @@ module Biosphere
       def help
         Log.separator
         Log.info "  Creating a Sphere:".cyan
-        Log.info "    bio sphere --create my_sphere".bold
+        Log.info "    bio sphere create my_sphere".bold
         Log.separator
       end
 
-      def create
-        Resources::Sphere.new(options.create).create
+      def create(name)
+        Resources::Sphere.new(name).create
       end
 
       def options
@@ -38,12 +39,8 @@ module Biosphere
           result = {}
           OptionParser.new do |parser|
 
-            parser.on("--create [SPHERENAME]") do |value|
-              result[:create] = value
-            end
-
-            parser.on("--help") do
-              result[:help] = true
+            parser.on("--test [SPHERENAME]") do |value|
+              result[:test] = value
             end
 
           end.parse!(Runtime.arguments)

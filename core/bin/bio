@@ -24,7 +24,7 @@ if Runtime.privileged?
 end
 
 begin
-  Action.perform(ARGV.first)
+  Action.perform(Runtime.arguments.shift)
 
 rescue Errors::Error => exception
   Log.debug "Exiting with status #{exception.code} defined by Error #{exception.class}"

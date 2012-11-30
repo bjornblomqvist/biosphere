@@ -12,6 +12,10 @@ module Biosphere
     class InvalidSphereName < Error
       def code() 2 end
     end
+
+    class InvalidManagerConfiguration < Error
+      def code() 3 end
+    end
   end
 end
 
@@ -42,10 +46,6 @@ module Biosphere
         manager.perform
       end
 
-      def config
-        Config.new raw_config
-      end
-
       def cache_path
         Directory.ensure path.join('cache')
       end
@@ -55,6 +55,10 @@ module Biosphere
       end
 
       private
+
+      def config
+        Config.new raw_config
+      end
 
       def ensure_path
         if path.exist?
@@ -81,10 +85,11 @@ module Biosphere
           #
           # To have a chef server manage this sphere, uncomment the following lines.
           #
-          # chefserver:
-          #   chef_server_url: https://chefserver.example.com
-          #   validation_key: ~/Documents/validation.pem
-          #   node_name: bobs_macbook.biosphere
+          # manager:
+          #   chefserver:
+          #     chef_server_url: https://chefserver.example.com
+          #     validation_key: ~/Documents/validation.pem
+          #     node_name: bobs_macbook.biosphere
           #
         END
         result.split("\n").map(&:strip).join("\n")
@@ -96,12 +101,35 @@ module Biosphere
           Log.error message
           raise Errors::InvalidSphereName, message
         end
-        manager.new :sphere => self
+        manager.new :sphere => self, :config => manager_config
+      end
+
+      def manager_config
+        if manager_name == 'manual'
+          Manager::Config.new
+        else
+          Manager::Config.new config.manager[manager_name]
+        end
       end
 
       def manager_name
-        best_guess = config.to_h.keys.first.to_s
-        best_guess.empty? ? 'manual' : best_guess
+        if config.manager
+          if config.manager.is_a?(Hash)
+            if config.manager.keys.size > 1
+              message = %{In your configuration at #{config_file_path} you specified multiple managers (#{config.managers.keys.join(', ')}) but currently biosphere only supports one manager per Spehre}.red
+              Log.error message
+              raise Errors::InvalidManagerConfiguration, message
+            else
+              config.manager.keys.first.to_s
+            end
+          else
+            message = %{You specified a "manager" key in your configuration at #{config_file_path} but that key has to be a Hash.}.red
+            Log.error message
+            raise Errors::InvalidManagerConfiguration, message
+          end
+        else
+          'manual'
+        end
       end
 
       def ensure_valid_name!

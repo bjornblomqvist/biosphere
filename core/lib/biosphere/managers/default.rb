@@ -4,6 +4,7 @@ module Biosphere
 
       def initialize(options={})
         @sphere = options[:sphere]
+        @config = options[:config]
       end
 
       def perform
@@ -18,6 +19,10 @@ module Biosphere
 
       def sphere
         @sphere
+      end
+
+      def config
+        @config
       end
 
     end

@@ -43,7 +43,7 @@ module Biosphere
           :run_list        => 'recipe[biosphere]',
           :log_level       => (Runtime.debug_mode? ? :debug : :info),
           :verbose_logging => (Runtime.debug_mode? ? true : false),
-        }.merge(sphere.config.to_h)
+        }.merge(config.to_h)
       end
 
       def knife_config_template
@@ -101,7 +101,7 @@ module Biosphere
       end
 
       def chef_version
-        sphere.config.chef_version || default_chef_version
+        config.chef_version || default_chef_version
       end
 
       def default_chef_version

@@ -141,15 +141,17 @@ module Biosphere
       end
 
       def raw_config
-        if config_file_path.readable?
-          YAML.load config_file_path.read
-        else
-          Log.debug "The sphere #{name.inspect} has no YAML configuration file (#{config_file_path}). Using default (i.e. empty) configuration."
-          {}
+        @raw_config ||= begin
+          if config_file_path.readable?
+            YAML.load config_file_path.read
+          else
+            Log.debug "The sphere #{name.inspect} has no YAML configuration file (#{config_file_path}). Using default (i.e. empty) configuration."
+            {}
+          end
+        rescue ArgumentError
+          Log.error "The sphere #{name.inspect} has an invalid YAML configuration file: (#{config_file_path})"
+          exit 50
         end
-      rescue ArgumentError
-        Log.error "The sphere #{name.inspect} has an invalid YAML configuration file: (#{config_file_path})"
-        exit 50
       end
 
       def config_file_path

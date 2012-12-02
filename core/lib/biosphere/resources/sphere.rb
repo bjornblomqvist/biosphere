@@ -99,7 +99,7 @@ module Biosphere
           # manager:
           #   chefsolo:
           #     cookbook_path: "~/Documents/my_cookbooks"
-          #     runlist: "role[biosphere]"
+          #     # runlist: "recipe[biosphere]"  # Uncomment this line to change the default run list
           #
         END
         result.split("\n").map(&:strip).join("\n")

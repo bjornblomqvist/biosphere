@@ -1,6 +1,7 @@
 require 'biosphere/managers/chef'
 require 'biosphere/resources/gem'
 require 'biosphere/resources/command'
+require 'biosphere/resources/file'
 
 module Biosphere
   module Managers
@@ -9,9 +10,22 @@ module Biosphere
       private
 
       def chef_command
-        env_vars = { 'GEM_HOME' => Resources::Gem.rubygems_path, 'BIOSPHERE_HOME' => BIOSPHERE_HOME }
+        env_vars = { 'GEM_HOME' => Resources::Gem.rubygems_path, 'BIOSPHERE_HOME' => BIOSPHERE_HOME, 'BIOSPHERE_SPHERE_PATH' => sphere.path }
         arguments = [chef_solo_executable_path, '--config', chef_knife_config_path, '--json-attributes', chef_json_path]
         Resources::Command.new :show_output => true, :env_vars => env_vars, :executable => BIOSPHERE_RUBY_EXECUTABLE_PATH, :arguments => arguments
+      end
+
+      def ensure_knife_config
+        super
+        Resources::File.write chef_json_path, chef_json_template
+      end
+
+      def chef_json_template
+        %{{ "run_list": "#{chef_run_list}" }}
+      end
+
+      def chef_run_list
+        knife_config[:runlist] || "recipe[biosphere]"
       end
 
       def chef_solo_executable_path
@@ -19,7 +33,9 @@ module Biosphere
       end
 
       def knife_config_template
-        super += %{cookbook_path "#{knife_config[:cookbook_path]}"}
+        result = super
+        cookbook_path = Array(knife_config[:cookbook_path]).map { |path| File.expand_path(path) }
+        result += %{\ncookbook_path %w{ #{cookbook_path.join(' ')} }}
       end
 
       def chef_json_path

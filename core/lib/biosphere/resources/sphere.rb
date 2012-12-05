@@ -22,6 +22,20 @@ end
 module Biosphere
   module Resources
     class Sphere
+      class Config
+
+        def initialize(config_file_path)
+          @config_file_path = config_file_path
+        end
+
+      end
+    end
+  end
+end
+
+module Biosphere
+  module Resources
+    class Sphere
 
       Config = Class.new(OpenStruct)
 

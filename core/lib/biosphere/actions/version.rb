@@ -54,6 +54,8 @@ module Biosphere
         Log.info '  --minor     Show only minor version number'
         Log.info '  --patch     Show only patch version number'
         Log.separator
+        Log.info '  --compatible-with-preference-pane VERSION     Is this Biosphere compatible with the specified version of BiospherePane?'
+        Log.separator
       end
 
       def options

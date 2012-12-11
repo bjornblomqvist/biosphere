@@ -4,6 +4,7 @@ require 'biosphere/manager'
 require 'biosphere/resources/directory'
 require 'biosphere/resources/file'
 require 'biosphere/extensions/ostruct'
+require 'biosphere/extensions/to_json'
 require 'pathname'
 require 'yaml'
 
@@ -68,6 +69,23 @@ module Biosphere
         self.class.spheres_path.join(name)
       end
 
+      def manager
+        unless manager = Manager.find(manager_name)
+          message = %{The sphere #{name.to_s.inspect} has defined the manager #{manager_name.inspect} in its config file (#{config_file_path}). But that manager could not be found by Biosphere::Manager.}.red
+          Log.error message
+          raise Errors::InvalidSphereName, message
+        end
+        manager.new :sphere => self, :config => manager_config
+      end
+
+      def as_json
+        { :identifier => name, :manager => manager }
+      end
+
+      def to_json
+        as_json.to_json
+      end
+
       private
 
       def config
@@ -117,15 +135,6 @@ module Biosphere
           #
         END
         result.split("\n").map(&:strip).join("\n")
-      end
-
-      def manager
-        unless manager = Manager.find(manager_name)
-          message = %{The sphere #{name.to_s.inspect} has defined the manager #{manager_name.inspect} in its config file (#{config_file_path}). But that manager could not be found by Biosphere::Manager.}.red
-          Log.error message
-          raise Errors::InvalidSphereName, message
-        end
-        manager.new :sphere => self, :config => manager_config
       end
 
       def manager_config

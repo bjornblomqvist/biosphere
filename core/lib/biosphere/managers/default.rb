@@ -11,10 +11,26 @@ module Biosphere
         Log.info "Not updating sphere #{sphere.name.bold} because #{self.class.name} does not implement anything useful."
       end
 
+      def to_s
+        name
+      end
+
+      def description
+        name
+      end
+
+      def as_json
+        { :identifier => name, :description => description, :config => config }
+      end
+
+      def to_json
+        as_json.to_json
+      end
+
       private
 
       def name
-        self.class.name.split('::').last
+        self.class.name.split('::').last.downcase
       end
 
       def sphere

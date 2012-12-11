@@ -3,8 +3,18 @@ require 'biosphere/action'
 require 'biosphere/log'
 require 'biosphere/extensions/option_parser'
 require 'biosphere/extensions/ostruct'
+require 'biosphere/extensions/to_json'
 require 'biosphere/runtime'
 require 'biosphere/resources/sphere'
+
+
+module Biosphere
+  module Errors
+    class SphereNotFound < Error
+      def code() 10 end
+    end
+  end
+end
 
 module Biosphere
   module Actions
@@ -17,6 +27,8 @@ module Biosphere
         subcommand = Runtime.arguments.shift
         case subcommand
         when 'create' then create(Runtime.arguments.shift)
+        when 'list'   then list
+        when 'show'   then show(Runtime.arguments.shift)
         else               help
         end
       end
@@ -30,6 +42,25 @@ module Biosphere
         Log.separator
       end
 
+      def list
+        Log.separator
+        Log.batch Resources::Sphere.all.map(&:name).to_json
+        Resources::Sphere.all.each do |sphere|
+          #Log.batch sphere.name
+          Log.info "  #{sphere.name.ljust(15).bold}  # Managed by #{sphere.manager}"
+        end
+        Log.separator
+      end
+
+      def show(name)
+        unless sphere = Resources::Sphere.all.detect { |sphere| sphere.name == name }
+          message = "Sphere #{name.inspect} not found"
+          Log.error message
+          raise Errors::SphereNotFound, message
+        end
+        Log.batch sphere.to_json
+      end
+
       def create(name)
         Resources::Sphere.new(name).create
       end
@@ -39,9 +70,9 @@ module Biosphere
           result = {}
           OptionParser.new do |parser|
 
-            parser.on("--test [SPHERENAME]") do |value|
-              result[:test] = value
-            end
+            #parser.on("--test") do |value|
+            #  result[:test] = value
+            #end
 
           end.parse!(Runtime.arguments)
           Options.new result

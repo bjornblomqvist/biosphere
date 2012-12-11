@@ -18,6 +18,10 @@ module Biosphere
       instance.store[object_name] = object
     end
 
+    def self.all
+      store.values
+    end
+
     private
 
     def self.name

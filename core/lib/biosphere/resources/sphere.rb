@@ -4,7 +4,7 @@ require 'biosphere/manager'
 require 'biosphere/resources/directory'
 require 'biosphere/resources/file'
 require 'biosphere/extensions/ostruct'
-require 'biosphere/extensions/to_json'
+require 'biosphere/extensions/json'
 require 'pathname'
 require 'yaml'
 
@@ -59,6 +59,14 @@ module Biosphere
       def update
         Log.debug "Initializing update of sphere #{name}..."
         manager.perform
+      end
+
+      def configure(options={})
+        options = JSON.load(options[:from_json])
+        yaml = YAML.dump(options).gsub(/^---\s\n/, '')
+        content = [config_example_template, yaml].join("\n\n")
+        Resources::File.write config_file_path, content
+        Log.info "Sphere #{name} updated."
       end
 
       def cache_path

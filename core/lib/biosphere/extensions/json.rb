@@ -1,6 +1,14 @@
 # This will, obviously, be replaced by some original JSON library.
 # I just needed a quick way to convert to JSON without RubyGems in Ruby 1.8.
 
+require 'biosphere/extensions/okjson'
+
+module JSON
+  def self.load(object)
+    OkJson.decode(object)
+  end
+end
+
 class NilClass
   def to_json
     "null"

@@ -29,7 +29,7 @@ module Biosphere
         elsif options.patch
           Log.info Biosphere::Version::PATCH
         elsif version = options.biospherepane
-          if compatible_with_biospherepane?(version)
+          if compatible_with_biosphere_pane?(version)
             Log.info "Biosphere #{VERSION} is compatible with BiospherePane #{version}"
           else
             message = "Biosphere #{VERSION} is NOT compatible with BiospherePane #{version}".red
@@ -43,8 +43,9 @@ module Biosphere
 
       private
 
-      def compatible_with_biospherepane?(version)
-        true
+      def compatible_with_biosphere_pane?(version)
+        major, minor, patch = version.to_s.split('.')
+        major.to_i == Biosphere::Version::MAJOR && minor.to_i == Biosphere::Version::MINOR
       end
 
       def help

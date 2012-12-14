@@ -3,7 +3,7 @@ require 'biosphere/action'
 require 'biosphere/log'
 require 'biosphere/extensions/option_parser'
 require 'biosphere/extensions/ostruct'
-require 'biosphere/extensions/to_json'
+require 'biosphere/extensions/json'
 require 'biosphere/runtime'
 require 'biosphere/resources/sphere'
 
@@ -26,10 +26,11 @@ module Biosphere
         return help if Runtime.help_mode?
         subcommand = Runtime.arguments.shift
         case subcommand
-        when 'create' then create(Runtime.arguments.shift)
-        when 'list'   then list
-        when 'show'   then show(Runtime.arguments.shift)
-        else               help
+        when 'create'    then create(Runtime.arguments.shift)
+        when 'list'      then list
+        when 'show'      then show(Runtime.arguments.shift)
+        when 'configure' then configure(Runtime.arguments.shift)
+        else                  help
         end
       end
 
@@ -65,14 +66,18 @@ module Biosphere
         Resources::Sphere.new(name).create
       end
 
+      def configure(name)
+        Resources::Sphere.new(name).configure :from_json => options.from_json
+      end
+
       def options
         @options ||= begin
           result = {}
           OptionParser.new do |parser|
 
-            #parser.on("--test") do |value|
-            #  result[:test] = value
-            #end
+            parser.on("--from-json JSON") do |value|
+              result[:from_json] = value
+            end
 
           end.parse!(Runtime.arguments)
           Options.new result

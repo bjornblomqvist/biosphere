@@ -1,5 +1,5 @@
 require 'ostruct'
-require 'biosphere/extensions/to_json'
+require 'biosphere/extensions/json'
 
 module Biosphere
   module Extensions

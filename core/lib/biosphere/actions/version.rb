@@ -6,13 +6,17 @@ require 'biosphere/resources/sphere'
 
 module Biosphere
   module Errors
-    class IncompatibleBiospherePane < Error
-      def code() 70 end
+    class BiospherePaneIsTooNew < Error
+      def code() 50 end
+    end
+    class BiospherePaneIsTooOld < Error
+      def code() 51 end
     end
   end
 end
 
 module Biosphere
+  # ErrorCodes: 50-59
   module Actions
     class Version
 
@@ -29,13 +33,7 @@ module Biosphere
         elsif options.patch
           Log.info Biosphere::Version::PATCH
         elsif version = options.biospherepane
-          if compatible_with_biosphere_pane?(version)
-            Log.info "Biosphere #{VERSION} is compatible with BiospherePane #{version}"
-          else
-            message = "Biosphere #{VERSION} is NOT compatible with BiospherePane #{version}".red
-            Log.error message
-            raise Errors::IncompatibleBiospherePane, message
-          end
+          compatibility_notice(version)
         else
           Log.info "Biosphere Version #{VERSION}"
         end
@@ -43,9 +41,23 @@ module Biosphere
 
       private
 
-      def compatible_with_biosphere_pane?(version)
+      def compatibility_notice(version)
         major, minor, patch = version.to_s.split('.')
-        major.to_i == Biosphere::Version::MAJOR && minor.to_i == Biosphere::Version::MINOR
+        if major.to_i == Biosphere::Version::MAJOR && minor.to_i == Biosphere::Version::MINOR
+          message = "Biosphere #{VERSION} is compatible with BiospherePane #{version}"
+          Log.batch message
+          Log.info message.green
+        elsif major.to_i > Biosphere::Version::MAJOR || major.to_i == Biosphere::Version::MAJOR && minor.to_i > Biosphere::Version::MINOR
+          message = "Your Preference Pane #{version} is too new for Biosphere #{VERSION}. Please update your Biosphere installation."
+          Log.batch message
+          Log.error message.red
+          raise Errors::BiospherePaneIsTooNew, message
+        elsif major.to_i < Biosphere::Version::MAJOR || major.to_i == Biosphere::Version::MAJOR && minor.to_i < Biosphere::Version::MINOR
+          message = "Biosphere #{VERSION} is too new for Preference Pane #{version}. Please upgrade your Preference Pane."
+          Log.batch message
+          Log.error message.red
+          raise Errors::BiospherePaneIsTooOld, message
+        end
       end
 
       def help

@@ -11,12 +11,13 @@ require 'biosphere/resources/sphere'
 module Biosphere
   module Errors
     class SphereNotFound < Error
-      def code() 10 end
+      def code() 30 end
     end
   end
 end
 
 module Biosphere
+  # ErrorCodes: 30-39
   module Actions
     class Sphere
 
@@ -67,7 +68,11 @@ module Biosphere
       end
 
       def configure(name)
-        Resources::Sphere.new(name).configure :from_json => options.from_json
+        if options.remove_config
+          Resources::Sphere.new(name).configure
+        else
+          Resources::Sphere.new(name).configure :from_json => options.from_json
+        end
       end
 
       def options
@@ -77,6 +82,9 @@ module Biosphere
 
             parser.on("--from-json JSON") do |value|
               result[:from_json] = value
+            end
+            parser.on("--remove-config") do |value|
+              result[:remove_config] = value
             end
 
           end.parse!(Runtime.arguments)

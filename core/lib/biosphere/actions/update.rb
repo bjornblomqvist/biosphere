@@ -3,6 +3,7 @@ require 'biosphere/resources/sphere'
 
 module Biosphere
   module Actions
+    # ErrorCodes: 40-49
     class Update
 
       def perform

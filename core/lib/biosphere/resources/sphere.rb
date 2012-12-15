@@ -62,6 +62,7 @@ module Biosphere
       end
 
       def configure(options={})
+        Resources::File.write(config_file_path, config_example_template) if options == {}
         options = JSON.load(options[:from_json])
         yaml = YAML.dump(options).gsub(/^---\s\n/, '')
         content = [config_example_template, yaml].join("\n\n")

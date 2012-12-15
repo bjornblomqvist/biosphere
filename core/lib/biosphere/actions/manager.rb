@@ -3,6 +3,7 @@ require 'biosphere/manager'
 
 module Biosphere
   module Actions
+    # ErrorCodes: 20-29
     class Manager
 
       def perform

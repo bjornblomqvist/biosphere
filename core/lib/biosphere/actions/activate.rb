@@ -2,6 +2,7 @@ require 'biosphere/action'
 
 module Biosphere
   module Actions
+    # ErrorCodes: 10-19
     class Activate
 
       def perform

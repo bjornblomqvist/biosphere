@@ -22,7 +22,7 @@ module Biosphere
         end
       end
 
-      attr_reader :executable, :arguments, :show_output
+      attr_reader :executable, :arguments, :show_output, :indent
 
       # Convenience wrapper
       def self.run(*args)
@@ -34,6 +34,7 @@ module Biosphere
         @arguments = options[:arguments] || []
         @env_vars = options[:env_vars] || {}
         @show_output = options[:show_output] || false
+        @indent = options[:indent].to_i
       end
 
       def to_s
@@ -52,6 +53,10 @@ module Biosphere
         [env_vars, executable, arguments].compact.join(' ')
       end
 
+      def indentation
+        ' ' * indent
+      end
+
       def run
         result = Result.new
         result.command = command # For later inspection
@@ -67,7 +72,7 @@ module Biosphere
               if Runtime.debug_mode?
                 Log.debug "  STDOUT: #{stdout_line}"
               elsif show_output
-                Log.info stdout_line
+                Log.info indentation + stdout_line.strip.faint
               end
               stdout_lines << stdout_line
             end
@@ -78,7 +83,7 @@ module Biosphere
               if Runtime.debug_mode?
                 Log.debug "  STDERR: #{stderr_line}"
               elsif show_output
-                Log.info stderr_line
+                Log.info indentation + stderr_line.strip.faint
               end
               stderr_lines << stderr_line
             end

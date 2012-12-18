@@ -29,6 +29,10 @@ module Biosphere
 
       private
 
+      def default_env_vars
+        { 'GEM_HOME' => Resources::Gem.rubygems_path, 'BIOSPHERE_HOME' => BIOSPHERE_HOME, 'BIOSPHERE_SPHERE_PATH' => sphere.path, 'BIOSPHERE_SPHERE_AUGMENTATIONS_PATH' => sphere.augmentations_path }
+      end
+
       def name
         self.class.name.split('::').last.downcase
       end

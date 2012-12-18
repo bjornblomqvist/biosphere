@@ -10,9 +10,8 @@ module Biosphere
       private
 
       def chef_command
-        env_vars = { 'GEM_HOME' => Resources::Gem.rubygems_path, 'BIOSPHERE_HOME' => BIOSPHERE_HOME, 'BIOSPHERE_SPHERE_PATH' => sphere.path }
         arguments = [chef_solo_executable_path, '--config', chef_knife_config_path, '--json-attributes', chef_json_path]
-        Resources::Command.new :show_output => true, :env_vars => env_vars, :executable => BIOSPHERE_RUBY_EXECUTABLE_PATH, :arguments => arguments
+        Resources::Command.new :show_output => true, :indent => 4, :env_vars => default_env_vars, :executable => BIOSPHERE_RUBY_EXECUTABLE_PATH, :arguments => arguments
       end
 
       def ensure_knife_config

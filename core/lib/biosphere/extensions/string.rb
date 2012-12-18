@@ -10,6 +10,7 @@ module Biosphere
       def magenta() stylize(:magenta); end
       def cyan()    stylize(:cyan);    end
       def bold()    stylize(:bold);    end
+      def faint()   stylize(:faint);   end
       def blink()   stylize(:blink);   end
 
       # Thanks ActiveSupport
@@ -29,11 +30,13 @@ module Biosphere
         when :magenta   then 35
         when :cyan      then 36
         when :bold      then 1
+        when :faint     then 2
         end
 
         end_code = case style
         when :blink then 25
         when :bold  then 22
+        when :faint then 22
         else             0
         end
 

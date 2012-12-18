@@ -4,11 +4,12 @@ require 'biosphere/log'
 module Biosphere
   class Action < Container
 
-    def self.perform(name)
+    def self.perform(args=[])
+      name = args.shift
       name = 'help' unless name
       if action = store[name]
         Log.debug "Loading action #{name.inspect}..."
-        action.new.perform
+        action.new.perform args
       else
         Log.separator
         Log.error "  Unknown action: #{name}".red

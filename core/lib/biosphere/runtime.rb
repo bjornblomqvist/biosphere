@@ -7,6 +7,7 @@ module Biosphere
       @@silent_mode ||= !!arguments.delete('--silent')
       @@batch_mode  ||= !!arguments.delete('--batch')
       @@help_mode   ||= !!arguments.delete('--help')
+      @@arguments.freeze
     end
 
     def privileged?

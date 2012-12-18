@@ -51,9 +51,14 @@ module Biosphere
         sphere_paths.sort.map { |sphere_path| new(sphere_path.basename) }
       end
 
+      def self.find(name)
+        all.detect { |sphere| sphere.name == name }
+      end
+
       def create
         ensure_path
         ensure_config_file
+        augmentations_path
       end
 
       def update
@@ -72,6 +77,10 @@ module Biosphere
 
       def cache_path
         Directory.ensure path.join('cache')
+      end
+
+      def augmentations_path
+        Directory.ensure path.join('augmentations')
       end
 
       def path
@@ -93,6 +102,28 @@ module Biosphere
 
       def to_json
         as_json.to_json
+      end
+
+      def activated?
+        activated_file_path.exist?
+      end
+
+      def activate!(index=0)
+        Resources::File.write activated_file_path, index
+      end
+
+      def deactivate!
+        Resources::File.delete activated_file_path
+      end
+
+      def activation_order
+        return 0 unless activated?
+        activated_file_path.read.to_i
+      end
+
+      def augmentation(identifier)
+        path = augmentations_path.join(identifier.to_s)
+        path.exist? ? path.read : nil
       end
 
       private
@@ -194,6 +225,14 @@ module Biosphere
           Log.error "The sphere #{name.inspect} has an invalid YAML configuration file: (#{config_file_path})"
           exit 50
         end
+      end
+
+      def activated_file_path
+        path.join(activated_file_name)
+      end
+
+      def activated_file_name
+        'active'
       end
 
       def config_file_path

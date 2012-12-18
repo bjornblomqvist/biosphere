@@ -21,7 +21,10 @@ module Biosphere
 
       def run_chef
         Log.info "Running chef to update sphere #{sphere.name.bold}..."
-        chef_command.run
+        Log.separator
+        result = chef_command.run
+        Log.separator
+        result
       end
 
       def ensure_knife_config
@@ -94,7 +97,7 @@ module Biosphere
       end
 
       def default_chef_version
-        '10.14.2'
+        '10.16.2'
       end
 
     end

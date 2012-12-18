@@ -7,7 +7,6 @@ require 'biosphere/extensions/json'
 require 'biosphere/runtime'
 require 'biosphere/resources/sphere'
 
-
 module Biosphere
   module Errors
     class SphereNotFound < Error
@@ -23,14 +22,14 @@ module Biosphere
 
       Options = Class.new(OpenStruct)
 
-      def perform
+      def perform(args)
         return help if Runtime.help_mode?
-        subcommand = Runtime.arguments.shift
+        subcommand = args.shift
         case subcommand
-        when 'create'    then create(Runtime.arguments.shift)
+        when 'create'    then create(args.shift)
         when 'list'      then list
-        when 'show'      then show(Runtime.arguments.shift)
-        when 'configure' then configure(Runtime.arguments.shift)
+        when 'show'      then show(args.shift)
+        when 'configure' then configure(args.shift)
         else                  help
         end
       end

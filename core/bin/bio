@@ -6,6 +6,7 @@ module Biosphere
   BIOSPHERE_GEM_EXECUTABLE_PATH = '/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/gem'
   # All these constants below will make it easier to provide advanced configuration options based on ENV in the future. I think :)
   BIOSPHERE_HOME                = File.expand_path('../../..', __FILE__)
+  BIOSPHERE_AUGMENTATIONS_PATH  = File.join(BIOSPHERE_HOME, 'augmentations')
   BIOSPHERE_CORE_PATH           = File.join(BIOSPHERE_HOME, 'core')
   BIOSPHERE_SPHERES_PATH        = File.join(BIOSPHERE_HOME, 'spheres')
   BIOSPHERE_VENDOR_PATH         = File.join(BIOSPHERE_HOME, 'vendor')
@@ -24,7 +25,7 @@ if Runtime.privileged?
 end
 
 begin
-  Action.perform(Runtime.arguments.shift)
+  Action.perform Runtime.arguments.dup
 
 rescue Errors::Error => exception
   Log.debug "Exiting with status #{exception.code} defined by Error #{exception.class}"

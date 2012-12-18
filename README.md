@@ -11,7 +11,7 @@ Breathe in the two beautiful design principles of Biosphere:
 
 The by far easiest way to install Biosphere is by using the [Biosphere Preference Pane](https://github.com/halo/BiospherePane). But let's walk through how you can achieve the same thing the Preference Pane would help you to achieve otherwise.
 
-###### 1. Clone the repository from Github
+##### 1. Clone the repository from Github
 
 I recommend the default location in your home directory:
 
@@ -19,7 +19,7 @@ I recommend the default location in your home directory:
 git clone git://github.com/halo/biosphere.git ~/.biosphere
 ```
 
-###### 2. Enhance your bash profile
+##### 2. Enhance your bash profile
 
 Now we need to add something to your `~/.bash_profile` or `~/.zshenv` so that you have the `bio` executable available to you in the Terminal.
 
@@ -49,7 +49,7 @@ Now you're ready to use Biosphere!
 
 ## First steps
 
-###### Creating Spheres
+##### Creating Spheres
 
 Well, first of all you need some Spheres. Let's create a new Sphere called *work*:
 
@@ -59,7 +59,7 @@ bio sphere create work
 
 This will create the directory `~/.biosphere/spheres/work`, and inside of it configuration file `sphere.yml` and the directory `augmentations`.
 
-###### Bash Profile augmentations
+##### Bash Profile augmentations
 
 Let's say that every time you enter your *work* Sphere, you want the following environment variable to be set:
 
@@ -77,7 +77,7 @@ bio activate work
 
 Now reload your Terminal (that is, open a new tab or run `source ~/.bash_profile`) and you will notice that the environment variable RUBYOPT is properly set like you want it to in that Sphere. You'll notice that Biosphere created a file called `active` inside your sphere directory to remember that the sphere is currently activated.
 
-###### SSH config augmentations
+##### SSH config augmentations
 
 Imagine that you would like to tweak your SSH settings for this Sphere so that whenever you SSH into a server, you want to keep the connection alive by pinging the server every 30 seconds.
 
@@ -90,7 +90,7 @@ Host *
   ServerAliveInterval 30
 ```
 
-###### Reactivating a Sphere
+##### Reactivating a Sphere
 
 Now reactivate your sphere by typing
 
@@ -114,7 +114,7 @@ Host *
 Feel free to move that snippet around within the file, yet don't break the START and STOP tags. Because when you deactivate your sphere or activate more spheres, Biosphere will understand which section it may modify.
 
 
-##### To be continued...
+#### To be continued...
 
 Pchew, I will add more to this readme soon :)
 

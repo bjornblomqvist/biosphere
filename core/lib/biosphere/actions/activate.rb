@@ -34,12 +34,14 @@ module Biosphere
       end
 
       def relevant_spheres
-        if @sphere_names.empty?
-          Resources::Sphere.all.select(&:activated?).sort_by(&:activation_order)
-        else
-          @sphere_names.map do |name|
-            Resources::Sphere.find(name)
-          end.compact
+        @relevant_spheres ||= begin
+          if @sphere_names.empty?
+            Resources::Sphere.all.select(&:activated?).sort_by(&:activation_order)
+          else
+            @sphere_names.map do |name|
+              Resources::Sphere.find(name)
+            end.compact
+          end
         end
       end
 

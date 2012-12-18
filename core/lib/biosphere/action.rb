@@ -7,7 +7,13 @@ module Biosphere
     def self.perform(args=[])
       name = args.shift
       name = 'help' unless name
-      if action = store[name]
+      perform! name, args
+    end
+
+    private
+
+    def self.perform!(name, args)
+      if action = find(name)
         Log.debug "Loading action #{name.inspect}..."
         action.new.perform args
       else

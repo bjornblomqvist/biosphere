@@ -75,7 +75,7 @@ Now you can activate your Sphere by running this command in your Terminal:
 bio activate work
 ```
 
-Now reload your Terminal (that is, open a new tab or run `source ~/.bash_profile`) and you will notice that the environment variable RUBYOPT is properly set like you want it to in that Sphere. You'll notice that Biosphere created a file called `active` inside your sphere directory to remember that the sphere is currently activated.
+Now reload your Terminal (that is, open a new tab or run `source ~/.bash_profile`) and you will notice that the environment variable `RUBYOPT` is properly set like you want it to in that Sphere. You'll notice that Biosphere created a file called `active` inside your sphere directory to remember that the sphere is currently activated.
 
 ##### SSH config augmentations
 
@@ -98,7 +98,9 @@ Now reactivate your sphere by typing
 bio activate
 ```
 
-Note that you don't have to type in the name of the sphere again, because Biosphere remembers which spheres are currently activated. What just happened is that your `~/.ssh/config` file has been augmented with the following snippet:
+Note that you don't have to type in the name of the sphere again, because Biosphere remembers which spheres are currently activated.
+
+What just happened is that your `~/.ssh/config` file has been augmented with the following snippet:
 
 ```bash
 ### BIOSPHERE MANAGED START ###
@@ -111,7 +113,7 @@ Host *
 ### BIOSPHERE MANAGED STOP ###
 ```
 
-Feel free to move that snippet around within the file, yet don't break the START and STOP tags. Because when you deactivate your sphere or activate more spheres, Biosphere will understand which section it may modify.
+Feel free to move that snippet around within the file, yet don't break the START and STOP tags. Because when you deactivate your sphere or activate more spheres, Biosphere will understand which section it may modify by looking for these tags.
 
 
 #### To be continued...

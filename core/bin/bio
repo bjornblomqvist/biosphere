@@ -26,7 +26,6 @@ end
 
 begin
   Action.perform Runtime.arguments.dup
-
 rescue Errors::Error => exception
   Log.debug "Exiting with status #{exception.code} defined by Error #{exception.class}"
   exit exception.code

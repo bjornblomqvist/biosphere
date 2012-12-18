@@ -1,4 +1,4 @@
-### Introduction
+## Introduction
 
 Biosphere is a simple way to manage multiple development environments on your Mac. For example, if you are developing at work, privately, and have several customer projects, you might need different mysql databases, different rubies, different whatever for each of them. We will refer to these environments as *Spheres*.
 
@@ -7,7 +7,7 @@ Breathe in the two beautiful design principles of Biosphere:
 - The only dependency is Mac OS 10.7 (or higher).
 - It is sandboxed so that you can get rid of it by removing its directory.
 
-### Installation
+## Installation
 
 The by far easiest way to install Biosphere is by using the [Biosphere Preference Pane](https://github.com/halo/BiospherePane). But let's walk through how you can achieve the same thing the Preference Pane would help you to achieve otherwise.
 
@@ -15,7 +15,9 @@ The by far easiest way to install Biosphere is by using the [Biosphere Preferenc
 
 I recommend the default location in your home directory:
 
-    git clone git://github.com/halo/biosphere.git ~/.biosphere
+```bash
+git clone git://github.com/halo/biosphere.git ~/.biosphere
+```
 
 ###### 2. Enhance your bash profile
 
@@ -23,25 +25,29 @@ Now we need to add something to your `~/.bash_profile` or `~/.zshenv` so that yo
 
 Biosphere can do that for you if you like by using this command (use `--augment-zshenv` if you use z-shell):
 
-    ~/.biosphere/core/bin/bio config --augment-bash-profile
+```bash
+~/.biosphere/core/bin/bio config --augment-bash-profile
+```
 
 Alternatively you can add the snippet all by yourself:
 
-    ### BIOSPHERE MANAGED START ###
+```bash
+### BIOSPHERE MANAGED START ###
 
-    # Adding the "bio" executable to your path.
-    export PATH="~/.biosphere/core/bin:$PATH"
+# Adding the "bio" executable to your path.
+export PATH="~/.biosphere/core/bin:$PATH"
 
-    # Loading Biosphere's bash_profile for easier de-/activation of spheres.
-    [[ -s ~/.biosphere/augmentations/bash_profile ]] && source ~/.biosphere/augmentations/bash_profile
+# Loading Biosphere's bash_profile for easier de-/activation of spheres.
+[[ -s ~/.biosphere/augmentations/bash_profile ]] && source ~/.biosphere/augmentations/bash_profile
 
-    ### BIOSPHERE MANAGED STOP ###
+### BIOSPHERE MANAGED STOP ###
+```
 
 Note that this won't have to change in the future. You can commit this into your dotfiles.
 
 Now you're ready to use Biosphere!
 
-### First steps
+## First steps
 
 Well, first of all you need some Spheres. Let's create a new Sphere called *work*:
 
@@ -93,7 +99,7 @@ Feel free to move that snippet around within the file, yet don't break the START
 Pchew, I will add more to this readme soon :)
 
 
-### Uninstallation
+## Uninstallation
 
 Simply remove the Biosphere directory. By default this is `~/.biosphere`.
 
@@ -101,6 +107,6 @@ If you happened to have Spheres with augmentations for your SSH config file, you
 
 Lastly, you have probably added a similar snippet to your `~/.bash_profile` too when you installed Biosphere. Just remove it from there.
 
-### Copyright
+## Copyright
 
 Released under MIT 2012 funkensturm. See [MIT-LICENSE](http://github.com/halo/biosphere/blob/master/MIT-LICENSE).

@@ -49,47 +49,67 @@ Now you're ready to use Biosphere!
 
 ## First steps
 
+###### Creating Spheres
+
 Well, first of all you need some Spheres. Let's create a new Sphere called *work*:
 
-    bio sphere create work
+```bash
+bio sphere create work
+```
 
 This will create the directory `~/.biosphere/spheres/work`, and inside of it configuration file `sphere.yml` and the directory `augmentations`.
 
+###### Bash Profile augmentations
+
 Let's say that every time you enter your *work* Sphere, you want the following environment variable to be set:
 
-    export RUBYOPT=-Ku
+```bash
+export RUBYOPT=-Ku
+```
 
 Create the file `~/.biosphere/spheres/work/augmentations/bash_profile` and copy the export command above into that new file.
 
 Now you can activate your Sphere by running this command in your Terminal:
 
-    bio activate work
+```bash
+bio activate work
+```
 
 Now reload your Terminal (that is, open a new tab or run `source ~/.bash_profile`) and you will notice that the environment variable RUBYOPT is properly set like you want it to in that Sphere. You'll notice that Biosphere created a file called `active` inside your sphere directory to remember that the sphere is currently activated.
 
+###### SSH config augmentations
+
 Imagine that you would like to tweak your SSH settings for this Sphere so that whenever you SSH into a server, you want to keep the connection alive by pinging the server every 30 seconds.
 
-Now, while the design principles of Biosphere states that it will never modify any files outside of the `~/.biosphere` directory, there is a single exception if you permit it. Let's **augment** your `~/.ssh/config` file by performing the following steps.
+Now, while the design principles of Biosphere states that it will never modify any files outside of the `~/.biosphere` directory, there is a single exception if you permit it. Let's *augment* your `~/.ssh/config` file by performing the following steps.
 
 Create the file `~/.biosphere/spheres/work/augmentations/ssh_config` and copy the following snippet into it:
 
-    Host *
-      ServerAliveInterval 30
+```bash
+Host *
+  ServerAliveInterval 30
+```
+
+###### Reactivating a Sphere
 
 Now reactivate your sphere by typing
 
-    bio activate
+```bash
+bio activate
+```
 
 Note that you don't have to type in the name of the sphere again, because Biosphere remembers which spheres are currently activated. What just happened is that your `~/.ssh/config` file has been augmented with the following snippet:
 
-    ### BIOSPHERE MANAGED START ###
-    
-    # SPHERE WORK
-    
-    Host *
-      ServerAliveInterval 30
-    
-    ### BIOSPHERE MANAGED STOP ###
+```bash
+### BIOSPHERE MANAGED START ###
+
+# SPHERE WORK
+
+Host *
+  ServerAliveInterval 30
+
+### BIOSPHERE MANAGED STOP ###
+```
 
 Feel free to move that snippet around within the file, yet don't break the START and STOP tags. Because when you deactivate your sphere or activate more spheres, Biosphere will understand which section it may modify.
 

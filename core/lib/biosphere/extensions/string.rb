@@ -13,9 +13,20 @@ module Biosphere
       def faint()   stylize(:faint);   end
       def blink()   stylize(:blink);   end
 
-      # Thanks ActiveSupport
+      # Copyright © 2005-2012 David Heinemeier Hansson (github.com/rails/rails) under MIT
       def underscore
         self.gsub(/::/, '/').gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').gsub(/([a-z\d])([A-Z])/,'\1_\2').tr("-", "_").downcase
+      end
+
+      # Copyright © 2009 Martin Aumont (github.com/mynyml/unindent) under MIT
+      def unindent
+        indent = self.split("\n").select {|line| !line.strip.empty? }.map {|line| line.index(/[^\s]/) }.compact.min || 0
+        self.gsub(/^[[:blank:]]{#{indent}}/, '')
+      end
+
+      # Copyright © 2009 Martin Aumont (github.com/mynyml/unindent) under MIT
+      def unindent!
+        self.replace(self.unindent)
       end
 
       private

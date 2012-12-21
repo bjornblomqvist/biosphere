@@ -1,4 +1,5 @@
 require 'biosphere/resources/file'
+require 'biosphere/error'
 require 'pathname'
 
 module Biosphere
@@ -9,19 +10,26 @@ module Biosphere
   end
 end
 
-
 module Biosphere
   # ErrorCodes: 100-110
   class Augmentator
     attr_reader :spheres
 
     def initialize(options={})
-      @spheres = options[:spheres]
+      @spheres = options[:spheres] || []
     end
 
     def perform
       gather
-      augment
+      augment gathered_augmentations
+    end
+
+    def implode
+      augmentations = {}
+      valid_augmentation_identifiers.each do |identifier|
+        augmentations[identifier] = ''
+      end
+      augment augmentations
     end
 
     private
@@ -37,7 +45,7 @@ module Biosphere
             end
           else
             Log.debug "Writing gathered #{identifier} augmentations to #{destination}..."
-            Resources::File.write(destination, "\n" + contents.join("\n\n") + "\n")
+            Resources::File.write(destination, contents.join("\n\n"))
           end
         else
           message = "Cannot write to #{destination}"
@@ -47,16 +55,13 @@ module Biosphere
       end
     end
 
-    def augment
-      Log.debug "Applying augmentations to the real world..."
+    def augment(augmentations)
       augmentations.each do |identifier, content|
         next unless destination = augmentation_destination_path(identifier)
         if destination.exist?
           if destination.writable?
-            if content.strip.empty?
-            else
-              destination.augment :augmentation => content
-            end
+            Log.debug "Augmenting #{destination}..."
+            Resources::File.augment destination, content
           else
             Log.info "Skipping augmentation of #{destination} because the file is not writable."
           end
@@ -67,7 +72,7 @@ module Biosphere
       # Going to augment files outside of biosphere sandbox here...
     end
 
-    def augmentations
+    def gathered_augmentations
       result = {}
       valid_augmentation_identifiers.each do |identifier|
         path = augmentations_path.join(identifier.to_s)

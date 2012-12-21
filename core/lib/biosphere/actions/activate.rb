@@ -2,10 +2,10 @@ require 'biosphere/action'
 
 module Biosphere
   module Actions
-    # ErrorCodes: 10-19
+    # ErrorCodes: 3-19
     class Activate
 
-      def perform(args)
+      def perform(args=[])
         return help if Runtime.help_mode?
         @sphere_names = args
         activate
@@ -13,6 +13,10 @@ module Biosphere
       end
 
       private
+
+      def help
+        Log.info "Coming soon..."
+      end
 
       def activate
         if relevant_spheres.empty?

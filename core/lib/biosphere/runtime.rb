@@ -3,10 +3,10 @@ module Biosphere
     extend self
 
     def load
-      @@debug_mode  ||= !!arguments.delete('--debug')
-      @@silent_mode ||= !!arguments.delete('--silent')
-      @@batch_mode  ||= !!arguments.delete('--batch')
-      @@help_mode   ||= !!arguments.delete('--help')
+      @@debug_mode  = !!arguments.delete('--debug')
+      @@silent_mode = !!arguments.delete('--silent')
+      @@batch_mode  = !!arguments.delete('--batch')
+      @@help_mode   = !!arguments.delete('--help')
       @@arguments.freeze
     end
 

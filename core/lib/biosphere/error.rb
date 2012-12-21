@@ -3,8 +3,11 @@ module Biosphere
     # The Parent of all Biosphere-related errors
     class Error < StandardError
 
+      # 0 = no errors
+      # 1 = uncaught, abnormal error
+      # 2 or higher = biosphere errors
       def code
-        1
+        2
       end
 
     end

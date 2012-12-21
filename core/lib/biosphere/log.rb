@@ -69,7 +69,7 @@ module Biosphere
         when :batch then 'BATCH: '.cyan
         else             ' '
         end
-        message.insert(0, prefix)
+        message.insert 0, prefix
       end
       output message
     end

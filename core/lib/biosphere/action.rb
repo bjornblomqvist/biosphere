@@ -5,8 +5,7 @@ module Biosphere
   class Action < Container
 
     def self.perform(args=[])
-      name = args.shift
-      name = 'help' unless name
+      name = args.shift || 'help'
       perform! name, args
     end
 

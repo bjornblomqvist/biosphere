@@ -7,9 +7,5 @@ module Biosphere
 
     Config = Class.new(OpenStruct)
 
-    def self.find(name)
-      store[name]
-    end
-
   end
 end

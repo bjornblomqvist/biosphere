@@ -123,11 +123,11 @@ Pchew, I will add more to this readme soon :)
 
 ## Uninstallation
 
-Simply remove the Biosphere directory. By default this is `~/.biosphere`.
+If you happened to have Spheres with augmentations for your SSH config file, you should first run `bio implode` so that your `~/.ssh/config` file is cleaned from any modifications made by Biosphere. You can also perform this step manually by deleting everything between the `### BIOSPHERE MANAGED START ###` and `### BIOSPHERE MANAGED STOP ###` tags.
 
-If you happened to have Spheres with augmentations for your SSH config file, you should first run `bio deactivate` so that your `~/.ssh/config` file is cleaned from any modifications made by Biosphere. You can also perform this step manually by deleting everything between the `### BIOSPHERE MANAGED START ###` and `### BIOSPHERE MANAGED STOP ###` tags.
+If you didn't mess around with augmentations, simply remove the Biosphere directory. By default this is `~/.biosphere`.
 
-Lastly, you have probably added a similar snippet to your `~/.bash_profile` too when you installed Biosphere. Just remove it from there.
+Lastly, you have probably added a similar snippet to your `~/.bash_profile` too when you installed Biosphere. Just remove it from there or let `bio implode` take care of that.
 
 ## Copyright
 

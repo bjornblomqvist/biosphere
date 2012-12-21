@@ -1,14 +1,18 @@
 # General
+require 'biosphere/augmentator'
 require 'biosphere/error'
+require 'biosphere/log'
 require 'biosphere/runtime'
-require 'biosphere/version'
 
 # Actions
-require 'biosphere/actions/version'
 require 'biosphere/actions/activate'
+require 'biosphere/actions/deactivate'
+require 'biosphere/actions/config'
+require 'biosphere/actions/implode'
 require 'biosphere/actions/manager'
 require 'biosphere/actions/sphere'
 require 'biosphere/actions/update'
+require 'biosphere/actions/version'
 
 # Managers
 require 'biosphere/managers/chefserver'

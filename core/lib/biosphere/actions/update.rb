@@ -7,9 +7,9 @@ module Biosphere
     # ErrorCodes: 40-49
     class Update
 
-      def perform
+      def perform(args=[])
         return help if Runtime.help_mode?
-        @sphere_names = Runtime.arguments
+        @sphere_names = args
         update
       end
 

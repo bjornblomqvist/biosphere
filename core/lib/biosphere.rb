@@ -1,5 +1,5 @@
 # General
-require 'biosphere/augmentator'
+require 'biosphere/augmentations'
 require 'biosphere/error'
 require 'biosphere/log'
 require 'biosphere/runtime'

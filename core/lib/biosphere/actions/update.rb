@@ -1,6 +1,6 @@
 require 'biosphere/action'
 require 'biosphere/resources/sphere'
-require 'biosphere/augmentator'
+require 'biosphere/augmentations'
 
 module Biosphere
   module Actions

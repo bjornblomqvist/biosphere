@@ -10,7 +10,7 @@ module Biosphere
         self.class.new('~').join relative_path_from(home_path)
       end
 
-      def augment(content)
+      def augment(content=nil)
         Augmentor.new(:file => self, :content => content).perform
       end
 

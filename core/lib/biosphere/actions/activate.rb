@@ -19,38 +19,36 @@ module Biosphere
       end
 
       def activate
-        if relevant_spheres.empty?
-          Log.info "Nothing to activate or reactivate."
+        if spheres_to_activate.empty?
+          Log.info "No Spheres to (re-)activate."
         else
-          Log.info "Activating Spheres #{relevant_spheres.map(&:name).join(', ')}"
-          other_spheres.each do |sphere|
-            sphere.deactivate!
+          unless spheres_to_deactivate.empty?
+            Log.info "Deactivating Spheres #{spheres_to_deactivate.map(&:name).join(', ')}..."
+            spheres_to_deactivate.each(&:deactivate!)
           end
-          relevant_spheres.each_with_index do |sphere, index|
+          Log.info "Activating Spheres #{spheres_to_activate.map(&:name).join(', ')}..."
+          spheres_to_activate.each_with_index do |sphere, index|
             sphere.activate! index
           end
         end
       end
 
       def augment
-        augmentator = Augmentator.new :spheres => relevant_spheres
-        augmentator.perform
+        Augmentations.perform :spheres => spheres_to_activate
       end
 
-      def relevant_spheres
-        @relevant_spheres ||= begin
+      def spheres_to_activate
+        @spheres_to_activate ||= begin
           if @sphere_names.empty?
             Resources::Sphere.all.select(&:activated?).sort_by(&:activation_order)
           else
-            @sphere_names.map do |name|
-              Resources::Sphere.find(name)
-            end.compact
+            Resources::Sphere.find @sphere_names
           end
         end
       end
 
-      def other_spheres
-        Resources::Sphere.all - relevant_spheres
+      def spheres_to_deactivate
+        Resources::Sphere.find Resources::Sphere.all.select(&:activated?).map(&:name) - spheres_to_activate.map(&:name)
       end
 
     end

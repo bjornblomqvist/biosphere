@@ -51,8 +51,41 @@ module Biosphere
         sphere_paths.sort.map { |sphere_path| new(sphere_path.basename) }
       end
 
-      def self.find(name)
-        all.detect { |sphere| sphere.name == name }
+      def self.find(name_or_names)
+        if name_or_names.is_a?(Array)
+          name_or_names.map do |name|
+            find name
+          end.compact
+        else
+          all.detect { |sphere| sphere.name == name_or_names }
+        end
+      end
+
+      def self.augmentations
+        result = {}
+        all.each do |sphere|
+          next unless sphere.activated?
+          augmentation_identifiers.each do |identifier|
+            result[identifier] = [] unless result[identifier]
+            augmentation = sphere.augmentation(identifier)
+            if augmentation
+              Log.debug "Gathering #{identifier} augmentations from sphere #{sphere.name}..."
+              augmentation = "# SPHERE #{sphere.name.upcase}\n\n#{augmentation}"
+              if augmentation_prominence?(identifier) == :earlier
+                result[identifier].push augmentation
+              else
+                result[identifier].unshift augmentation
+              end
+            else
+              Log.debug "No #{identifier} augmentations to gather from sphere #{sphere.name}..."
+            end
+          end
+        end
+        result
+      end
+
+      def self.augmentation_identifiers
+        [:bash_profile, :zshenv, :ssh_config]
       end
 
       def create
@@ -69,7 +102,7 @@ module Biosphere
       def configure(options={})
         Resources::File.write(config_file_path, config_example_template) if options == {}
         options = JSON.load(options[:from_json])
-        yaml = YAML.dump(options).gsub(/^---\s\n/, '')
+        yaml = YAML.dump(options).sub(/^---\s\n/, '')
         content = [config_example_template, yaml].join("\n\n")
         Resources::File.write config_file_path, content
         Log.info "Sphere #{name} updated."
@@ -241,6 +274,13 @@ module Biosphere
 
       def config_file_name
         'sphere.yml'
+      end
+
+      def self.augmentation_prominence?(identifier)
+        case identifier
+        when :ssh_config then :earlier # Earlier things in ~/.ssh/config override later things
+        else                  :later   # Later things in e.g. ~/.bash_profile override earlier things
+        end
       end
 
       def valid_name?

@@ -18,14 +18,12 @@ module Biosphere
       end
 
       def deactivate
-        Resources::Sphere.all.each do |sphere|
-          sphere.deactivate!
-        end
+        Log.debug "Deactivating all Spheres..."
+        Resources::Sphere.all.each(&:deactivate!)
       end
 
       def augment
-        augmentator = Augmentator.new
-        augmentator.perform
+        Augmentations.perform
       end
 
     end

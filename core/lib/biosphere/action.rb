@@ -13,7 +13,7 @@ module Biosphere
 
     def self.perform!(name, args)
       if action = find(name)
-        Log.debug "Loading action #{name.inspect}..."
+        Log.debug "Loading action #{name.inspect} with arguments: #{args.join(' ')}"
         action.new.perform args
       else
         Log.separator

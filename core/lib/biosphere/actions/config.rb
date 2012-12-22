@@ -67,14 +67,22 @@ module Biosphere
 
       def implode_bash_profile
         return unless bash_profile_path.writable?
-        Log.info "Removing augmentation from #{bash_profile_path}"
-        Resources::File.augment bash_profile_path
+        result = Resources::File.augment bash_profile_path
+        if result.success?
+          Log.info "Imploded augmentation from #{bash_profile_path}" if result.status == :content_updated
+        else
+          Log.info "Could nor implode augmentation from #{bash_profile_path} because #{result.status}"
+        end
       end
 
       def implode_zshenv
         return unless zshenv_path.writable?
-        Log.info "Removing augmentation from #{zshenv_path}"
-        Resources::File.augment zshenv_path
+        result = Resources::File.augment zshenv_path
+        if result.success?
+          Log.info "Imploded augmentation from #{zshenv_path}" if result.status == :content_updated
+        else
+          Log.info "Could nor implode augmentation from #{bash_profile_path} because #{result.status}"
+        end
       end
 
       def profile_augmentation_template(profile_name)

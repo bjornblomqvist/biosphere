@@ -22,7 +22,7 @@ module Biosphere
       end
 
       def implode
-        Augmentator.new.implode
+        Augmentations.implode
       end
 
       def deactivate_all

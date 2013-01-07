@@ -20,6 +20,20 @@ module Biosphere
 
       private
 
+      def default_env_vars
+        result = super
+        result.merge custom_env_vars
+      end
+
+      def custom_env_vars
+        result = {}
+        return result unless config.env_vars
+        config.env_vars.each do |env_var, value|
+          result["BIOSPHERE_CUSTOM_#{env_var.upcase}"] = value
+        end
+        result
+      end
+
       def run_chef
         Log.info "Running chef to update sphere #{sphere.name.bold}..."
         Log.separator

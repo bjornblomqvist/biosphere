@@ -15,7 +15,17 @@ module Biosphere
       private
 
       def help
-        Log.info "Coming soon..."
+        Log.separator
+        Log.info "  bio activate SPHERE1 SPHERE2...".bold
+        Log.separator
+        Log.info "  Activates Spheres by updating the augmentations."
+        Log.separator
+        Log.info "  Examples:".cyan
+        Log.separator
+        Log.info "  bio activate                   ".bold + "Reactivate all currently activated Spheres.".cyan
+        Log.info "  bio activate myproject         ".bold + "Activate only Sphere myproject.".cyan
+        Log.info "  bio activate work myproject    ".bold + "Activate work as primary Sphere and myprojcet as secondary.".cyan
+        Log.separator
       end
 
       def activate

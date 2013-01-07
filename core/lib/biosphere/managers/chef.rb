@@ -1,3 +1,4 @@
+require 'biosphere/extensions/string'
 require 'biosphere/managers/default'
 require 'biosphere/resources/gem'
 require 'biosphere/resources/directory'
@@ -34,7 +35,7 @@ module Biosphere
       def knife_config
         {
           :chef_server_url  => 'localhost',
-          :validation_key   => '/dev/null',
+          :validation_key   => nil,
           :node_name        => 'default_node_name.biosphere',
           :log_level        => (Runtime.debug_mode? ? :debug : :info),
           :verbose_logging  => (Runtime.debug_mode? ? true : false),
@@ -50,10 +51,14 @@ module Biosphere
           file_cache_path  "#{chef_cache_path}"
           log_level        #{knife_config[:log_level].to_sym.inspect}
           node_name        "#{knife_config[:node_name]}"
-          validation_key   "#{knife_config[:validation_key]}"
+          validation_key   "#{validation_key_path}"
           verbose_logging  #{knife_config[:verbose_logging].inspect}
         END
-        result.split("\n").map(&:strip).join("\n")
+        result.unindent
+      end
+
+      def validation_key_path
+        knife_config[:validation_key] || sphere.path.join('validation.pem')
       end
 
       def chef_client_key_path

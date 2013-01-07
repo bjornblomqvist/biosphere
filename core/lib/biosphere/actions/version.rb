@@ -2,6 +2,7 @@ require 'optparse'
 require 'biosphere/error'
 require 'biosphere/extensions/ostruct'
 require 'biosphere/action'
+require 'biosphere/version'
 require 'biosphere/resources/sphere'
 
 module Biosphere
@@ -22,7 +23,8 @@ module Biosphere
 
       Options = Class.new(OpenStruct)
 
-      def perform
+      def perform(args)
+        @args = args
         return help if Runtime.help_mode?
         if options.short
           Log.info VERSION
@@ -96,7 +98,7 @@ module Biosphere
               result[:biospherepane] = value
             end
 
-          end.parse!(Runtime.arguments)
+          end.parse!(@args)
           Options.new result
         end
       end

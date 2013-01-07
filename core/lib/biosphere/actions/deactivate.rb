@@ -14,7 +14,11 @@ module Biosphere
       private
 
       def help
-        Log.info "Coming soon..."
+        Log.separator
+        Log.info "  bio deactivate".bold
+        Log.separator
+        Log.info "  Deactivates all active Spheres by removing all augmentations."
+        Log.separator
       end
 
       def deactivate

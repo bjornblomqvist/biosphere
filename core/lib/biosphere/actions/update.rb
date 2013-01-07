@@ -30,14 +30,22 @@ module Biosphere
       end
 
       def update
+        Log.separator
         relevant_spheres.each do |sphere|
           result = sphere.update
-          if result.success?
-            Log.info "Successfully updated #{sphere.name.bold}"
+          if result
+            if result.success?
+              Log.info "Successfully updated Sphere #{sphere.name.bold}"
+              Log.separator
+            else
+              Log.info "There were problems updating #{sphere.name.bold}"
+              Log.separator
+            end
           else
-            Log.info "There were problems updating #{sphere.name.bold}"
+            # Sphere is handled manually
           end
         end
+        Log.separator
       end
 
     end

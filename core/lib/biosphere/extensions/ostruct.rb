@@ -5,6 +5,14 @@ module Biosphere
   module Extensions
     module OpenStructExtensions
 
+      def empty?
+        @table.empty?
+      end
+
+      def any?
+        @table.any?
+      end
+
       def to_h
         @table.dup
       end

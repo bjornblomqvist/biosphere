@@ -4,6 +4,7 @@ require 'biosphere/manager'
 require 'biosphere/resources/directory'
 require 'biosphere/resources/file'
 require 'biosphere/extensions/ostruct'
+require 'biosphere/extensions/string'
 require 'biosphere/extensions/json'
 require 'pathname'
 require 'yaml'
@@ -190,12 +191,15 @@ module Biosphere
           #
           # To have a chef server manage this sphere, uncomment the following lines.
           # They are essentialy passed on to knife, see http://wiki.opscode.com/display/chef/Knife#Knife-Knifeconfiguration
+          # Important: Make sure that the validation.pem key is located inside the sphere directory!
+          #            Alternatively you can specify the "validation_key_path" option to specify the path.
           #
           # manager:
           #   chefserver:
           #     chef_server_url: https://chefserver.example.com
-          #     validation_key: ~/Documents/validation.pem
           #     node_name: bobs_macbook.biosphere
+          #     env_vars:
+          #       ssh_key_name: id_rsa
           #     # override_runlist: "role[biosphere]"  # Uncomment this one to override the runlist assigned to you by the chef server.
           #
           # This following one uses chef-solo.
@@ -207,7 +211,7 @@ module Biosphere
           #     # runlist: "recipe[biosphere]"  # Uncomment this line to change the default run list
           #
         END
-        result.split("\n").map(&:strip).join("\n")
+        result.unindent
       end
 
       def manager_config

@@ -7,18 +7,22 @@ module Biosphere
 
       def perform(args=[])
         return help if Runtime.help_mode?
+        Log.separator
         deactivate_all
         implode
         implode_bash_profile
-        #Log.separator
-        #Log.info "  All Spheres have been deactivated and all augmentations have been removed entirely.".green
-        #Log.separator
+        Log.info "  All Spheres have been deactivated and all augmentations have been removed entirely.".green
+        Log.separator
       end
 
       private
 
       def help
-        Log.info "Coming soon..."
+        Log.separator
+        Log.info "  bio implode".bold
+        Log.separator
+        Log.info "  Removes all possible traces of Biosphere from your System, except the directory #{biosphere_home}"
+        Log.separator
       end
 
       def implode
@@ -26,12 +30,16 @@ module Biosphere
       end
 
       def deactivate_all
-        Action.perform %w{ deactivate}
+        Action.perform %w{ deactivate }
       end
 
       def implode_bash_profile
         Action.perform %w{ config --implode-bash-profile }
         Action.perform %w{ config --implode-zshenv }
+      end
+
+      def biosphere_home
+        Pathname.new(BIOSPHERE_HOME).unexpand_path
       end
 
     end

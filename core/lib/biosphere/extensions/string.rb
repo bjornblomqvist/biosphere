@@ -51,7 +51,10 @@ module Biosphere
         else             0
         end
 
-        %{\033[#{start_code}m#{self}\033[#{end_code}m}
+        # When this string resets the style because of a bold pattern, ensure it's opened properly again
+        string = self.gsub(/\033\[1m(.*)\033\[22m/, "\033\[1m" + '\1' + "\033\[22m\033[#{start_code}m")
+
+        %{\033[#{start_code}m#{string}\033[#{end_code}m} + "\033[0m"
       end
 
     end

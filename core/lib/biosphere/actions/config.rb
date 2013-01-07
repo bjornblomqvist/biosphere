@@ -68,7 +68,7 @@ module Biosphere
         if zshenv_path.writable?
           Resources::File.augment zshenv_path, profile_augmentation_template('zshenv')
         else
-          message = "Cannot augment #{bash_profile_path} because the file does not exist."
+          message = "Cannot augment #{zshenv_path} because the file does not exist."
           Log.error message.red
           raise Errors::ZSHEnvDoesNotExist, message
         end

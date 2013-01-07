@@ -10,13 +10,20 @@ module Biosphere
       def perform(args=[])
         return help if Runtime.help_mode?
         @sphere_names = args
+        Log.separator
         update
+        reactivate
+        Log.separator
       end
 
       private
 
       def help
         'Coming soon ...'
+      end
+
+      def reactivate
+        Action.perform %w{ activate }
       end
 
       def relevant_spheres
@@ -30,7 +37,6 @@ module Biosphere
       end
 
       def update
-        Log.separator
         relevant_spheres.each do |sphere|
           result = sphere.update
           if result
@@ -45,7 +51,6 @@ module Biosphere
             # Sphere is handled manually
           end
         end
-        Log.separator
       end
 
     end

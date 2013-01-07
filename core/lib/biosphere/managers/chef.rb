@@ -29,7 +29,7 @@ module Biosphere
         result = {}
         return result unless config.env_vars
         config.env_vars.each do |env_var, value|
-          result["BIOSPHERE_CUSTOM_#{env_var.upcase}"] = value
+          result["BIOSPHERE_ENV_#{env_var.upcase}"] = value
         end
         result
       end

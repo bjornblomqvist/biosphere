@@ -185,7 +185,7 @@ module Biosphere
       end
 
       def config_example_template
-        result = <<-END
+        <<-END.undent
           # In this YAML file you can configure how the sphere #{name.inspect} is updated.
           # To manage this file manually, simply leave this file empty or delete it.
           #
@@ -211,7 +211,6 @@ module Biosphere
           #     # runlist: "recipe[biosphere]"  # Uncomment this line to change the default run list
           #
         END
-        result.unindent
       end
 
       def manager_config

@@ -57,7 +57,7 @@ module Biosphere
       end
 
       def knife_config_template
-        result = <<-END
+        <<-END.undent
           cache_options    :path => "#{chef_checksums_path}"
           chef_server_url  "#{knife_config[:chef_server_url]}"
           client_key       "#{chef_client_key_path.join(knife_config[:node_name] + '.pem')}"
@@ -68,7 +68,6 @@ module Biosphere
           validation_key   "#{validation_key_path}"
           verbose_logging  #{knife_config[:verbose_logging].inspect}
         END
-        result.unindent
       end
 
       def validation_key_path

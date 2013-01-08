@@ -103,7 +103,7 @@ module Biosphere
           # Loading Biosphere's bash_profile for easier de-/activation of spheres.
           [[ -s #{profile_augmentation_path} ]] && source #{profile_augmentation_path}
         END
-        result.unindent.strip
+        result.undent.strip
       end
 
       def core_bin_path

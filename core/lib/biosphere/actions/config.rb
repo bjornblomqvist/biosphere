@@ -94,11 +94,14 @@ module Biosphere
         end
       end
 
-      def profile_augmentation_template(profile_name)
-        profile_augmentation_path = augmentations_path.join(profile_name).unexpand_path
+      def profile_augmentation_template(profile_name, relative=false)
+        profile_augmentation_path = augmentations_path.join(profile_name)
+        profile_augmentation_path = profile_augmentation_path.unexpand_path if options.relative
+        executable_path = core_bin_path
+        executable_path = core_bin_path.unexpand_path if options.relative
         result = <<-END
           # Adding the "bio" executable to your path.
-          export PATH="#{core_bin_path.unexpand_path}:$PATH"
+          export PATH="#{executable_path}:$PATH"
 
           # Loading Biosphere's bash_profile for easier de-/activation of spheres.
           [[ -s #{profile_augmentation_path} ]] && source #{profile_augmentation_path}
@@ -133,6 +136,10 @@ module Biosphere
 
             parser.on("--augment-zshenv") do |value|
               result[:augment_zshenv] = value
+            end
+
+            parser.on("--relative") do |value|
+              result[:relative] = value
             end
 
             parser.on("--implode-bash-profile") do |value|

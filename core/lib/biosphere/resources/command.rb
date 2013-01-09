@@ -22,7 +22,7 @@ module Biosphere
         end
       end
 
-      attr_reader :executable, :arguments, :show_output, :indent
+      attr_reader :working_directory, :executable, :arguments, :show_output, :indent
 
       # Convenience wrapper
       def self.run(*args)
@@ -30,6 +30,7 @@ module Biosphere
       end
 
       def initialize(options={})
+        @working_directory = options[:working_directory]
         @executable = options[:executable] || 'whoami'
         @arguments = options[:arguments] || []
         @env_vars = options[:env_vars] || {}
@@ -58,6 +59,7 @@ module Biosphere
       end
 
       def run
+        Dir.chdir(working_directory) if working_directory
         result = Result.new
         result.command = command # For later inspection
         stdout_lines = []

@@ -5,6 +5,7 @@ require 'biosphere/resources/directory'
 require 'biosphere/resources/file'
 require 'biosphere/extensions/ostruct'
 require 'biosphere/extensions/string'
+require 'biosphere/extensions/hash'
 require 'biosphere/extensions/json'
 require 'pathname'
 require 'yaml'
@@ -158,6 +159,10 @@ module Biosphere
       def augmentation(identifier)
         path = augmentations_path.join(identifier.to_s)
         path.exist? ? path.read : nil
+      end
+
+      def config_value(key)
+        config.to_h.flatten_keys[key]
       end
 
       private

@@ -12,6 +12,9 @@ module Biosphere
     class SphereNotFound < Error
       def code() 30 end
     end
+    class ConfigKeyNotFound < Error
+      def code() 31 end
+    end
   end
 end
 
@@ -30,6 +33,7 @@ module Biosphere
         when 'list'      then list
         when 'show'      then show(args.shift)
         when 'configure' then configure(args.shift)
+        when 'config'    then config(args.shift, args.shift, args.shift)
         else                  help
         end
       end
@@ -53,11 +57,24 @@ module Biosphere
         Log.separator
       end
 
+      def config(name, key, new_value=nil)
+        sphere = Resources::Sphere.find(name)
+        if new_value
+          
+        elsif value = sphere.config_value(key)
+          Log.batch value.to_json
+          Log.info value.inspect
+        else
+          message = "Key #{key.inspect} not found."
+          Log.error message
+          raise Errors::ConfigKeyNotFound, message
+        end
+      end
+
       def show(name)
         unless sphere = Resources::Sphere.all.detect { |sphere| sphere.name == name }
           message = "Sphere #{name.inspect} not found"
-          Log.error message
-          raise Errors::SphereNotFound, message
+          raise Errors::SphereNotFound, message.red
         end
         Log.batch sphere.to_json
       end
@@ -82,6 +99,7 @@ module Biosphere
             parser.on("--from-json JSON") do |value|
               result[:from_json] = value
             end
+
             parser.on("--remove-config") do |value|
               result[:remove_config] = value
             end

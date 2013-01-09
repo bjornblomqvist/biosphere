@@ -6,6 +6,11 @@ module Biosphere
     module File
       extend self
 
+      def ensure(path)
+        path = Pathname.new(path)
+        write(path) unless path.exist?
+      end
+
       def write(path, content=nil)
         path = Pathname.new(path)
         path.open('w') { |file| file.write content }

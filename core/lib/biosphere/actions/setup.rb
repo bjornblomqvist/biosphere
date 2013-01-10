@@ -16,7 +16,7 @@ end
 module Biosphere
   module Actions
     # ErrorCodes: 60-65
-    class Config
+    class Setup
 
       Options = Class.new(OpenStruct)
 
@@ -141,4 +141,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Config
+Biosphere::Action.register Biosphere::Actions::Setup

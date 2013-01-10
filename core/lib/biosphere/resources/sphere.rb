@@ -165,6 +165,10 @@ module Biosphere
         config.to_h.flatten_keys[key]
       end
 
+      def set_config_value(key, value)
+        
+      end
+
       private
 
       def config

@@ -58,9 +58,10 @@ module Biosphere
       end
 
       def config(name, key, new_value=nil)
-        sphere = Resources::Sphere.find(name)
+        sphere = find_sphere!(name)
+        Log.info "#{name} - #{key} - #{new_value}"
         if new_value
-          
+          sphere.set_config_value(key, new_value)
         elsif value = sphere.config_value(key)
           Log.batch value.to_json
           Log.info value.inspect
@@ -72,10 +73,7 @@ module Biosphere
       end
 
       def show(name)
-        unless sphere = Resources::Sphere.all.detect { |sphere| sphere.name == name }
-          message = "Sphere #{name.inspect} not found"
-          raise Errors::SphereNotFound, message.red
-        end
+        sphere = find_sphere!(name)
         Log.batch sphere.to_json
       end
 
@@ -89,6 +87,20 @@ module Biosphere
         else
           Resources::Sphere.new(name).configure :from_json => options.from_json
         end
+      end
+
+      def find_sphere!(name)
+        unless name
+          message = "You must specify a Sphere name."
+          Log.error message.red
+          raise Errors::SphereNotFound, message
+        end
+        unless sphere = Resources::Sphere.find(name)
+          message = "Sphere #{name.inspect} not found."
+          Log.error message.red
+          raise Errors::SphereNotFound, message
+        end
+        sphere
       end
 
       def options

@@ -47,16 +47,16 @@ module Biosphere
         major, minor, patch = version.to_s.split('.')
         if major.to_i == Biosphere::Version::MAJOR && minor.to_i == Biosphere::Version::MINOR
           message = "Biosphere #{VERSION} is compatible with BiospherePane #{version}"
-          Log.batch message
+          Log.batch message.to_json
           Log.info message.green
         elsif major.to_i > Biosphere::Version::MAJOR || major.to_i == Biosphere::Version::MAJOR && minor.to_i > Biosphere::Version::MINOR
           message = "Your Preference Pane #{version} is too new for Biosphere #{VERSION}. Please update your Biosphere installation."
-          Log.batch message
+          Log.batch message.to_json
           Log.error message.red
           raise Errors::BiospherePaneIsTooNew, message
         elsif major.to_i < Biosphere::Version::MAJOR || major.to_i == Biosphere::Version::MAJOR && minor.to_i < Biosphere::Version::MINOR
           message = "Biosphere #{VERSION} is too new for Preference Pane #{version}. Please upgrade your Preference Pane."
-          Log.batch message
+          Log.batch message.to_json
           Log.error message.red
           raise Errors::BiospherePaneIsTooOld, message
         end

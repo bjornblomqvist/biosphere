@@ -19,10 +19,6 @@ module Biosphere
     class InvalidSphereName < Error
       def code() 2 end
     end
-
-    class InvalidManagerConfiguration < Error
-      def code() 3 end
-    end
   end
 end
 
@@ -68,7 +64,7 @@ module Biosphere
       end
 
       def cache_path
-        Directory.ensure path.join('cache')
+        Directory.create path.join('cache')
       end
 
       def path
@@ -90,7 +86,7 @@ module Biosphere
           Log.info "Sphere #{name.inspect} already exists at #{path}".yellow
         else
           Log.info "Creating new sphere #{name.inspect} at #{path}".green
-          Resources::Directory.ensure path
+          Resources::Directory.create path
         end
       end
 

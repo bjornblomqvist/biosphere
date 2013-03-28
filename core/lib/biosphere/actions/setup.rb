@@ -51,7 +51,7 @@ module Biosphere
 
       def augment(profile_name)
         path = path_for(profile_name)
-        Resources::File.ensure path
+        Resources::File.create path
         result = Resources::File.augment path, template(profile_name)
         if result.success?
           case result.status

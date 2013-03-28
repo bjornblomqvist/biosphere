@@ -5,8 +5,7 @@ module Biosphere
 
         def self.augmentations
           result = {}
-          all.each do |sphere|
-            next unless sphere.activated?
+          all.map(&:activated?).each do |sphere|
             augmentation_identifiers.each do |identifier|
               result[identifier] = [] unless result[identifier]
               augmentation = sphere.augmentation(identifier)
@@ -27,7 +26,7 @@ module Biosphere
         end
 
         def augmentations_path
-          Directory.ensure path.join('augmentations')
+          Directory.create path.join('augmentations')
         end
 
         def augmentation(identifier)

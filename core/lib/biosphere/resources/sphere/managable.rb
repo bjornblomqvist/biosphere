@@ -1,4 +1,12 @@
 module Biosphere
+  module Errors
+    class InvalidManagerConfiguration < Error
+      def code() 3 end
+    end
+  end
+end
+
+module Biosphere
   module Resources
     class Sphere
       module Managable
@@ -18,19 +26,19 @@ module Biosphere
           if manager_name == 'manual'
             Manager::Config.new
           else
-            Manager::Config.new config.manager[manager_name]
+            Manager::Config.new config[:manager][manager_name]
           end
         end
 
         def manager_name
-          if config.manager
-            if config.manager.is_a?(Hash)
-              if config.manager.keys.size > 1
-                message = %{In your configuration at #{config_file_path} you specified multiple managers (#{config.managers.keys.join(', ')}) but currently biosphere only supports one manager per Spehre}.red
+          if config[:manager]
+            if config[:manager].is_a?(Hash)
+              if config[:manager].keys.size > 1
+                message = %{In your configuration at #{config_file_path} you specified multiple managers (#{config[:manager].keys.join(', ')}) but currently biosphere only supports one manager per Spehre}.red
                 Log.error message
                 raise Errors::InvalidManagerConfiguration, message
               else
-                config.manager.keys.first.to_s
+                config[:manager].keys.first.to_s
               end
             else
               message = %{You specified a "manager" key in your configuration at #{config_file_path} but that key has to be a Hash.}.red

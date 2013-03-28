@@ -1,18 +1,14 @@
-require 'biosphere/log'
-require 'pathname'
+require 'biosphere/resources/path'
 
 module Biosphere
   module Resources
-    module Directory
-      extend self
+    class Directory < Path
 
-      def ensure(path)
-        path = Pathname.new path
-        unless path.exist?
-          Log.debug "Creating directory #{path}"
-          path.mkdir
-        end
-        path
+      private
+
+      def create!
+        Log.debug "Creating directory #{path}"
+        path.mkdir
       end
 
     end

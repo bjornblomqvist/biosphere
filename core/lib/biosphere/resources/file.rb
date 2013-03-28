@@ -1,32 +1,37 @@
-require 'biosphere/log'
-require 'biosphere/extensions/pathname'
+require 'biosphere/resources/path'
 
 module Biosphere
   module Resources
-    module File
-      extend self
+    class File < Path
 
-      def ensure(path)
-        path = Pathname.new(path)
-        write(path) unless path.exist?
+      # Convenience wrapper
+      def self.write(path, content = nil)
+        new(path).write content
       end
 
-      def write(path, content=nil)
-        path = Pathname.new(path)
-        path.open('w') { |file| file.write content }
+      # Convenience wrapper
+      def self.augment(path, *args)
+        new(path).augment *args
       end
 
-      # Raises if operation not successful.
-      def delete(path)
-        path = Pathname.new(path)
-        if path.exist?
-          path.delete
-        end
-        true
+      def write(content = nil)
+        path.open('w') { |io| io.write content }
       end
 
-      def augment(path, *args)
-        Pathname.new(path).augment(*args)
+      def augment(*args)
+        path.augment(*args)
+      end
+
+      private
+
+      def create!
+        Log.debug "Creating file #{path}"
+        path.open('a')
+      end
+
+      def delete!
+        Log.debug "Deleting file #{path}"
+        path.delete
       end
 
     end

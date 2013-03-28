@@ -6,9 +6,9 @@ module Biosphere
     # ErrorCodes: 20-29
     class Manager
 
-      def perform
+      def perform(args)
         return help if Runtime.help_mode?
-        subcommand = Runtime.arguments.shift
+        subcommand = args.shift
         case subcommand
         when 'list' then list
         else             help

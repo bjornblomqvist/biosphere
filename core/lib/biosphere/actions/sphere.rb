@@ -19,7 +19,7 @@ module Biosphere
 end
 
 module Biosphere
-  # ErrorCodes: 30-39
+  # ErrorCodes: 30-35
   module Actions
     class Sphere
 

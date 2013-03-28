@@ -5,9 +5,18 @@ module Biosphere
   module Extensions
     module PathnameExtensions
 
+      module ClassMethods
+        def home_path
+          new home_env
+        end
+
+        def home_env
+          ENV['HOME']
+        end
+      end
+
       def unexpand_path
-        home_path = self.class.new ENV['HOME']
-        self.class.new('~').join relative_path_from(home_path)
+        self.class.new('~').join relative_path_from(self.class.home_path)
       end
 
       def augment(content=nil)
@@ -20,4 +29,5 @@ end
 
 class Pathname
   include Biosphere::Extensions::PathnameExtensions
+  extend Biosphere::Extensions::PathnameExtensions::ClassMethods
 end

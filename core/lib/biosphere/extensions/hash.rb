@@ -25,7 +25,6 @@ module Biosphere
       def merge_flat_key(flat_key, value, new_hash=self)
         keys = flat_key.to_s.split('.')
         next_keys = keys[1..-1].join('.')
-        puts "Entering with #{new_hash} and keys #{flat_key}"
         if keys.size == 1
           key = keys.first.to_s
           new_hash[key] = value

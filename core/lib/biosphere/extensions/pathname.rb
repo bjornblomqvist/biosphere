@@ -1,4 +1,4 @@
-require 'biosphere/extensions/augmentor'
+require 'biosphere/tools/augmentor'
 require 'digest/md5'
 
 module Biosphere
@@ -16,11 +16,12 @@ module Biosphere
       end
 
       def unexpand_path
+        return self unless self.to_s =~ /^#{self.class.home_path}/
         self.class.new('~').join relative_path_from(self.class.home_path)
       end
 
-      def augment(content=nil)
-        Augmentor.new(:file => self, :content => content).perform
+      def augment(content = nil)
+        Tools::Augmentor.new(:file => self, :content => content).perform
       end
 
     end

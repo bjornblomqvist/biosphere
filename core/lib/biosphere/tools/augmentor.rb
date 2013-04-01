@@ -1,7 +1,7 @@
 require 'pathname'
 
 module Biosphere
-  module Extensions
+  module Tools
     class Augmentor
 
       class Snippet

@@ -27,21 +27,19 @@ module Biosphere
     end
 
     def arguments
-      return @arguments if @arguments
-      @arguments = ARGV.dup
-      load
+      load unless loaded?
       @arguments
     end
 
     private
 
-    # Lazy loading
     def load
-      @debug_mode  = !!arguments.delete('--debug')
-      @silent_mode = !!arguments.delete('--silent')
-      @batch_mode  = !!arguments.delete('--batch')
-      @help_mode   = !!arguments.delete('--help')
-      arguments.freeze
+      @arguments = ARGV.dup
+      @debug_mode  = !!@arguments.delete('--debug')
+      @silent_mode = !!@arguments.delete('--silent')
+      @batch_mode  = !!@arguments.delete('--batch')
+      @help_mode   = !!@arguments.delete('--help')
+      @arguments.freeze
     end
 
     def loaded?
@@ -51,7 +49,6 @@ module Biosphere
     # Useful for testing
     def reset!
       @arguments = nil
-      load
     end
 
   end

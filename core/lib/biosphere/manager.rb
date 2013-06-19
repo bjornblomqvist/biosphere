@@ -3,7 +3,8 @@ require 'biosphere/extensions/ostruct'
 require 'biosphere/log'
 
 module Biosphere
-  class Manager < Container
+  module Manager
+    extend Container
 
     Config = Class.new(OpenStruct)
 

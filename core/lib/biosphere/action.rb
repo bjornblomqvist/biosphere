@@ -2,19 +2,25 @@ require 'biosphere/container'
 require 'biosphere/log'
 
 module Biosphere
-  class Action < Container
+  module Action
+    extend Container
+    extend self
 
-    def self.perform(args=[])
+    def initialize(args)
+      @args = args
+    end
+
+    def perform(args = [])
       name = args.shift || 'help'
       perform! name, args
     end
 
     private
 
-    def self.perform!(name, args)
+    def perform!(name, args)
       if action = find(name)
         Log.debug "Loading action #{name.inspect} with arguments: #{args.join(' ')}"
-        action.new.perform args
+        action.new(args).perform
       else
         Log.separator
         Log.error "  Unknown action: #{name}".red

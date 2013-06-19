@@ -160,6 +160,9 @@ This will run chef solo using a custom node name and the following environment v
 
 Pchew, I will add more to this readme soon :)
 
+## TODO
+
+* Assistant for generating SSH key pairs
 
 ## Uninstallation
 

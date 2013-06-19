@@ -18,7 +18,7 @@ module Biosphere
       end
 
       def initialize(path)
-        @path = Pathname.new path
+        @path = Pathname.new path.to_s
       end
 
       def create
@@ -33,6 +33,14 @@ module Biosphere
 
       def exists?
         path.exist?
+      end
+
+      def join(subpath)
+        result = self.class.new path.join(subpath)
+      end
+
+      def to_s
+        path.to_s
       end
 
       private

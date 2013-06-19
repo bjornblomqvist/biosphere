@@ -3,7 +3,7 @@
 
 module Biosphere
   BIOSPHERE_RUBY_EXECUTABLE_PATH = '/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby'
-  BIOSPHERE_GEM_EXECUTABLE_PATH = '/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/gem'
+  BIOSPHERE_GEM_EXECUTABLE_PATH  = '/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/gem'
   # All these constants below will make it easier to provide advanced configuration options based on ENV in the future. I think :)
   BIOSPHERE_HOME                = File.expand_path('../../..', __FILE__)
   BIOSPHERE_AUGMENTATIONS_PATH  = File.join(BIOSPHERE_HOME, 'augmentations')

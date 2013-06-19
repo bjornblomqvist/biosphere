@@ -17,9 +17,12 @@ module Biosphere
 
       Options = Class.new(OpenStruct)
 
-      def perform(args=[])
-        return help if Runtime.help_mode?
+      def initialize(args)
         @args = args
+      end
+
+      def perform
+        return help if Runtime.help_mode?
         Log.separator
         if options.system
           update_system
@@ -50,7 +53,7 @@ module Biosphere
       end
 
       def reactivate
-        Action.perform %w{ activate }
+        Action.new(%w{ activate }).perform
       end
 
       def relevant_spheres

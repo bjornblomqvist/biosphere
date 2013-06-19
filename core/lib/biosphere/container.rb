@@ -3,38 +3,38 @@ require 'biosphere/log'
 require 'singleton'
 
 module Biosphere
-  class Container
-    include ::Singleton
+  module Container
+    extend self
 
     attr_reader :store
 
-    def initialize
-      @store = {}
-    end
-
-    def self.register(object)
+    def register(object)
       object_name = object.name.underscore.split('/').last
-      Log.debug "Registering #{name} #{object_name.inspect}..."
-      instance.store[object_name] = object
+      Log.debug "Registering #{self} #{object_name.inspect}..."
+      store[object_name] = object
     end
 
-    def self.find(name)
-      store[name]
+    def find(name)
+      store[name.to_s]
     end
 
-    def self.all
-      store.values
-    end
+    #def all
+    #  store.values
+    #end
 
     private
 
-    def self.name
-      self.to_s.split('::').last
+    #def name
+    #  self.to_s.split('::').last
+    #end
+
+    def store
+      @store ||= {}
     end
 
-    # Internal: Convenience wrapper
-    def self.store
-      instance.store
+    # Useful for testing
+    def reset!
+      @store = nil
     end
 
   end

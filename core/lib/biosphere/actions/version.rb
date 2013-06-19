@@ -3,7 +3,6 @@ require 'biosphere/error'
 require 'biosphere/extensions/ostruct'
 require 'biosphere/action'
 require 'biosphere/version'
-require 'biosphere/resources/sphere'
 
 module Biosphere
   module Errors
@@ -23,18 +22,24 @@ module Biosphere
 
       Options = Class.new(OpenStruct)
 
-      def perform(args)
+      def initialize(args)
         @args = args
+      end
+
+      def perform
         return help if Runtime.help_mode?
         if options.short
           Log.info VERSION
         elsif options.major
+          Log.batch Biosphere::Version::MAJOR
           Log.info Biosphere::Version::MAJOR
         elsif options.minor
+          Log.batch Biosphere::Version::MINOR
           Log.info Biosphere::Version::MINOR
         elsif options.patch
-          Log.info Biosphere::Version::PATCH
-        elsif version = options.biospherepane
+          Log.batch Biosphere::Version::TINY
+          Log.info Biosphere::Version::TINY
+        elsif version = options.pane_version
           compatibility_notice(version)
         else
           Log.info "Biosphere Version #{VERSION}"
@@ -77,27 +82,11 @@ module Biosphere
         @options ||= begin
           result = {}
           OptionParser.new do |parser|
-
-            parser.on("--short") do |value|
-              result[:short] = value
-            end
-
-            parser.on("--major") do |value|
-              result[:major] = value
-            end
-
-            parser.on("--minor") do |value|
-              result[:minor] = value
-            end
-
-            parser.on("--patch") do |value|
-              result[:patch] = value
-            end
-
-            parser.on("--compatible-with-preference-pane VERSION") do |value|
-              result[:biospherepane] = value
-            end
-
+            parser.on("--short") { |v| result[:short] = v }
+            parser.on("--major") { |v| result[:major] = v }
+            parser.on("--minor") { |v| result[:minor] = v }
+            parser.on("--patch") { |v| result[:patch] = v }
+            parser.on("--compatible-with-preference-pane VERSION") { |v| result[:pane_version] = v }
           end.parse!(@args)
           Options.new result
         end

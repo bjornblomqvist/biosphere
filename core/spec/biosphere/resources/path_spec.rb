@@ -3,7 +3,7 @@ require 'biosphere/resources/path'
 
 describe Biosphere::Resources::Path do
 
-  let(:pathname) { mock(:pathname, exist?: false)}
+  let(:pathname) { mock(:pathname, :exist? => false)}
   let(:path)     { Biosphere::Resources::Path.new '/tmp/some/path' }
 
   before do
@@ -14,6 +14,11 @@ describe Biosphere::Resources::Path do
     it 'creates a pathname object' do
       Pathname.should_receive(:new).with('/tmp/some/path').and_return pathname
       path.path.should == pathname
+    end
+
+    it 'accepts a Path instance as argument' do
+      Pathname.should_receive(:new).with('/tmp/some/path').and_return pathname
+      Biosphere::Resources::Path.new(path).path.should == pathname
     end
   end
 
@@ -35,6 +40,13 @@ describe Biosphere::Resources::Path do
     end
   end
 
+  describe '#to_s' do
+    it 'delegates to the pathname object' do
+      pathname.should_receive(:to_s).and_return 'my/path'
+      path.to_s.should == 'my/path'
+    end
+  end
+
   context 'the path does not exist' do
     describe '#create' do
       it 'delegates to #create! if the path does not exist' do
@@ -53,6 +65,13 @@ describe Biosphere::Resources::Path do
     describe '#exists?' do
       it 'is false' do
         path.should_not be_exists
+      end
+    end
+
+    describe '#join' do
+      it 'joins to the underlying pathname' do
+        pathname.should_receive(:join).with('some/subpath')
+        path.join('some/subpath')
       end
     end
   end

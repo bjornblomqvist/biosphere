@@ -2,8 +2,8 @@ module Biosphere
   module Version
     MAJOR = 0
     MINOR = 9
-    PATCH = 0
+    TINY  = 0
   end
 
-  VERSION = [Version::MAJOR, Version::MINOR, Version::PATCH].join('.')
+  VERSION = [Version::MAJOR, Version::MINOR, Version::TINY].join('.')
 end

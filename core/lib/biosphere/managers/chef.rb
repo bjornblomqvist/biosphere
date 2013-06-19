@@ -75,19 +75,19 @@ module Biosphere
       end
 
       def chef_client_key_path
-        Resources::Directory.create workdir_path.join('client_keys')
+        workdir_path.join('client_keys').create
       end
 
       def chef_checksums_path
-        Resources::Directory.create chef_workdir_path.join('checksums')
+        chef_workdir_path.join('checksums').create
       end
 
       def chef_cache_path
-        Resources::Directory.create chef_workdir_path.join('cache')
+        chef_workdir_path.join('cache').create
       end
 
       def chef_backups_path
-        Resources::Directory.create chef_workdir_path.join('backups')
+       chef_workdir_path.join('backups').create
       end
 
       def chef_knife_config_path
@@ -95,11 +95,11 @@ module Biosphere
       end
 
       def chef_workdir_path
-        Resources::Directory.create workdir_path.join('cache')
+        workdir_path.join('cache').create
       end
 
       def workdir_path
-        Resources::Directory.create sphere.cache_path.join('chef')
+        sphere.cache_path.join('chef').create
       end
 
       def ensure_chef

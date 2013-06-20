@@ -1,6 +1,7 @@
 require 'optparse'
 require 'biosphere/error'
 require 'biosphere/extensions/ostruct'
+require 'biosphere/extensions/json'
 require 'biosphere/action'
 require 'biosphere/version'
 
@@ -16,8 +17,8 @@ module Biosphere
 end
 
 module Biosphere
-  # ErrorCodes: 50-59
   module Actions
+    # ErrorCodes: 50-59
     class Version
 
       Options = Class.new(OpenStruct)

@@ -5,6 +5,7 @@ RSpec.configure do |config|
   config.order = 'rand'
 
   config.before do
-    Biosphere::Log.stub!(:logger).and_return mock(:logger, :debug => nil, :info => nil, :error => nil, :batch => nil, :separator => nil)
+    logger = mock(:logger, :debug => nil, :separator => nil)
+    Biosphere::Log.stub!(:logger).and_return logger
   end
 end

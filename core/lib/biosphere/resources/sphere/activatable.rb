@@ -7,7 +7,7 @@ module Biosphere
           activated_file_path.exist?
         end
 
-        def activate!(index=0)
+        def activate!(index = 0)
           Resources::File.write activated_file_path, index
         end
 

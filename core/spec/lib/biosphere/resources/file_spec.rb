@@ -4,7 +4,7 @@ require 'biosphere/resources/file'
 describe Biosphere::Resources::File do
 
   let(:io)       { mock(:io) }
-  let(:pathname) { mock(:pathname, exist?: false)}
+  let(:pathname) { mock(:pathname, :exist? => false)}
   let(:file)     { Biosphere::Resources::File.new '/tmp/some/file' }
 
   before do

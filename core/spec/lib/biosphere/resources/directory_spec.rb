@@ -3,7 +3,7 @@ require 'biosphere/resources/directory'
 
 describe Biosphere::Resources::Directory do
 
-  let(:pathname)  { mock(:pathname, exist?: false)}
+  let(:pathname)  { mock(:pathname, :exist? => false)}
   let(:directory) { Biosphere::Resources::Directory.new '/tmp/some/dir' }
 
   before do

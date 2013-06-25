@@ -9,9 +9,12 @@ describe Biosphere::Actions::Version do
 
   let(:action) { Biosphere::Actions::Version.new @args }
 
+  before do
+    @args = []
+  end
+
   describe '.perform' do
     it 'reveals the full version string' do
-      @args = []
       Biosphere::Log.should_receive(:info).with "Biosphere Version #{major}.#{minor}.#{tiny}"
       action.perform
     end

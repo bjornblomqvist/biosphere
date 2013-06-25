@@ -5,9 +5,13 @@ module Biosphere
     # ErrorCodes: 3-19
     class Activate
 
-      def perform(args=[])
+      def initialize(args)
+        @args = args
+      end
+
+      def perform
         return help if Runtime.help_mode?
-        @sphere_names = args
+        @sphere_names = @args
         activate
         augment
       end

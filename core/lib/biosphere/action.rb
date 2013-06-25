@@ -6,10 +6,6 @@ module Biosphere
     extend Container
     extend self
 
-    def initialize(args)
-      @args = args
-    end
-
     def perform(args = [])
       name = args.shift || 'help'
       perform! name, args

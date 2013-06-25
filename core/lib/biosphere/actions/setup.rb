@@ -1,4 +1,5 @@
 require 'biosphere/action'
+require 'biosphere/paths'
 require 'biosphere/extensions/string'
 require 'biosphere/extensions/pathname'
 require 'biosphere/extensions/ostruct'
@@ -80,7 +81,7 @@ module Biosphere
       def template(profile_name, relative=false)
         executable_path = core_bin_path
         executable_path = core_bin_path.unexpand_path if options.relative
-        profile_augmentation_path = augmentations_path.join(profile_name.to_s)
+        profile_augmentation_path = Paths.augmentations.join(profile_name.to_s)
         profile_augmentation_path = profile_augmentation_path.unexpand_path if options.relative
         <<-END.undent
           # Adding the "bio" executable to your path.
@@ -93,10 +94,6 @@ module Biosphere
 
       def core_bin_path
         Pathname.new BIOSPHERE_CORE_BIN_PATH
-      end
-
-      def augmentations_path
-        Pathname.new BIOSPHERE_AUGMENTATIONS_PATH
       end
 
       def path_for(profile_name)

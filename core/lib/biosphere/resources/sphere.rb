@@ -1,6 +1,7 @@
 require 'biosphere/error'
 require 'biosphere/log'
 require 'biosphere/manager'
+require 'biosphere/paths'
 require 'biosphere/resources/sphere/activatable'
 require 'biosphere/resources/sphere/augmentable'
 require 'biosphere/resources/sphere/configurable'
@@ -68,7 +69,7 @@ module Biosphere
       end
 
       def path
-        self.class.spheres_path.join(name)
+        Paths.spheres.join(name)
       end
 
       def as_json
@@ -103,11 +104,7 @@ module Biosphere
       end
 
       def self.sphere_paths
-        Pathname.glob spheres_path.join('*')
-      end
-
-      def self.spheres_path
-        Pathname.new BIOSPHERE_SPHERES_PATH
+        Pathname.glob Paths.spheres.join('*')
       end
 
     end

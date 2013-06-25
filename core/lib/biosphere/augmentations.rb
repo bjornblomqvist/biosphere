@@ -53,7 +53,7 @@ module Biosphere
     def clear
       Log.debug "Clearing cached augmentations..."
       Resources::Sphere.augmentation_identifiers.each do |identifier|
-        Resources::File.delete augmentations_path.join(identifier.to_s)
+        Resources::File.delete Paths.augmentations.join(identifier.to_s)
       end
     end
 

@@ -1,4 +1,5 @@
-require 'biosphere/action'
+require 'biosphere/actions/activate'
+require 'biosphere/paths'
 require 'biosphere/resources/sphere'
 require 'biosphere/augmentations'
 
@@ -40,7 +41,7 @@ module Biosphere
       end
 
       def update_system
-        work_tree = self.class.biosphere_home_path
+        work_tree = Paths.biosphere_home
         git_dir = work_tree.join('.git')
         result = Resources::Command.run :executable => 'git', :arguments => %W{ --work-tree #{work_tree} --git-dir #{git_dir} pull origin master }, :show_output => true
         if result.success?
@@ -53,7 +54,7 @@ module Biosphere
       end
 
       def reactivate
-        Action.new(%w{ activate }).perform
+        Action.perform %w{ activate }
       end
 
       def relevant_spheres
@@ -72,11 +73,10 @@ module Biosphere
           if result
             if result.success?
               Log.info "Successfully updated Sphere #{sphere.name.bold}"
-              Log.separator
             else
               Log.info "There were problems updating #{sphere.name.bold}"
-              Log.separator
             end
+            Log.separator
           else
             # Sphere is handled manually
           end
@@ -88,17 +88,13 @@ module Biosphere
           result = {}
           OptionParser.new do |parser|
 
-            parser.on("--system") do |value|
+            parser.on('--system') do |value|
               result[:system] = value
             end
 
           end.parse!(@args)
           Options.new result
         end
-      end
-
-      def self.biosphere_home_path
-        Pathname.new BIOSPHERE_HOME
       end
 
     end

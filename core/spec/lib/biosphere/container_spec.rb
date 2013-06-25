@@ -6,7 +6,7 @@ describe Biosphere::Container do
   let(:object) { mock(:object, :name => 'Im::Some::Bird') }
 
   after do
-    container.send(:reset!)
+    container.send :reset!
   end
 
   describe '.find' do

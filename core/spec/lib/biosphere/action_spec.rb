@@ -22,6 +22,10 @@ describe Biosphere::Action do
         dispatcher.register action_class
       end
 
+      after do
+        dispatcher.send :unregister, action_class
+      end
+
       it 'executes the action with parameters relevant for the action' do
         action_class.should_receive(:new).with(%w{ ready set --go }).and_return action
         action.should_receive(:perform)

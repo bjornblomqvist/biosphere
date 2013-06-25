@@ -9,13 +9,17 @@ module Biosphere
     attr_reader :store
 
     def register(object)
-      object_name = object.name.underscore.split('/').last
+      object_name = object_to_name(object)
       Log.debug "Registering #{self} #{object_name.inspect}..."
       store[object_name] = object
     end
 
     def find(name)
       store[name.to_s]
+    end
+
+    def object_to_name(object)
+      object.name.underscore.split('/').last
     end
 
     #def all
@@ -30,6 +34,11 @@ module Biosphere
 
     def store
       @store ||= {}
+    end
+
+    # Useful for testing
+    def unregister(object)
+      store.delete object_to_name(object)
     end
 
     # Useful for testing

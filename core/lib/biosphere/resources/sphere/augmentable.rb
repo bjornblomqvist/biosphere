@@ -45,7 +45,9 @@ module Biosphere
         end
 
         def augmentations_path
-          Directory.create path.join('augmentations')
+          result = path.join('augmentations')
+          Directory.create result
+          result
         end
 
         def augmentation(identifier)

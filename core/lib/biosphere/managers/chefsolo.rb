@@ -11,7 +11,7 @@ module Biosphere
 
       def chef_command
         arguments = [chef_solo_executable_path, '--config', chef_knife_config_path, '--json-attributes', chef_json_path]
-        Resources::Command.new :show_output => true, :indent => 4, :env_vars => default_env_vars, :executable => BIOSPHERE_RUBY_EXECUTABLE_PATH, :arguments => arguments
+        Resources::Command.new :show_output => true, :indent => 4, :env_vars => default_env_vars, :executable => Paths.ruby_executable, :arguments => arguments
       end
 
       def ensure_knife_config

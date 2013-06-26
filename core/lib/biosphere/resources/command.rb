@@ -30,12 +30,12 @@ module Biosphere
       end
 
       def initialize(options={})
-        @working_directory = options[:working_directory]
-        @executable = options[:executable] || 'whoami'
-        @arguments = options[:arguments] || []
-        @env_vars = options[:env_vars] || {}
-        @show_output = options[:show_output] || false
-        @indent = options[:indent].to_i
+        @working_directory = options[:working_directory] || '/tmp'
+        @executable        = options[:executable]        || 'whoami'
+        @arguments         = options[:arguments]         || []
+        @env_vars          = options[:env_vars]          || {}
+        @show_output       = options[:show_output]       || false
+        @indent            = options[:indent].to_i
       end
 
       def to_s
@@ -58,8 +58,14 @@ module Biosphere
         ' ' * indent
       end
 
+      def ensure_in_working_directory
+        return unless working_directory
+        Log.debug "Switching working directory to: #{working_directory}"
+        Dir.chdir working_directory
+      end
+
       def run
-        Dir.chdir(working_directory) if working_directory
+        ensure_in_working_directory
         result = Result.new
         result.command = command # For later inspection
         stdout_lines = []

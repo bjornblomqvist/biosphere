@@ -38,23 +38,19 @@ module Biosphere
           arguments << '--version'
           arguments << version
         end
-        Resources::Command.run :executable => self.class.gem_executable_path, :arguments => arguments
+        Resources::Command.run :executable => Paths.gem_executable, :arguments => arguments
       end
 
       def name_and_version
         "#{name}-#{version}"
       end
 
-      def self.gem_executable_path
-        Pathname.new BIOSPHERE_GEM_EXECUTABLE_PATH
-      end
-
       def self.rubygems_path
-        Pathname.new BIOSPHERE_VENDOR_GEMS_PATH
+        Paths.vendor_gems
       end
 
       def self.gems_path
-        rubygems_path.join('gems')
+        Paths.vendor_gems.join 'gems'
       end
 
     end

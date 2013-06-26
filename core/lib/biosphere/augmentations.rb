@@ -72,7 +72,7 @@ module Biosphere
 
     def apply
       Resources::Sphere.augmentation_identifiers.each do |identifier|
-        source = augmentations_path.join(identifier.to_s)
+        source = Paths.augmentations.join(identifier.to_s)
         next unless source.file?
         next unless destination = destination_path(identifier)
         Resources::File.augment destination, source.read
@@ -84,10 +84,6 @@ module Biosphere
       when :ssh_config   then '~/.ssh/config'
       end
       result ? Pathname.new(result).expand_path : nil
-    end
-
-    def augmentations_path
-      Pathname.new BIOSPHERE_AUGMENTATIONS_PATH
     end
 
   end

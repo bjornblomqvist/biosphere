@@ -21,7 +21,7 @@ module Biosphere
         Log.separator
         Log.info "  bio implode".bold
         Log.separator
-        Log.info "  Removes all possible traces of Biosphere from your System, except the directory #{biosphere_home}"
+        Log.info "  Removes all possible traces of Biosphere from your System, except the directory #{Paths.biosphere_home.unexpand_path}"
         Log.separator
       end
 
@@ -36,10 +36,6 @@ module Biosphere
       def implode_bash_profile
         Action.perform %w{ config --implode-bash-profile }
         Action.perform %w{ config --implode-zshenv }
-      end
-
-      def biosphere_home
-        Pathname.new(BIOSPHERE_HOME).unexpand_path
       end
 
     end

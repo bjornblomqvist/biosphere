@@ -1,24 +1,11 @@
 #!/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby -W0
 # -*- encoding: utf-8 -*-
 
-module Biosphere
-  #BIOSPHERE_RUBY_EXECUTABLE_PATH = '/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby'
-  #BIOSPHERE_GEM_EXECUTABLE_PATH  = '/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/gem'
-  ## All these constants below will make it easier to provide advanced configuration options based on ENV in the future. I think :)
-  #BIOSPHERE_HOME                = File.expand_path('../../..', __FILE__)
-  #BIOSPHERE_AUGMENTATIONS_PATH  = File.join(BIOSPHERE_HOME, 'augmentations')
-  BIOSPHERE_CORE_PATH           = File.join(BIOSPHERE_HOME, 'core')
-  #BIOSPHERE_SPHERES_PATH        = File.join(BIOSPHERE_HOME, 'spheres')
-  BIOSPHERE_VENDOR_PATH         = File.join(BIOSPHERE_HOME, 'vendor')
-  BIOSPHERE_CORE_LIB_PATH       = File.join(BIOSPHERE_CORE_PATH, 'lib')
-  BIOSPHERE_CORE_BIN_PATH       = File.join(BIOSPHERE_CORE_PATH, 'bin')
-  BIOSPHERE_VENDOR_GEMS_PATH    = File.join(BIOSPHERE_VENDOR_PATH, 'gems')
-end
-
-$: << Biosphere::BIOSPHERE_CORE_LIB_PATH
+$: << File.expand_path('../../lib', __FILE__)
 require 'biosphere'
-
 include Biosphere
+
+Paths.biosphere_home = ENV['BIOSPHERE_HOME'] || File.expand_path('../../..', __FILE__)
 
 if Runtime.privileged?
   Log.error 'I refuse to run with superuser privileges.'.red

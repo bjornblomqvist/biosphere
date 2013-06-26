@@ -1,6 +1,6 @@
 require 'biosphere/log'
 require 'biosphere/runtime'
-require 'open3'
+require 'biosphere/vendor/open4'
 
 module Biosphere
   module Resources
@@ -10,11 +10,13 @@ module Biosphere
         attr_accessor :stdout, :stderr, :raw_status, :command
 
         def success?
-          self.raw_status.success?
+          self.raw_status ? self.raw_status.success? : false
         end
 
+        # Returns an Integer equal or greater than -1
+        #
         def status
-          self.raw_status.exitstatus
+         self.raw_status ? self.raw_status.exitstatus : -1
         end
 
         def to_s
@@ -22,7 +24,7 @@ module Biosphere
         end
       end
 
-      attr_reader :working_directory, :executable, :arguments, :show_output, :indent
+      attr_reader :working_directory, :executable, :show_output, :indent
 
       # Convenience wrapper
       def self.run(*args)
@@ -50,6 +52,10 @@ module Biosphere
         result.empty? ? nil : result.join(' ')
       end
 
+      def arguments
+        @arguments.empty? ? nil : @arguments
+      end
+
       def command
         [env_vars, executable, arguments].compact.join(' ')
       end
@@ -71,7 +77,9 @@ module Biosphere
         stdout_lines = []
         stderr_lines = []
         Log.debug "Running command: #{command}"
-        Open3.popen3(command) do |_, stdout, stderr|
+
+        status = Open4::popen4(command) do |pid, stdin, stdout, stderr|
+          Log.debug "Command runs with PID #{pid}"
           stdout.sync = true
           stderr.sync = true
 
@@ -102,7 +110,11 @@ module Biosphere
         end
         result.stdout = stdout_lines.join("\n")
         result.stderr = stderr_lines.join("\n")
-        result.raw_status = $?
+        result.raw_status = status
+        Log.debug "Command exited with status #{result.raw_status}"
+        result
+      rescue Errno::ENOENT
+        Log.error "Command not found: #{command}"
         result
       end
 

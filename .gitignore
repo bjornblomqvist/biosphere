@@ -4,6 +4,7 @@
 /spheres/*
 /vendor/*
 /core/doc
+/core/tmp
 
 !/augmentations/.gitkeep
 !/spheres/.gitkeep

@@ -74,7 +74,7 @@ module Biosphere
             if result.success?
               Log.info "Successfully updated Sphere #{sphere.name.bold}"
             else
-              Log.info "There were problems updating #{sphere.name.bold}"
+              Log.error "There were problems updating the Sphere #{sphere.name.bold}".red
             end
             Log.separator
           else

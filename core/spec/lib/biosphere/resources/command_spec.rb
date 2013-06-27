@@ -24,10 +24,20 @@ describe Biosphere::Resources::Command do
       let(:arguments)  { %w{ -c 'exit 15' } }
 
       it 'has the status of the failed command' do
-        #Biosphere::Log.should_receive(:error).with("Command not found: #{executable}")
         result = command.run
         result.should_not be_success
         result.status.should == 15
+      end
+    end
+
+    context 'command successful' do
+      let(:executable) { '/bin/bash' }
+      let(:arguments)  { %w{ -c 'echo "perfect"' } }
+
+      it 'has status 0' do
+        result = command.run
+        result.should be_success
+        result.status.should == 0
       end
     end
 

@@ -18,3 +18,6 @@ require 'biosphere/actions/version'
 require 'biosphere/managers/chefserver'
 require 'biosphere/managers/chefsolo'
 require 'biosphere/managers/manual'
+
+# Just making sure
+Biosphere::Errors.validate!

@@ -5,7 +5,11 @@ module Biosphere
     # ErrorCodes: 71-79
     class Deactivate
 
-      def perform(args=[])
+      def initialize(args)
+        @args = args
+      end
+
+      def perform
         return help if Runtime.help_mode?
         deactivate
         augment
@@ -15,15 +19,15 @@ module Biosphere
 
       def help
         Log.separator
-        Log.info "  bio deactivate".bold
+        Log.info '  bio deactivate'.bold
         Log.separator
-        Log.info "  Deactivates all active Spheres by removing all augmentations."
+        Log.info '  Deactivates all active Spheres by removing all augmentations.'
         Log.separator
       end
 
       def deactivate
-        Log.debug "Deactivating all Spheres..."
-        Resources::Sphere.all.each(&:deactivate!)
+        Log.debug 'Deactivating all Spheres...'
+        Resources::Sphere.all.each &:deactivate!
       end
 
       def augment

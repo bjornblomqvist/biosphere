@@ -1,17 +1,19 @@
 require 'biosphere/action'
+require 'biosphere/resources/sphere'
 
 module Biosphere
   module Actions
     # ErrorCodes: 3-19
     class Activate
 
+      attr_reader :sphere_names
+
       def initialize(args)
-        @args = args
+        @sphere_names = args
       end
 
       def perform
         return help if Runtime.help_mode?
-        @sphere_names = @args
         activate
         augment
       end
@@ -35,15 +37,17 @@ module Biosphere
       def activate
         if spheres_to_activate.empty?
           Log.info "No Spheres to (re-)activate."
-        else
-          unless spheres_to_deactivate.empty?
-            Log.info "Deactivating Spheres #{spheres_to_deactivate.map(&:name).join(', ')}..."
-            spheres_to_deactivate.each(&:deactivate!)
-          end
-          Log.info "Activating Spheres #{spheres_to_activate.map(&:name).join(', ')}..."
-          spheres_to_activate.each_with_index do |sphere, index|
-            sphere.activate! index
-          end
+          return
+        end
+
+        unless spheres_to_deactivate.empty?
+          Log.info "Deactivating spheres #{spheres_to_deactivate.map(&:name).join(', ')}..."
+          spheres_to_deactivate.each(&:deactivate!)
+        end
+
+        Log.info "Activating spheres #{spheres_to_activate.map(&:name).join(', ')}..."
+        spheres_to_activate.each_with_index do |sphere, index|
+          sphere.activate! index
         end
       end
 
@@ -53,10 +57,10 @@ module Biosphere
 
       def spheres_to_activate
         @spheres_to_activate ||= begin
-          if @sphere_names.empty?
+          if sphere_names.empty?
             Resources::Sphere.all.select(&:activated?).sort_by(&:activation_order)
           else
-            Resources::Sphere.find @sphere_names
+            Resources::Sphere.find sphere_names
           end
         end
       end

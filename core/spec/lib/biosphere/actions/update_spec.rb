@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'biosphere/action'
 require 'biosphere/actions/update'
 
 describe Biosphere::Actions::Update do

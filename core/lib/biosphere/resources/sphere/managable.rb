@@ -31,22 +31,20 @@ module Biosphere
         end
 
         def manager_name
-          if config[:manager]
-            if config[:manager].is_a?(Hash)
-              if config[:manager].keys.size > 1
-                message = %{In your configuration at #{config_file_path} you specified multiple managers (#{config[:manager].keys.join(', ')}) but currently biosphere only supports one manager per Spehre}.red
-                Log.error message
-                raise Errors::InvalidManagerConfiguration, message
-              else
-                config[:manager].keys.first.to_s
-              end
-            else
-              message = %{You specified a "manager" key in your configuration at #{config_file_path} but that key has to be a Hash.}.red
-              Log.error message
-              raise Errors::InvalidManagerConfiguration, message
-            end
+          return 'manual' unless config[:manager]
+
+          unless config[:manager].is_a?(Hash)
+            message = %{You specified a "manager" key in your configuration at #{config_file_path} but that key has to be a Hash.}.red
+            Log.error message
+            raise Errors::InvalidManagerConfiguration, message
+          end
+
+          if config[:manager].keys.size > 1
+            message = %{In your configuration at #{config_file_path} you specified multiple managers (#{config[:manager].keys.join(', ')}) but currently biosphere only supports one manager per Spehre}.red
+            Log.error message
+            raise Errors::InvalidManagerConfiguration, message
           else
-            'manual'
+            config[:manager].keys.first.to_s
           end
         end
 

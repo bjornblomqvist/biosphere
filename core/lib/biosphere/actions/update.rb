@@ -1,3 +1,4 @@
+require 'biosphere/action'
 require 'biosphere/actions/activate'
 require 'biosphere/paths'
 require 'biosphere/resources/sphere'

@@ -12,10 +12,9 @@ module Biosphere
       end
 
       def ensure_installed
-        unless exists?
-          Log.info "Installing gem #{name} version #{version}..."
-          install
-        end
+        return true if exists?
+        Log.info "Installing gem #{name.to_s.bold} version #{version.bold}..."
+        install.success?
       end
 
       def exists?
@@ -23,7 +22,7 @@ module Biosphere
       end
 
       def executables_path
-        gem_path.join('bin')
+        gem_path.join 'bin'
       end
 
       private
@@ -33,12 +32,21 @@ module Biosphere
       end
 
       def install
-        arguments = ['install', name, '--install-dir', self.class.rubygems_path, '--no-ri', '--no-rdoc']
+        arguments = %W{ install #{name} --install-dir #{self.class.rubygems_path} --no-ri --no-rdoc --source https://rubygems.org }
         if version
           arguments << '--version'
           arguments << version
         end
-        Resources::Command.run :executable => Paths.gem_executable, :arguments => arguments
+        if Runtime.debug_mode?
+          arguments << '--verbose'
+        end
+        result = Resources::Command.run :executable => Paths.gem_executable, :arguments => arguments
+        if result.success?
+          Log.debug "Successfully installed gem #{name.to_s.bold} version #{version.bold}"
+        else
+          Log.error "Could not install gem #{name.to_s.bold}".red + ' version '.red + version.bold.red + '. Are you online?'.red
+        end
+        result
       end
 
       def name_and_version

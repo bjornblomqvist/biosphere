@@ -1,4 +1,5 @@
 require 'biosphere/extensions/string'
+require 'biosphere/extensions/hash'
 require 'biosphere/managers/default'
 require 'biosphere/resources/gem'
 require 'biosphere/resources/directory'
@@ -11,10 +12,10 @@ module Biosphere
     class Chef < Default
 
       def perform
-        Log.debug "Manager #{name} will now update sphere #{sphere.name}..."
-        Log.info "Updating sphere #{sphere.name}..."
-        ensure_chef
-        ensure_knife_config
+        Log.debug "Manager #{name.bold} will now update Sphere #{sphere.name.bold}..."
+        Log.info "Updating Sphere #{sphere.name.bold}..."
+        ensure_chef &&
+        ensure_knife_config &&
         run_chef
       end
 
@@ -53,7 +54,7 @@ module Biosphere
           :node_name        => 'default_node_name.biosphere',
           :log_level        => (Runtime.debug_mode? ? :debug : :info),
           :verbose_logging  => (Runtime.debug_mode? ? true : false),
-        }.merge(config.to_h)
+        }.merge(config.to_h.symbolize_keys)
       end
 
       def knife_config_template

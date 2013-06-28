@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/halo/biosphere.png?branch=master)](https://travis-ci.org/halo/biosphere)
+
 ## Introduction
 
 Biosphere is a simple way to manage multiple development environments on your Mac. For example, if you are developing at work, privately, or for multiple customers, you might need different mysql databases, different rubies, different whatever... for each of them. We will refer to these environments as *Spheres*.

@@ -19,7 +19,7 @@ require 'yaml'
 module Biosphere
   module Errors
     class InvalidSphereName < Error
-      def code() 2 end
+      def code() 4 end
     end
   end
 end

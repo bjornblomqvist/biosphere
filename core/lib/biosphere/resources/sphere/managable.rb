@@ -1,7 +1,7 @@
 module Biosphere
   module Errors
     class InvalidManagerConfiguration < Error
-      def code() 3 end
+      def code() 8 end
     end
   end
 end

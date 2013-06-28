@@ -174,4 +174,4 @@ Lastly, you have probably added a similar snippet to your `~/.bash_profile` too 
 
 ## Copyright
 
-Released under MIT 2012 funkensturm. See [MIT-LICENSE](http://github.com/halo/biosphere/blob/master/MIT-LICENSE).
+Released under MIT 2013 funkensturm. See [MIT-LICENSE](http://github.com/halo/biosphere/blob/master/MIT-LICENSE).

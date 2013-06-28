@@ -14,7 +14,6 @@ end
 
 module Biosphere
   module Actions
-    # ErrorCodes: 40-49
     class Update
 
       Options = Class.new(OpenStruct)

@@ -19,31 +19,42 @@ module Biosphere
 end
 
 module Biosphere
-  # ErrorCodes: 30-35
   module Actions
     class Sphere
 
       Options = Class.new(OpenStruct)
 
-      def perform(args)
+      def initialize(args)
+        @args = args
+      end
+
+      def perform
         return help if Runtime.help_mode?
-        subcommand = args.shift
         case subcommand
-        when 'create'    then create(args.shift)
+        when 'create'    then create
         when 'list'      then list
-        when 'show'      then show(args.shift)
-        when 'configure' then configure(args.shift)
-        when 'config'    then config(args.shift, args.shift, args.shift)
+        when 'show'      then show
+        when 'configure' then configure
+        when 'config'    then config
         else                  help
         end
       end
 
       private
 
+      def subcommand
+        @args.first
+      end
+
+      def parameters
+        @args.dup[1..-1]
+      end
+
       def help
         Log.separator
-        Log.info "  Creating a Sphere:".cyan
-        Log.info "    bio sphere create my_sphere".bold
+        Log.info "    bio sphere list".bold + "                 Listing all spheres".cyan
+        Log.info "    bio sphere show my_sphere".bold + "       Details about one sphere".cyan
+        Log.info "    bio sphere create my_sphere".bold + "     Creating a sphere".cyan
         Log.separator
       end
 
@@ -52,12 +63,13 @@ module Biosphere
         Log.batch Resources::Sphere.all.map(&:name).to_json
         Resources::Sphere.all.each do |sphere|
           #Log.batch sphere.name
-          Log.info "  #{sphere.name.ljust(15).bold}  # Managed by #{sphere.manager}"
+          Log.info "  #{sphere.name.ljust(15).bold}" + " Managed by #{sphere.manager.to_s.bold}".cyan
         end
         Log.separator
       end
 
-      def config(name, key, new_value=nil)
+      def config
+        name, key, new_value = parameters
         sphere = find_sphere!(name)
         Log.info "#{name} - #{key} - #{new_value}"
         if new_value
@@ -72,16 +84,18 @@ module Biosphere
         end
       end
 
-      def show(name)
-        sphere = find_sphere!(name)
-        Log.batch sphere.to_json
+      def show
+        sphere = find_sphere!
+        Log.batch({ :sphere => sphere.as_json }.to_json)
       end
 
-      def create(name)
+      def create
+        name = parameters.first
         Resources::Sphere.new(name).create
       end
 
-      def configure(name)
+      def configure
+        name = parameters.first
         if options.remove_config
           Resources::Sphere.new(name).configure
         else
@@ -89,7 +103,8 @@ module Biosphere
         end
       end
 
-      def find_sphere!(name)
+      def find_sphere!
+        name = parameters.first
         unless name
           message = "You must specify a Sphere name."
           Log.error message.red

@@ -3,12 +3,14 @@ require 'biosphere/manager'
 
 module Biosphere
   module Actions
-    # ErrorCodes: 20-29
     class Manager
 
-      def perform(args)
+      def initialize(args)
+        @args = args
+      end
+
+      def perform
         return help if Runtime.help_mode?
-        subcommand = args.shift
         case subcommand
         when 'list' then list
         else             help
@@ -17,8 +19,14 @@ module Biosphere
 
       private
 
+      def subcommand
+        @args.dup.shift
+      end
+
       def help
-        Log.info "Help..."
+        Log.separator
+        Log.info '  manager list'.bold + '       Lists all available sphere managers'.cyan
+        Log.separator
       end
 
       def list

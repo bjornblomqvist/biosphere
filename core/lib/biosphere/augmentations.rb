@@ -11,7 +11,6 @@ module Biosphere
 end
 
 module Biosphere
-  # ErrorCodes: 100-110
   class Augmentations
 
     attr_reader :spheres

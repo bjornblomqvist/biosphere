@@ -22,15 +22,11 @@ module Biosphere
       object.name.underscore.split('/').last
     end
 
-    #def all
-    #  store.values
-    #end
+    def all
+      store.values
+    end
 
     private
-
-    #def name
-    #  self.to_s.split('::').last
-    #end
 
     def store
       @store ||= {}

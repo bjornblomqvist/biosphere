@@ -20,7 +20,7 @@ module Biosphere
       end
 
       def as_json
-        { :identifier => name, :description => description, :config => config }
+        { :identifier => name, :description => description, :config => config.as_json }
       end
 
       def to_json

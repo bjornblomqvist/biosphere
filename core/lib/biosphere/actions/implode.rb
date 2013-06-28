@@ -2,10 +2,13 @@ require 'biosphere/action'
 
 module Biosphere
   module Actions
-    # ErrorCodes: 66-70
     class Implode
 
-      def perform(args=[])
+      def initialize(args)
+        @args = args
+      end
+
+      def perform
         return help if Runtime.help_mode?
         Log.separator
         deactivate_all
@@ -21,7 +24,7 @@ module Biosphere
         Log.separator
         Log.info "  bio implode".bold
         Log.separator
-        Log.info "  Removes all possible traces of Biosphere from your System, except the directory #{Paths.biosphere_home.unexpand_path}"
+        Log.info "  Removes all possible traces of Biosphere from your System, except the directory #{Paths.biosphere_home.unexpand_path.to_s.bold}"
         Log.separator
       end
 
@@ -34,8 +37,8 @@ module Biosphere
       end
 
       def implode_bash_profile
-        Action.perform %w{ config --implode-bash-profile }
-        Action.perform %w{ config --implode-zshenv }
+        Action.perform %w{ setup --implode-bash-profile }
+        Action.perform %w{ setup --implode-zshenv }
       end
 
     end

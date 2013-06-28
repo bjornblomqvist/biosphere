@@ -2,7 +2,6 @@ require 'biosphere/action'
 
 module Biosphere
   module Actions
-    # ErrorCodes: 71-79
     class Deactivate
 
       def initialize(args)

@@ -18,7 +18,6 @@ end
 module Biosphere
   module Resources
     class Sphere
-      # ErrorCodes: 36-37
       class Config
         attr_reader :path
 

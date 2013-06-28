@@ -16,20 +16,21 @@ end
 
 module Biosphere
   module Actions
-    # ErrorCodes: 60-65
     class Setup
 
       Options = Class.new(OpenStruct)
 
-      def perform(args=[])
+      def initialize(args)
         @args = args
+      end
+
+      def perform
         return help if Runtime.help_mode? || options.empty?
         Log.separator
         augment(:bash_profile) if options.augment_bash_profile
         augment(:zshenv)       if options.augment_zshenv
         implode(:bash_profile) if options.implode_bash_profile
         implode(:zshenv)       if options.implode_zshenv
-        Log.info @args
         Log.separator
       end
 
@@ -37,16 +38,20 @@ module Biosphere
 
       def help
         Log.separator
-        Log.info "  bio config OPTIONS".bold
+        Log.info "  bio setup OPTIONS".bold
         Log.separator
         Log.info "  Allows you to setup Biosphere fundamentals."
         Log.separator
         Log.info "  Examples:".cyan
         Log.separator
-        Log.info "  bio config --augment-bash-profile       ".bold + "Prepares your ~/.bash_profile for Biosphere.".cyan
-        Log.info "  bio config --augment-zshenv             ".bold + "Prepares your ~/.zshenv for Biosphere.".cyan
-        Log.info "  bio config --implode-bash-profile       ".bold + "Entirely removes all Biosphere related modifications from your ~/.bash_profile.".cyan
-        Log.info "  bio config --implode-zshenv             ".bold + "Entirely removes all Biosphere related modifications from your ~/.zshenv.".cyan
+        Log.info "  bio setup --augment-bash-profile       ".bold + "Prepares your ~/.bash_profile for Biosphere.".cyan
+        Log.info "  bio setup --augment-zshenv             ".bold + "Prepares your ~/.zshenv for Biosphere.".cyan
+        Log.info "  bio setup --implode-bash-profile       ".bold + "Entirely removes all Biosphere related modifications from your ~/.bash_profile.".cyan
+        Log.info "  bio setup --implode-zshenv             ".bold + "Entirely removes all Biosphere related modifications from your ~/.zshenv.".cyan
+        Log.separator
+        Log.info '  Add the ' + '--relative'.bold + ' flag to ensure all paths begin with ' + '~/'.bold + ' instead of ' + '/Users/yourname'.bold + '.'
+        Log.info '  This is useful if you have your .bash_profile/.zshenv in revision control and share it on multiple computers.'
+        Log.info '  Note, however, that your biosphere directory must lie within your home directory for this to work.'
         Log.separator
       end
 
@@ -57,8 +62,7 @@ module Biosphere
         if result.success?
           case result.status
           when :already_up_to_date then Log.info("  Not augmenting #{path} because it already is augmented.".yellow)
-          else
-            Log.info("  Successfully augmented #{path}.".green)
+            else                        Log.info("  Successfully augmented #{path}.".green)
           end
         else
           message = "Cannot augment #{path} because #{result.status}."
@@ -79,8 +83,8 @@ module Biosphere
       end
 
       def template(profile_name, relative=false)
-        executable_path = core_bin_path
-        executable_path = core_bin_path.unexpand_path if options.relative
+        executable_path = Paths.core_bin
+        executable_path = executable_path.unexpand_path if options.relative
         profile_augmentation_path = Paths.augmentations.join(profile_name.to_s)
         profile_augmentation_path = profile_augmentation_path.unexpand_path if options.relative
         <<-END.undent
@@ -90,10 +94,6 @@ module Biosphere
           # Loading Biosphere's bash_profile for easier de-/activation of spheres.
           [[ -s #{profile_augmentation_path} ]] && source #{profile_augmentation_path}
         END
-      end
-
-      def core_bin_path
-        Pathname.new BIOSPHERE_CORE_BIN_PATH
       end
 
       def path_for(profile_name)
@@ -117,16 +117,16 @@ module Biosphere
               result[:augment_zshenv] = value
             end
 
-            parser.on("--relative") do |value|
-              result[:relative] = value
-            end
-
             parser.on("--implode-bash-profile") do |value|
               result[:implode_bash_profile] = value
             end
 
             parser.on("--implode-zshenv") do |value|
               result[:implode_zshenv] = value
+            end
+
+            parser.on("--relative") do |value|
+              result[:relative] = value
             end
 
           end.parse!(@args)

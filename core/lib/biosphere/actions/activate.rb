@@ -1,15 +1,13 @@
 require 'biosphere/action'
 require 'biosphere/resources/sphere'
+require 'biosphere/augmentations'
 
 module Biosphere
   module Actions
-    # ErrorCodes: 3-19
     class Activate
 
-      attr_reader :sphere_names
-
       def initialize(args)
-        @sphere_names = args
+        @args = args
       end
 
       def perform
@@ -53,6 +51,10 @@ module Biosphere
 
       def augment
         Augmentations.perform :spheres => spheres_to_activate
+      end
+
+      def sphere_names
+        @args
       end
 
       def spheres_to_activate

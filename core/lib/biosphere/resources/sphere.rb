@@ -2,6 +2,7 @@ require 'biosphere/error'
 require 'biosphere/log'
 require 'biosphere/manager'
 require 'biosphere/paths'
+require 'biosphere/extensions/json'
 require 'biosphere/resources/sphere/activatable'
 require 'biosphere/resources/sphere/augmentable'
 require 'biosphere/resources/sphere/configurable'
@@ -73,7 +74,7 @@ module Biosphere
       end
 
       def as_json
-        { :identifier => name, :manager => manager }
+        { :identifier => name, :manager => manager.as_json }
       end
 
       def to_json

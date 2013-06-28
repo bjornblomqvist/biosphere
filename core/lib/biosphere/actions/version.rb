@@ -18,7 +18,6 @@ end
 
 module Biosphere
   module Actions
-    # ErrorCodes: 50-59
     class Version
 
       Options = Class.new(OpenStruct)

@@ -8,7 +8,7 @@ end
 
 class Hash
   def to_json
-    Biosphere::JSON.dump self
+    Biosphere::JSON.dump self.deep_stringify_keys
   end
 end
 

@@ -1,7 +1,10 @@
 source 'https://rubygems.org'
 
-group :development do
+group :development, :test do
   gem 'guard-rspec', '3.0.2'
+end
+
+group :development do
   gem 'rb-fsevent', '0.9.3'
   gem 'rb-readline', '0.5.0'
 end

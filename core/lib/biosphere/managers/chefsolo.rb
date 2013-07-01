@@ -41,8 +41,8 @@ module Biosphere
 
       def clone_cookbooks
         Log.info "Cloning remote cookbooks from #{cookbooks_repo}"
-        Log.info "Cloning into #{cookbooks_path}"
-        result = Resources::Command.run :executable => 'git', :arguments => %W{ clone #{cookbooks_repo} #{cookbooks_path} }
+        Log.info "Cloning into #{cookbooks_repo_path}"
+        result = Resources::Command.run :executable => 'git', :arguments => %W{ clone #{cookbooks_repo} #{cookbooks_repo_path} }
       end
 
       def update_cookbooks

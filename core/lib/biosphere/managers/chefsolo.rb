@@ -84,11 +84,12 @@ module Biosphere
         return unless config.cookbooks_repo
         @cookbooks_path ||= begin
           paths = Array(knife_config[:cookbooks_path])
+          Log.debug "sphere.yml specified the following cookbooks_path: #{paths.inspect}"
           if cookbooks_repo.to_s == ""
             paths = paths.map { |path| File.expand_path(path) }
             result = paths.join(' ')
           else
-            result = cookbooks_container_path.join cookbooks_repo_name, paths.first
+            result = cookbooks_repo_path.join paths.first
           end
           Log.debug "Using cookbooks located at #{result}"
           result

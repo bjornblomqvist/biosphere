@@ -65,7 +65,7 @@ module Biosphere
 
       def cookbooks_path
         return unless cookbooks_repo
-        name = File.basename URI.parse(cookbooks_repo).path.split('/').last, '.*'
+        name = File.basename cookbooks_repo.to_s.split('/').last, '.*'
         cookbooks_container_path.join name
       end
 

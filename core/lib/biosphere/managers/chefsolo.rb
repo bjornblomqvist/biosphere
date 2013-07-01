@@ -88,7 +88,10 @@ module Biosphere
       def knife_config_template
         result = super
         paths = Array(knife_config[:cookbooks_path])
-        if cookbooks_repo
+        if cookbooks_repo.to_s == ""
+          paths = paths.map { |path| File.expand_path(path) }
+          result += %{\ncookbook_path %w{ #{paths.join(' ')} }}
+        else
           if path = paths.first
             path = cookbooks_path.join(path)
             Log.debug "Using cookbooks located at relative path #{path}"
@@ -97,9 +100,6 @@ module Biosphere
             Log.debug "Using cookbooks located at absolute path#{cookbooks_path}"
             result += %{\ncookbook_path %w{ #{cookbooks_path} }}
           end
-        else
-          paths = paths.map { |path| File.expand_path(path) }
-          result += %{\ncookbook_path %w{ #{paths.join(' ')} }}
         end
       end
 

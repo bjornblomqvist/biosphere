@@ -31,7 +31,7 @@ module Biosphere
       end
 
       def ensure_cookbooks
-        return if cookbooks_repo.to_s.strip == ""
+        return unless cookbooks_repo
         if cookbooks_path && cookbooks_path.exist?
           update_cookbooks
         else
@@ -81,7 +81,6 @@ module Biosphere
       end
 
       def cookbooks_path
-        return unless config.cookbooks_repo
         @cookbooks_path ||= begin
           paths = Array(knife_config[:cookbooks_path])
           Log.debug "sphere.yml specified the following cookbooks_path: #{paths.inspect}"

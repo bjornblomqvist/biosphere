@@ -47,7 +47,7 @@ module Biosphere
 
       def update_cookbooks
         Log.info "Updating remote cookbooks from #{cookbooks_repo}"
-        work_tree = cookbooks_path
+        work_tree = cookbooks_repo_path
         git_dir = cookbooks_repo_path.join('.git')
         result = Resources::Command.run :executable => 'git', :arguments => %W{ --work-tree #{work_tree} --git-dir #{git_dir} pull origin master }
         if result.success?

@@ -61,15 +61,15 @@ module Biosphere
 
       def cookbooks_repo
         return unless config.cookbooks_repo
-        @cookbooks_repo ||=
+        @cookbooks_repo ||= begin
           result = Pathname.new config.cookbooks_repo
-          Log.debug "The cookbooks repository is located at #{resutl}"
+          Log.debug "The remote cookbooks repository is located at #{result}"
           result
         end
       end
 
       def cookbooks_repo_name
-        @cookbooks_repo_name ||=
+        @cookbooks_repo_name ||= begin
           result = File.basename cookbooks_repo.to_s.split('/').last, '.*'
           Log.debug "The cookbooks repository name is #{result}"
           result
@@ -96,7 +96,7 @@ module Biosphere
       end
 
       def cookbooks_container_path
-        @cookbooks_container_path ||=
+        @cookbooks_container_path ||= begin
           result = sphere.path.join('cookbooks')
           Log.debug "The cookbooks container is located at #{result}"
           result

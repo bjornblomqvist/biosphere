@@ -48,7 +48,7 @@ module Biosphere
       def update_cookbooks
         Log.info "Updating remote cookbooks from #{cookbooks_repo}"
         work_tree = cookbooks_path
-        git_dir = cookbooks_path.join('.git')
+        git_dir = cookbooks_repo_path.join('.git')
         result = Resources::Command.run :executable => 'git', :arguments => %W{ --work-tree #{work_tree} --git-dir #{git_dir} pull origin master }
         if result.success?
           Log.info "Cookbooks were updated."
@@ -62,6 +62,11 @@ module Biosphere
       def cookbooks_repo
         return unless config.cookbooks_repo
         Pathname.new config.cookbooks_repo
+      end
+
+      def cookbooks_repo_path
+        name = File.basename cookbooks_repo.to_s.split('/').last, '.*'
+        cookbooks_container_path.join name
       end
 
       def cookbooks_path

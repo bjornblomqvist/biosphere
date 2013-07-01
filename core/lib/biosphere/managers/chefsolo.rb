@@ -64,20 +64,23 @@ module Biosphere
         Pathname.new config.cookbooks_repo
       end
 
+      def cookbooks_repo_name
+        File.basename cookbooks_repo.to_s.split('/').last, '.*'
+      end
+
       def cookbooks_repo_path
-        name = File.basename cookbooks_repo.to_s.split('/').last, '.*'
-        cookbooks_container_path.join name
+        cookbooks_container_path.join cookbooks_repo_name
       end
 
       def cookbooks_path
+        return unless config.cookbooks_repo
         @cookbooks_path ||= begin
           paths = Array(knife_config[:cookbooks_path])
           if cookbooks_repo.to_s == ""
             paths = paths.map { |path| File.expand_path(path) }
             result = paths.join(' ')
           else
-            name = File.basename cookbooks_repo.to_s.split('/').last, '.*'
-            result = cookbooks_container_path.join name, paths.first
+            result = cookbooks_container_path.join cookbooks_repo_name, paths.first
           end
           Log.debug "Using cookbooks located at #{result}"
           result

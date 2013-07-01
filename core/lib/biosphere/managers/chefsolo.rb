@@ -31,6 +31,7 @@ module Biosphere
       end
 
       def ensure_cookbooks
+        return if cookbooks_repo.to_s.strip == ""
         if cookbooks_path && cookbooks_path.exist?
           update_cookbooks
         else
@@ -64,9 +65,18 @@ module Biosphere
       end
 
       def cookbooks_path
-        return unless cookbooks_repo
-        name = File.basename cookbooks_repo.to_s.split('/').last, '.*'
-        cookbooks_container_path.join name
+        @cookbooks_path ||= begin
+          paths = Array(knife_config[:cookbooks_path])
+          if cookbooks_repo.to_s == ""
+            paths = paths.map { |path| File.expand_path(path) }
+            result = paths.join(' ')
+          else
+            name = File.basename cookbooks_repo.to_s.split('/').last, '.*'
+            result = cookbooks_container_path.join name, paths.first
+          end
+          Log.debug "Using cookbooks located at #{result}"
+          result
+        end
       end
 
       def cookbooks_container_path
@@ -87,20 +97,7 @@ module Biosphere
 
       def knife_config_template
         result = super
-        paths = Array(knife_config[:cookbooks_path])
-        if cookbooks_repo.to_s == ""
-          paths = paths.map { |path| File.expand_path(path) }
-          result += %{\ncookbook_path %w{ #{paths.join(' ')} }}
-        else
-          if path = paths.first
-            path = cookbooks_path.join(path)
-            Log.debug "Using cookbooks located at relative path #{path}"
-            result += %{\ncookbook_path %w{ #{path} }}
-          else
-            Log.debug "Using cookbooks located at absolute path#{cookbooks_path}"
-            result += %{\ncookbook_path %w{ #{cookbooks_path} }}
-          end
-        end
+        result += %{\ncookbook_path %w{ #{cookbooks_path} }}
       end
 
       def chef_json_path

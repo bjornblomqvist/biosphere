@@ -60,9 +60,8 @@ module Biosphere
 
       def list
         Log.separator
-        Log.batch Resources::Sphere.all.map(&:name).to_json
+        Log.batch Resources::Sphere.all.map(&:as_json).to_json
         Resources::Sphere.all.each do |sphere|
-          #Log.batch sphere.name
           Log.info "  #{sphere.name.ljust(15).bold}" + " Managed by #{sphere.manager.to_s.bold}".cyan
         end
         Log.separator

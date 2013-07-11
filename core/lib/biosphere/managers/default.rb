@@ -15,8 +15,9 @@ module Biosphere
         name
       end
 
+      # Implement this in a subclass.
       def description
-        name
+        ''
       end
 
       def as_json
@@ -26,7 +27,13 @@ module Biosphere
       private
 
       def default_env_vars
-        { 'GEM_HOME' => Resources::Gem.rubygems_path, 'BIOSPHERE_HOME' => Paths.biosphere_home, 'BIOSPHERE_SPHERE_NAME' => sphere.name, 'BIOSPHERE_SPHERE_PATH' => sphere.path, 'BIOSPHERE_SPHERE_AUGMENTATIONS_PATH' => sphere.augmentations_path }
+        {
+          'GEM_HOME'                            => Resources::Gem.rubygems_path,
+          'BIOSPHERE_HOME'                      => Paths.biosphere_home,
+          'BIOSPHERE_SPHERE_NAME'               => sphere.name,
+          'BIOSPHERE_SPHERE_PATH'               => sphere.path,
+          'BIOSPHERE_SPHERE_AUGMENTATIONS_PATH' => sphere.augmentations_path
+        }
       end
 
       def name

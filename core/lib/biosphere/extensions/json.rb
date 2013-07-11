@@ -10,6 +10,16 @@ class Array
   end
 end
 
+class OpenStruct
+  def as_json
+    self.to_hash.as_json
+  end
+
+  def to_json
+    Biosphere::JSON.dump as_json
+  end
+end
+
 class Hash
   def as_json
     self.deep_stringify_keys

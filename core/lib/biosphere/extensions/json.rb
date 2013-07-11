@@ -12,7 +12,7 @@ end
 
 class OpenStruct
   def as_json
-    self.to_hash.as_json
+    @table.as_json
   end
 
   def to_json

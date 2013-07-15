@@ -31,10 +31,12 @@ module Biosphere
 
       def list
         Log.separator
-        Biosphere::Manager.all.each do |manager|
-          Log.batch manager.new
-          Log.info "   #{manager.new}"
+        instances = Biosphere::Manager.all.map do |manager|
+          instance = manager.new
+          Log.info "   #{instance}"
+          instance
         end
+        Log.batch instances.map!(&:as_json).as_json.to_json
         Log.separator
       end
 

@@ -23,7 +23,7 @@ module Biosphere
     end
 
     def all
-      store.values
+      store.values.sort_by(&:to_s)
     end
 
     private

@@ -85,7 +85,7 @@ module Biosphere
 
       def show
         sphere = find_sphere!
-        Log.batch({ :sphere => sphere.as_json }.to_json)
+        Log.batch sphere.as_json.to_json
       end
 
       def create

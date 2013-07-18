@@ -74,7 +74,7 @@ module Biosphere
       end
 
       def as_json
-        { :identifier => name, :manager => manager.as_json, :activated => activated? }
+        { :identifier => name, :manager => manager.as_json, :activated => activated?, :activation_order => activation_order }
       end
 
       private

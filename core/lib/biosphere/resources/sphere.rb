@@ -77,8 +77,10 @@ module Biosphere
         { :identifier => name, :manager => manager.as_json, :activated => activated?, :activation_order => activation_order }
       end
 
-      def <=>(other_sphere)
-        other_sphere.activation_order <=> self.activation_order
+      def <=>(other)
+        return self.activated?.to_s   <=> other.activated?.to_s if (self.activated?.to_s   <=> other.activated?.to_s) != 0
+        return other.activation_order <=> self.activation_order if (other.activation_order <=> self.activation_order) != 0
+        other.name  <=> self.name
       end
 
       private

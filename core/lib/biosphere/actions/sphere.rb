@@ -62,7 +62,9 @@ module Biosphere
         Log.separator
         Log.batch Resources::Sphere.all.sort.map(&:as_json).to_json
         Resources::Sphere.all.sort.reverse.each do |sphere|
-          Log.info "  #{sphere.name.ljust(15).bold}" + " Managed by #{sphere.manager.to_s.bold}".cyan
+          name = sphere.name.ljust(15)
+          name = name.bold if sphere.activated?
+          Log.info "  #{name}" + " Managed by #{sphere.manager.to_s.bold}".cyan
         end
         Log.separator
       end

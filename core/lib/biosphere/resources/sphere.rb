@@ -77,6 +77,10 @@ module Biosphere
         { :identifier => name, :manager => manager.as_json, :activated => activated?, :activation_order => activation_order }
       end
 
+      def <=>(other_sphere)
+        other_sphere.activation_order <=> self.activation_order
+      end
+
       private
 
       def ensure_path

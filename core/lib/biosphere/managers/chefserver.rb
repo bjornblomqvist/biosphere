@@ -7,6 +7,14 @@ module Biosphere
   module Managers
     class Chefserver < Chef
 
+      def name
+        'Opscode Chef Server'
+      end
+
+      def description
+        'This Manager connects to a remote Chef server and executes the remote cookbooks according to the configuration for your node.'
+      end
+
       private
 
       def chef_command

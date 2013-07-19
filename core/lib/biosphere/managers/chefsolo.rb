@@ -17,6 +17,14 @@ module Biosphere
   module Managers
     class Chefsolo < Chef
 
+      def name
+        'Opscode Chef Solo'
+      end
+
+      def description
+        'This Manager runs Chef locally in a standalone manner. You have to provide the cookbooks via Github or a local directory.'
+      end
+
       private
 
       def chef_command

@@ -12,7 +12,12 @@ module Biosphere
       end
 
       def to_s
-        name
+        identifier
+      end
+
+      # Implement this in a subclass.
+      def name
+        ''
       end
 
       # Implement this in a subclass.
@@ -21,7 +26,7 @@ module Biosphere
       end
 
       def as_json
-        { :identifier => name, :description => description, :config => config.as_json }
+        { :identifier => identifier, :description => description, :name => name, :config => config.as_json }
       end
 
       private
@@ -36,7 +41,7 @@ module Biosphere
         }
       end
 
-      def name
+      def identifier
         self.class.name.split('::').last.downcase
       end
 

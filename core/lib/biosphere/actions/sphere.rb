@@ -71,12 +71,13 @@ module Biosphere
 
       def config
         name, key, new_value = parameters
-        sphere = find_sphere!(name)
+        sphere = find_sphere!
         Log.info "#{name} - #{key} - #{new_value}"
         if new_value
           sphere.set_config_value(key, new_value)
+          Log.batch({ :status => 'saved', :value => sphere.config_value(key) }.as_json.to_json)
         elsif value = sphere.config_value(key)
-          Log.batch value.to_json
+          Log.batch({ :status => 'found', :value => value }.as_json.to_json)
           Log.info value.inspect
         else
           message = "Key #{key.inspect} not found."

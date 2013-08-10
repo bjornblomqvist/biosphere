@@ -34,7 +34,7 @@ Biosphere can do that for you if you like by using the following command. The `-
 Z-shell users might want to use the following command instead. Leave out the `--relative` option, because z-shell usually has difficulties expanding `~` to an absolute path.
 
 ```bash
-~/.biosphere/core/bin/bio config --augment-zshenv
+~/.biosphere/core/bin/bio setup --augment-zshenv
 ```
 
 Alternatively you can add the snippet all by yourself:

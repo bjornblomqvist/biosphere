@@ -28,7 +28,7 @@ Now we need to add something to your `~/.bash_profile` or `~/.zshenv` so that yo
 Biosphere can do that for you if you like by using the following command. The `--relative` option makes sure that the snippet inserted into your profile uses `~` to refer to your home directory.
 
 ```bash
-~/.biosphere/core/bin/bio config --augment-bash-profile --relative
+~/.biosphere/core/bin/bio setup --augment-bash-profile --relative
 ```
 
 Z-shell users might want to use the following command instead. Leave out the `--relative` option, because z-shell usually has difficulties expanding `~` to an absolute path.

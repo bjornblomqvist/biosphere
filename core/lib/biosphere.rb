@@ -13,6 +13,7 @@ require 'biosphere/actions/setup'
 require 'biosphere/actions/sphere'
 require 'biosphere/actions/update'
 require 'biosphere/actions/version'
+require 'biosphere/actions/help'
 
 # Managers
 require 'biosphere/managers/chefserver'

@@ -5,7 +5,6 @@ require 'biosphere/extensions/json'
 require 'biosphere/action'
 require 'biosphere/version'
 
-
 module Biosphere
   module Actions
     class Help

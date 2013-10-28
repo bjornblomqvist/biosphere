@@ -6,6 +6,10 @@ module Biosphere
 
     BiosphereHomeNotSetError = Class.new(StandardError)
 
+    # ––––––––
+    # Settings
+    # ––––––––
+
     def biosphere_home=(path)
       @biosphere_home = path
     end
@@ -14,6 +18,10 @@ module Biosphere
       raise BiosphereHomeNotSetError unless @biosphere_home
       Pathname.new @biosphere_home
     end
+
+    # –––––––––––––
+    # Derived Paths
+    # –––––––––––––
 
     def augmentations
       biosphere_home.join 'augmentations'

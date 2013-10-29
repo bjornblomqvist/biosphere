@@ -97,7 +97,7 @@ module Biosphere
             # To manage this file manually, simply leave this file empty or delete it.
             #
             # To have a chef server manage this sphere, uncomment the following lines.
-            # They are essentialy passed on to knife, see http://wiki.opscode.com/display/chef/Knife#Knife-Knifeconfiguration
+            # They are essentialy passed on to knife, see http://docs.opscode.com/config_rb_client.html
             # Important: Make sure that the validation.pem key is located inside the sphere directory!
             #            Alternatively you can specify the "validation_key_path" option to specify the path.
             #

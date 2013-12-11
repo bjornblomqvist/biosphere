@@ -48,7 +48,7 @@ module Biosphere
     end
 
     def vendor_gems
-      vendor.join 'gems'
+      vendor.join "gems/#{RUBY_VERSION}"
     end
 
     # –––––––––––––––––––
@@ -56,11 +56,22 @@ module Biosphere
     # –––––––––––––––––––
 
     def ruby_executable
-      Pathname.new '/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby'
+      return unless ruby_path
+      ruby_path.join 'usr/bin/ruby'
     end
 
     def gem_executable
-      Pathname.new '/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/gem'
+      return unless ruby_path
+      ruby_path.join 'usr/bin/gem'
+    end
+
+    private
+
+    def ruby_path
+      %w{ 2.1 2.0 1.9 1.8 }.each do |version|
+        path = Pathname.new "/System/Library/Frameworks/Ruby.framework/Versions/#{version}"
+        return path if path.exist?
+      end
     end
 
   end

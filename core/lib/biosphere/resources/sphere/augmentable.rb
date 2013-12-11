@@ -28,6 +28,7 @@ module Biosphere
                 end
               end
             end
+            result.each { |key, value| result[key] = value.join("\n\n") }
             result
           end
 

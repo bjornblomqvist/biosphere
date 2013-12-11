@@ -49,7 +49,7 @@ module Biosphere
         else
           message = "Could not update Biosphere: #{result.stdout.strip} #{result.stderr.strip}"
           Log.error message
-          raise CouldNotUpdateBiosphere, message
+          raise Errors::CouldNotUpdateBiosphere, message
         end
       end
 

@@ -8,7 +8,7 @@ RSpec.configure do |config|
 
   config.before do
     logger = mock(:logger, :debug => nil, :separator => nil)
-    Biosphere::Log.stub!(:logger).and_return logger
+    Biosphere::Log.stub(:logger).and_return logger
     Biosphere::Paths.biosphere_home = '/dev/null/biosphere'
   end
 

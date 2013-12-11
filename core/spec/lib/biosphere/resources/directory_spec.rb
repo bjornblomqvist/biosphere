@@ -7,7 +7,7 @@ describe Biosphere::Resources::Directory do
   let(:directory) { Biosphere::Resources::Directory.new '/tmp/some/dir' }
 
   before do
-    Pathname.stub!(:new).and_return pathname
+    Pathname.stub(:new).and_return pathname
   end
 
   describe 'create' do

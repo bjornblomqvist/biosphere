@@ -5,13 +5,13 @@ describe Biosphere::Runtime do
   let(:runtime) { Biosphere::Runtime }
 
   before do
-    ARGV.stub!(:dup).and_return []
+    ARGV.stub(:dup).and_return []
     runtime.send(:reset!)
   end
 
   describe '.arguments' do
     it 'is a duplication of ARGV' do
-      ARGV.stub!(:dup).and_return %w{ one two --three }
+      ARGV.stub(:dup).and_return %w{ one two --three }
       runtime.arguments.should == %w{ one two --three }
     end
 
@@ -20,7 +20,7 @@ describe Biosphere::Runtime do
     end
 
     it 'strips out runtime-related parameters' do
-      ARGV.stub!(:dup).and_return %w{ some_parameter --debug --some-option }
+      ARGV.stub(:dup).and_return %w{ some_parameter --debug --some-option }
       runtime.arguments.should == %w{ some_parameter --some-option }
     end
   end
@@ -32,7 +32,7 @@ describe Biosphere::Runtime do
     end
 
     it 'is true when run with superuser privileges' do
-      Process.stub!(:uid).and_return 0
+      Process.stub(:uid).and_return 0
       runtime.should be_privileged
     end
   end
@@ -43,7 +43,7 @@ describe Biosphere::Runtime do
     end
 
     it 'is true when the corresponding ARGV was set' do
-      ARGV.stub!(:dup).and_return %w{ --debug }
+      ARGV.stub(:dup).and_return %w{ --debug }
       runtime.should be_debug_mode
     end
   end
@@ -54,7 +54,7 @@ describe Biosphere::Runtime do
     end
 
     it 'is true when the corresponding ARGV was set' do
-      ARGV.stub!(:dup).and_return %w{ --silent }
+      ARGV.stub(:dup).and_return %w{ --silent }
       runtime.should be_silent_mode
     end
   end
@@ -65,7 +65,7 @@ describe Biosphere::Runtime do
     end
 
     it 'is true when the corresponding ARGV was set' do
-      ARGV.stub!(:dup).and_return %w{ --batch }
+      ARGV.stub(:dup).and_return %w{ --batch }
       runtime.should be_batch_mode
     end
   end
@@ -76,7 +76,7 @@ describe Biosphere::Runtime do
     end
 
     it 'is true when the corresponding ARGV was set' do
-      ARGV.stub!(:dup).and_return %w{ --help }
+      ARGV.stub(:dup).and_return %w{ --help }
       runtime.should be_help_mode
     end
   end

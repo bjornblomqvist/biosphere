@@ -13,10 +13,10 @@ describe Biosphere::Resources::Sphere::Configurable do
   before do
     @path = Pathname.new('/dev/null')
 
-    sphere.stub!(:path).and_return @path
-    Biosphere::Resources::File.stub!(:ensure)
-    Biosphere::Resources::File.stub!(:write)
-    Biosphere::Resources::File.stub!(:delete)
+    sphere.stub(:path).and_return @path
+    Biosphere::Resources::File.stub(:ensure)
+    Biosphere::Resources::File.stub(:write)
+    Biosphere::Resources::File.stub(:delete)
   end
 
   describe '#get_config_value' do

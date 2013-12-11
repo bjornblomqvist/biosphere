@@ -7,7 +7,7 @@ describe Biosphere::Resources::Path do
   let(:path)     { Biosphere::Resources::Path.new '/tmp/some/path' }
 
   before do
-    Pathname.stub!(:new).and_return pathname
+    Pathname.stub(:new).and_return pathname
   end
 
   describe 'initialize' do
@@ -78,7 +78,7 @@ describe Biosphere::Resources::Path do
 
   context 'the path exists' do
     before do
-      pathname.stub!(:exist?).and_return true
+      pathname.stub(:exist?).and_return true
     end
 
     describe '#create' do

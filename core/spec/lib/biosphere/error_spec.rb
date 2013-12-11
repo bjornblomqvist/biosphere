@@ -31,7 +31,7 @@ describe Biosphere::Errors::Error do
 
   context 'with conflicting code definitions' do
     before do
-      Biosphere::Errors.stub!(:names).and_return %w{ ErrorSpecErrorOne ErrorSpecErrorTwo ErrorSpecErrorThree }
+      Biosphere::Errors.stub(:names).and_return %w{ ErrorSpecErrorOne ErrorSpecErrorTwo ErrorSpecErrorThree }
     end
 
     describe '.valid?' do

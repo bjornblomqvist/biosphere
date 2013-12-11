@@ -12,7 +12,7 @@ describe Biosphere::Actions::Activate do
 
   before do
     @args = []
-    Biosphere::Resources::Sphere.stub!(:all).and_return spheres
+    Biosphere::Resources::Sphere.stub(:all).and_return spheres
   end
 
   context 'no arguments' do

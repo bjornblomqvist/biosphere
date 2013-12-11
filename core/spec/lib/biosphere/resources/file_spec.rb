@@ -8,7 +8,7 @@ describe Biosphere::Resources::File do
   let(:file)     { Biosphere::Resources::File.new '/tmp/some/file' }
 
   before do
-    Pathname.stub!(:new).and_return pathname
+    Pathname.stub(:new).and_return pathname
   end
 
   describe 'create' do

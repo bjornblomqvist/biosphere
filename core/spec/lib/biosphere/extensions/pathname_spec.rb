@@ -4,7 +4,7 @@ require 'biosphere/extensions/pathname'
 describe Biosphere::Extensions::PathnameExtensions do
 
   before do
-    Pathname.stub!(:home_env).and_return '/Users/bob'
+    Pathname.stub(:home_env).and_return '/Users/bob'
   end
 
   describe '.home_path' do

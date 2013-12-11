@@ -9,18 +9,18 @@ describe Biosphere::Resources::Sphere::Config do
 
   before do
     @path = mock(:path, :to_s => '/dev/null')
-    @path.stub!(:readable?).and_return true
-    @path.stub!(:writable?).and_return true
-    @path.stub!(:read).and_return "manager:\n  chefserver:\n    url: 'www.example.com'\n    node_name: bob.biosphere"
-    config.stub!(:path).and_return @path
-    Biosphere::Resources::File.stub!(:ensure)
-    Biosphere::Resources::File.stub!(:write)
-    Biosphere::Resources::File.stub!(:delete)
+    @path.stub(:readable?).and_return true
+    @path.stub(:writable?).and_return true
+    @path.stub(:read).and_return "manager:\n  chefserver:\n    url: 'www.example.com'\n    node_name: bob.biosphere"
+    config.stub(:path).and_return @path
+    Biosphere::Resources::File.stub(:ensure)
+    Biosphere::Resources::File.stub(:write)
+    Biosphere::Resources::File.stub(:delete)
   end
 
   describe '#[]' do
     it 'is nil if the config file is readable but emtpy' do
-      @path.stub!(:readable?).and_return false
+      @path.stub(:readable?).and_return false
       config['manager'].should be_nil
     end
 

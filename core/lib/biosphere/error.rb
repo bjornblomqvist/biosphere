@@ -19,6 +19,10 @@ module Biosphere
       def code() 255 end
     end
 
+    class InterruptError < Error
+      def code() 130 end
+    end
+
     def validate!
       return if valid?
       duplicate_codes = codes.select { |code| codes.rindex(code) != codes.index(code) }

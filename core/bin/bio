@@ -14,6 +14,13 @@ end
 
 begin
   Action.perform Runtime.arguments.dup
+
+rescue Interrupt => exception
+  Log.separator
+  Log.info 'User interrupted...'.red
+  Log.separator
+  exit Errors::InterruptError.new.code
+
 rescue Errors::Error => exception
   Log.debug "Exiting with status #{exception.code} defined by Error #{exception.class}"
   exit exception.code

@@ -114,7 +114,7 @@ module Biosphere
             #
             # manager:
             #   chefsolo:
-            #     cookbook_path: "~/Documents/my_cookbooks"
+            #     cookbooks_path: "~/Documents/my_cookbooks"
             #     # runlist: "recipe[biosphere]"  # Uncomment this line to change the default run list
             #
           END

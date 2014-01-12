@@ -132,7 +132,7 @@ Add the following content to your `sphere.yml`:
 ```yaml
 manager:
   chefsolo:
-    cookbook_path: ~/Documents/my-chef-repo/cookbooks
+    cookbooks_path: ~/Documents/my-chef-repo/cookbooks
 ```
 
 The next time you run `bio update`, Biosphere will run chef solo using the cookbooks located at `~/Documents/my-chef-repo/cookbooks`. The run list will be the recipe `biosphere`. Chef solo will have the following environment variables set so you can do things with your Sphere:
@@ -149,7 +149,7 @@ You can modify all settings and even pass environment variables to the recipes. 
 ```yaml
 manager:
   chefsolo:
-    cookbook_path: ~/Code/Projects/biosphere/cortana/cookbooks
+    cookbooks_path: ~/Code/Projects/biosphere/cortana/cookbooks
     node_name: bobs-macbook
     env_vars:
       ssh_key_name: red.github.halo

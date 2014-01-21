@@ -5,9 +5,10 @@ require 'biosphere/tools/augmentor'
 describe Biosphere::Tools::Augmentor do
 
   let(:file)        { Tempfile.new('target') }
+  let(:path)        { Pathname.new(file.path) }
   let(:content)     { 'Merry Christmas' }
   let(:new_content) { 'Be happy' }
-  let(:augmentor)   { Biosphere::Tools::Augmentor.new :file => file, :content => content }
+  let(:augmentor)   { Biosphere::Tools::Augmentor.new :file => path, :content => content }
 
   after do
     file.close
@@ -32,7 +33,7 @@ describe Biosphere::Tools::Augmentor do
     end
 
     context 'file is augmented' do
-      let(:new_augmentor) { Biosphere::Tools::Augmentor.new :file => file, :content => new_content }
+      let(:new_augmentor) { Biosphere::Tools::Augmentor.new :file => path, :content => new_content }
 
       before do
         augmentor.perform

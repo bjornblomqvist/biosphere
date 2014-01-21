@@ -64,6 +64,8 @@ module Biosphere
           when :already_up_to_date then Log.info("  Not augmenting #{path} because it already is augmented.".yellow)
             else                        Log.info("  Successfully augmented #{path}.".green)
           end
+          
+          warn_about_existing_profiles(profile_name)
         else
           message = "Cannot augment #{path} because #{result.status}."
           Log.error message.red
@@ -100,7 +102,15 @@ module Biosphere
         case profile_name
         when :bash_profile then Pathname.new('~/.bash_profile').expand_path
         when :zshenv       then Pathname.new('~/.zshenv').expand_path
-        when :wow         then Pathname.new('/tmp/wow').expand_path
+        when :wow          then Pathname.new('/tmp/wow').expand_path
+        end
+      end
+
+      def warn_about_existing_profiles(profile_name)
+        if profile_name == :bash_profile && Pathname.new('~/.profile').expand_path.exist?
+          Log.info("  Biosphere detected ~/.profile".red)
+          Log.info("  ~/.bash_profile takes precedence over ~/.profile".red)
+          Log.info("  If your ~/.profile contains any argumentation it will have NO impect on your shell.".red)
         end
       end
 

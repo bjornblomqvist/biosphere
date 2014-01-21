@@ -110,7 +110,7 @@ module Biosphere
         if profile_name == :bash_profile && Pathname.new('~/.profile').expand_path.exist?
           Log.info("  Biosphere detected ~/.profile".red)
           Log.info("  ~/.bash_profile takes precedence over ~/.profile".red)
-          Log.info("  If your ~/.profile contains any argumentation it will have NO impact on your shell.".red)
+          Log.info("  If your ~/.profile has any content it will have no impact".red)
         end
       end
 

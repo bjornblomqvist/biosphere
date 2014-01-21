@@ -4,7 +4,7 @@ require 'biosphere/tools/augmentor'
 
 describe Biosphere::Tools::Augmentor do
 
-  let(:file)        { Tempfile.new('target') }
+  let(:file)        { Pathname.new(Tempfile.new('target').path) }
   let(:content)     { 'Merry Christmas' }
   let(:new_content) { 'Be happy' }
   let(:augmentor)   { Biosphere::Tools::Augmentor.new :file => file, :content => content }

@@ -7,30 +7,30 @@ end
 
 describe Biosphere::Resources::Sphere::Configurable do
 
-  let(:config) { mock(:config) }
+  let(:config) { double(:config) }
   let(:sphere) { ConfigurableSphereTest.new }
 
   before do
     @path = Pathname.new('/dev/null')
 
-    sphere.stub(:path).and_return @path
-    Biosphere::Resources::File.stub(:ensure)
-    Biosphere::Resources::File.stub(:write)
-    Biosphere::Resources::File.stub(:delete)
+    allow(sphere).to receive(:path).and_return @path
+    allow(Biosphere::Resources::File).to receive(:ensure)
+    allow(Biosphere::Resources::File).to receive(:write)
+    allow(Biosphere::Resources::File).to receive(:delete)
   end
 
   describe '#get_config_value' do
     it 'calls the Config backend to retrieve the value' do
-      config.should_receive(:[]).with('books').and_return(:value)
-      sphere.should_receive(:config).and_return config
-      sphere.config_value('books').should == :value
+      expect(config).to receive(:[]).with('books').and_return(:value)
+      expect(sphere).to receive(:config).and_return config
+      expect(sphere.config_value('books')).to eq(:value)
     end
   end
 
   describe '#set_config_value' do
     it 'calls the Config backend to set the value' do
-      config.should_receive(:[]=).with('books', 'lesmiserables')
-      sphere.should_receive(:config).and_return config
+      expect(config).to receive(:[]=).with('books', 'lesmiserables')
+      expect(sphere).to receive(:config).and_return config
       sphere.set_config_value('books', 'lesmiserables')
     end
   end

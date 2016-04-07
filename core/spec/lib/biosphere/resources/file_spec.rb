@@ -3,56 +3,56 @@ require 'biosphere/resources/file'
 
 describe Biosphere::Resources::File do
 
-  let(:io)       { mock(:io) }
-  let(:pathname) { mock(:pathname, :exist? => false)}
+  let(:io)       { double(:io) }
+  let(:pathname) { double(:pathname, :exist? => false)}
   let(:file)     { Biosphere::Resources::File.new '/tmp/some/file' }
 
   before do
-    Pathname.stub(:new).and_return pathname
+    allow(Pathname).to receive(:new).and_return pathname
   end
 
   describe 'create' do
     it 'creates the file' do
-      pathname.should_receive(:open).with('a')
+      expect(pathname).to receive(:open).with('a')
       file.create
     end
   end
 
   describe '.augment' do
     it 'delegates to the instance' do
-      new_path = mock(:path)
-      new_path.should_receive(:augment).with('hollywood')
-      Biosphere::Resources::File.should_receive(:new).with('/tmp/augmentable/file').and_return new_path
+      new_path = double(:path)
+      expect(new_path).to receive(:augment).with('hollywood')
+      expect(Biosphere::Resources::File).to receive(:new).with('/tmp/augmentable/file').and_return new_path
       Biosphere::Resources::File.augment '/tmp/augmentable/file', 'hollywood'
     end
   end
 
   describe '.write' do
     it 'delegates to the instance' do
-      new_path = mock(:path)
-      new_path.should_receive(:write).with('balloon')
-      Biosphere::Resources::File.should_receive(:new).with('/tmp/writable/file').and_return new_path
+      new_path = double(:path)
+      expect(new_path).to receive(:write).with('balloon')
+      expect(Biosphere::Resources::File).to receive(:new).with('/tmp/writable/file').and_return new_path
       Biosphere::Resources::File.write '/tmp/writable/file', 'balloon'
     end
   end
 
   describe '#write' do
     it 'opens the file in overwrite mode and writes the contents' do
-      io.should_receive(:write).with('content')
-      pathname.should_receive(:open).with('w').and_yield io
+      expect(io).to receive(:write).with('content')
+      expect(pathname).to receive(:open).with('w').and_yield io
       file.write 'content'
     end
 
     it 'does not require an argument' do
-      io.should_receive(:write).with(nil)
-      pathname.should_receive(:open).with('w').and_yield io
+      expect(io).to receive(:write).with(nil)
+      expect(pathname).to receive(:open).with('w').and_yield io
       file.write
     end
   end
 
   describe '#augment' do
     it 'opens the file in overwrite mode and writes the contents' do
-      pathname.should_receive(:augment).with('content')
+      expect(pathname).to receive(:augment).with('content')
       file.augment 'content'
     end
   end

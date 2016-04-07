@@ -3,7 +3,7 @@ require 'biosphere/container'
 
 describe Biosphere::Container do
   let(:container) { Biosphere::Container }
-  let(:object) { mock(:object, :name => 'Im::Some::Bird') }
+  let(:object) { double(:object, :name => 'Im::Some::Bird') }
 
   after do
     container.send :reset!
@@ -12,11 +12,11 @@ describe Biosphere::Container do
   describe '.find' do
     it 'finds a registered object' do
       container.register object
-      container.find('bird').should be object
+      expect(container.find('bird')).to be object
     end
 
     it 'is nil if the object was never registered' do
-      container.find(:bird).should be_nil
+      expect(container.find(:bird)).to be_nil
     end
   end
 

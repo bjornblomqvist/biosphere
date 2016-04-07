@@ -12,10 +12,10 @@ describe Biosphere::Resources::Command do
       let(:executable) { '/tmp/does_certainly_not_exist' }
 
       it 'has status -1' do
-        Biosphere::Log.should_receive(:error).with("Command not found: #{executable}")
+        expect(Biosphere::Log).to receive(:error).with("Command not found: #{executable}")
         result = command.run
-        result.should_not be_success
-        result.status.should == -1
+        expect(result).not_to be_success
+        expect(result.status).to eq(-1)
       end
     end
 
@@ -25,8 +25,8 @@ describe Biosphere::Resources::Command do
 
       it 'has the status of the failed command' do
         result = command.run
-        result.should_not be_success
-        result.status.should == 15
+        expect(result).not_to be_success
+        expect(result.status).to eq(15)
       end
     end
 
@@ -36,8 +36,8 @@ describe Biosphere::Resources::Command do
 
       it 'has status 0' do
         result = command.run
-        result.should be_success
-        result.status.should == 0
+        expect(result).to be_success
+        expect(result.status).to eq(0)
       end
     end
 

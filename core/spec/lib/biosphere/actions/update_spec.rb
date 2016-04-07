@@ -3,9 +3,9 @@ require 'biosphere/actions/update'
 
 describe Biosphere::Actions::Update do
 
-  let(:sphere1) { mock(:sphere1, :name => 'work') }
-  let(:sphere2) { mock(:sphere2, :name => 'private') }
-  let(:sphere3) { mock(:sphere3, :name => 'project') }
+  let(:sphere1) { double(:sphere1, :name => 'work') }
+  let(:sphere2) { double(:sphere2, :name => 'private') }
+  let(:sphere3) { double(:sphere3, :name => 'project') }
   let(:spheres) { [sphere1, sphere2, sphere3] }
 
   let(:action) { Biosphere::Actions::Update.new @args }
@@ -17,11 +17,11 @@ describe Biosphere::Actions::Update do
   context 'no arguments' do
     describe '.perform' do
       it 'updates all spheres and triggers a global reactivation' do
-        Biosphere::Resources::Sphere.should_receive(:all).with(no_args()).and_return spheres
-        sphere1.should_receive(:update).with(no_args())
-        sphere2.should_receive(:update).with(no_args())
-        sphere3.should_receive(:update).with(no_args())
-        Biosphere::Action.should_receive(:perform).with(%w{ activate })
+        expect(Biosphere::Resources::Sphere).to receive(:all).with(no_args()).and_return spheres
+        expect(sphere1).to receive(:update).with(no_args())
+        expect(sphere2).to receive(:update).with(no_args())
+        expect(sphere3).to receive(:update).with(no_args())
+        expect(Biosphere::Action).to receive(:perform).with(%w{ activate })
         action.perform
       end
     end
@@ -34,11 +34,11 @@ describe Biosphere::Actions::Update do
 
     describe '.perform' do
       it 'updates the specified spheres and triggers a global reactivation' do
-        Biosphere::Resources::Sphere.should_receive(:find).with('work').and_return sphere1
-        Biosphere::Resources::Sphere.should_receive(:find).with('project').and_return sphere3
-        sphere1.should_receive(:update).with(no_args())
-        sphere3.should_receive(:update).with(no_args())
-        Biosphere::Action.should_receive(:perform).with(%w{ activate })
+        expect(Biosphere::Resources::Sphere).to receive(:find).with('work').and_return sphere1
+        expect(Biosphere::Resources::Sphere).to receive(:find).with('project').and_return sphere3
+        expect(sphere1).to receive(:update).with(no_args())
+        expect(sphere3).to receive(:update).with(no_args())
+        expect(Biosphere::Action).to receive(:perform).with(%w{ activate })
         action.perform
       end
     end

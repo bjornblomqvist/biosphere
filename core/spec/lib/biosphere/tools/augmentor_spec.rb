@@ -18,9 +18,9 @@ describe Biosphere::Tools::Augmentor do
   describe '#perform' do
     context 'file is empty' do
       it 'inserts the content' do
-        file.read.should be_empty  # Just making really sure
+        expect(file.read).to be_empty  # Just making really sure
         augmentor.perform
-        file.read.should == <<-END.undent
+        expect(file.read).to eq <<-END.undent
 
 
           ### BIOSPHERE MANAGED START ###
@@ -41,7 +41,7 @@ describe Biosphere::Tools::Augmentor do
 
       it 'modifies the augmentation' do
         new_augmentor.perform
-        file.read.should == <<-END.undent
+        expect(file.read).to eq <<-END.undent
 
 
           ### BIOSPHERE MANAGED START ###

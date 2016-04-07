@@ -18,7 +18,7 @@ describe Biosphere::Errors::Error do
   context 'no conflicting error code definitions' do
     describe '.valid?' do
       it 'is true' do
-        Biosphere::Errors.should be_valid
+        expect(Biosphere::Errors).to be_valid
       end
     end
 
@@ -31,12 +31,12 @@ describe Biosphere::Errors::Error do
 
   context 'with conflicting code definitions' do
     before do
-      Biosphere::Errors.stub(:names).and_return %w{ ErrorSpecErrorOne ErrorSpecErrorTwo ErrorSpecErrorThree }
+      allow(Biosphere::Errors).to receive(:names).and_return %w{ ErrorSpecErrorOne ErrorSpecErrorTwo ErrorSpecErrorThree }
     end
 
     describe '.valid?' do
       it 'is false' do
-        Biosphere::Errors.should_not be_valid
+        expect(Biosphere::Errors).not_to be_valid
       end
     end
 

@@ -4,16 +4,15 @@ require 'biosphere/log'
 module Biosphere
   module Action
     extend Container
-    extend self
 
-    def perform(args = [])
+    def self.perform(args = [])
       name = args.shift || 'help'
       perform! name, args
     end
 
     private
 
-    def perform!(name, args)
+    def self.perform!(name, args)
       if action = find(name)
         Log.debug "Loading action #{name.inspect} with arguments: #{args.join(' ')}"
         action.new(args).perform

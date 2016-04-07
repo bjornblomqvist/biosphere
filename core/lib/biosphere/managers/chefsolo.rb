@@ -106,7 +106,7 @@ module Biosphere
       def cookbooks_container_path
         @cookbooks_container_path ||= begin
           result = sphere.path.join('cookbooks')
-          Log.debug "The cookbooks container is located at #{result}"
+          Log.debug "The cookbooks container is located at #{result.to_s}"
           result
         end
       end
@@ -135,5 +135,6 @@ module Biosphere
     end
   end
 end
+
 
 Biosphere::Manager.register Biosphere::Managers::Chefsolo

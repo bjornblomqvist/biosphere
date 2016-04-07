@@ -2,15 +2,30 @@ require 'biosphere/logger'
 
 module Biosphere
   module Log
-    extend self
 
-    def method_missing(method, *args)
-      logger.send method, *args
+    def self.debug(&block)
+      logger.debug(&block)
+    end
+
+    def self.info(&block)
+      logger.info(&block)
+    end
+
+    def self.warn(&block)
+      logger.warn(&block)
+    end
+
+    def self.error(&block)
+      logger.error(&block)
+    end
+
+    def self.fatal(&block)
+      logger.fatal(&block)
     end
 
     private
 
-    def logger
+    def self.logger
       @logger ||= Logger.new
     end
 

@@ -2,12 +2,13 @@
 
 ## Introduction
 
-Biosphere is a simple way to manage multiple development environments on your Mac. For example, if you are developing at work, privately, or for multiple customers, you might need different mysql databases, different rubies, different whatever... for each of them. We will refer to these environments as *Spheres*.
+Biosphere is a simple way to manage multiple development environments on your Mac. For example, if you are developing at work, privately, or for multiple customers, you might need different databases, different rubies, different homebrews, etc. for each of them. We will refer to these environments as *Spheres*.
 
-Breathe in the two beautiful design principles of Biosphere:
+Breathe in the beautiful design principles of Biosphere:
 
-- The only dependency is Mac OS 10.7 (or higher).
-- It is sandboxed so that you can get rid of it by removing a single directory at any time.
+- The *only* dependency is `Ruby 2.0.0-p0` or higher (e.g. OS X Yosemite, Ubuntu 15, Debian 8).
+- It is entirely sandboxed so you can get rid of it by removing one single directory.
+- No superuser privileges needed.
 
 ## Installation
 

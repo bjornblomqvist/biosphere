@@ -1,0 +1,2 @@
+excludeInFileChooser = "{$excludeInFileChooser,vendor,spheres/**/*}"
+excludeInFolderSearch = "{$excludeInFolderSearch,$excludeInFileChooser}"

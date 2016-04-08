@@ -31,10 +31,5 @@ module Biosphere
       name.underscore.split('/').last
     end
 
-    # Useful for testing
-    def reset!
-      @store = nil
-    end
-
   end
 end

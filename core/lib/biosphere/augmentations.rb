@@ -37,7 +37,7 @@ module Biosphere
       Resources::Sphere.augmentation_identifiers.each do |identifier|
         destination = destination_path(identifier)
         next unless destination && destination.exist?
-        Log.debug "Imploding augmentation for #{destination}"
+        Log.debug { "Imploding augmentation for #{destination}" }
         Resources::File.augment destination
       end
     end
@@ -50,7 +50,7 @@ module Biosphere
     end
 
     def clear
-      Log.debug "Clearing cached augmentations..."
+      Log.debug { "Clearing cached augmentations..." }
       Resources::Sphere.augmentation_identifiers.each do |identifier|
         Resources::File.delete Paths.augmentations.join(identifier.to_s)
       end
@@ -60,10 +60,10 @@ module Biosphere
       Resources::Sphere.augmentations.each do |identifier, content|
         path = Paths.augmentations.join(identifier.to_s)
         if content.empty?
-          Log.debug "Removing cached augmentation for #{identifier}..."
+          Log.debug { "Removing cached augmentation for #{identifier}..." }
           Resources::File.delete path
         else
-          Log.debug "Caching augmentation for #{identifier}..."
+          Log.debug { "Caching augmentation for #{identifier}..." }
           Resources::File.write path, content
         end
       end

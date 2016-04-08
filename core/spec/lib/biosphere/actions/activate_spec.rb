@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'biosphere/actions/activate'
 
-describe Biosphere::Actions::Activate do
+RSpec.describe Biosphere::Actions::Activate do
 
   let(:sphere1) { double(:sphere1, :name => 'work',    :activated? => true,  :activation_order => 1) }
   let(:sphere2) { double(:sphere2, :name => 'private', :activated? => true,  :activation_order => 0) }

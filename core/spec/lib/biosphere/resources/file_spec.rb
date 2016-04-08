@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'biosphere/resources/file'
 
-describe Biosphere::Resources::File do
+RSpec.describe Biosphere::Resources::File do
 
   let(:io)       { double(:io) }
   let(:pathname) { double(:pathname, :exist? => false)}

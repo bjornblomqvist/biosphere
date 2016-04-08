@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'biosphere/extensions/hash'
 
-describe Biosphere::Extensions::HashExtensions do
+RSpec.describe Biosphere::Extensions::HashExtensions do
 
   let(:hash) { { 'one' => :two, 'three' => { 'four' => { 'five' => :six } } } }
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'biosphere/actions/update'
 
-describe Biosphere::Actions::Update do
+RSpec.describe Biosphere::Actions::Update do
 
   let(:sphere1) { double(:sphere1, :name => 'work') }
   let(:sphere2) { double(:sphere2, :name => 'private') }

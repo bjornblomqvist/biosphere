@@ -5,7 +5,7 @@ class ConfigurableSphereTest
   include Biosphere::Resources::Sphere::Configurable
 end
 
-describe Biosphere::Resources::Sphere::Configurable do
+RSpec.describe Biosphere::Resources::Sphere::Configurable do
 
   let(:config) { double(:config) }
   let(:sphere) { ConfigurableSphereTest.new }

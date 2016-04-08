@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'biosphere/resources/command'
 
-describe Biosphere::Resources::Command do
+RSpec.describe Biosphere::Resources::Command do
 
   let(:executable) { 'whoami' }
   let(:arguments)  { [] }

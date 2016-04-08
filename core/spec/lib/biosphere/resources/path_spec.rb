@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'biosphere/resources/path'
 
-describe Biosphere::Resources::Path do
+RSpec.describe Biosphere::Resources::Path do
 
   let(:pathname) { double(:pathname, :exist? => false)}
   let(:path)     { Biosphere::Resources::Path.new '/tmp/some/path' }

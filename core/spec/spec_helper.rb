@@ -1,5 +1,25 @@
 $LOAD_PATH << File.expand_path('../lib', File.dirname(__FILE__))
 
+if ENV['COVERAGE']
+  require 'simplecov'
+
+  SimpleCov.start do
+    add_group 'Core' do |file|
+      file.filename =~ /lib\/biosphere.rb/ ||
+        file.filename =~ /lib\/biosphere\/[^\/]*.rb/
+    end
+
+    add_group 'Actions', 'lib/biosphere/actions'
+    add_group 'Resources', 'lib/biosphere/resources'
+    add_group 'Managers', 'lib/biosphere/managers'
+    add_group 'Tools', 'lib/biosphere/tools'
+    add_group 'Extensions', 'lib/biosphere/extensions'
+    add_group 'Vendor', 'lib/biosphere/vendor'
+
+    add_filter 'spec'
+  end
+end
+
 require 'biosphere/log'
 require 'biosphere/paths'
 require 'biosphere/runtime'

@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'biosphere/resources/sphere/config'
 
-describe Biosphere::Resources::Sphere::Config do
+RSpec.describe Biosphere::Resources::Sphere::Config do
 
   let(:config) { Biosphere::Resources::Sphere::Config.new('/dev/null') }
 

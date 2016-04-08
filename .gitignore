@@ -5,6 +5,7 @@
 /vendor/*
 /core/doc
 /core/tmp
+/core/coverage
 
 !/augmentations/.gitkeep
 !/spheres/.gitkeep

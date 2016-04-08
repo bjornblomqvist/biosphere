@@ -12,8 +12,8 @@ module Biosphere
     class Chef < Default
 
       def perform
-        Log.debug "Manager #{name.bold} will now update Sphere #{sphere.name.bold}..."
-        Log.info "Updating Sphere #{sphere.name.bold}..."
+        Log.debug { "Manager #{name.bold} will now update Sphere #{sphere.name.bold}..." }
+        Log.info { "Updating Sphere #{sphere.name.bold}..." }
         ensure_chef &&
         ensure_knife_config &&
         run_chef

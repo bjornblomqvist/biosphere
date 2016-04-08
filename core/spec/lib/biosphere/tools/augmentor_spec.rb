@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'tempfile'
 require 'biosphere/tools/augmentor'
 
-describe Biosphere::Tools::Augmentor do
+RSpec.describe Biosphere::Tools::Augmentor do
 
   let(:file)        { Tempfile.new('target') }
   let(:path)        { Pathname.new(file.path) }

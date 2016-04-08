@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'biosphere/actions/version'
 
-describe Biosphere::Actions::Version do
+RSpec.describe Biosphere::Actions::Version do
 
   let(:major)   { 0 }
   let(:minor)   { 9 }

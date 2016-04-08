@@ -1,5 +1,4 @@
-#!/usr/bin/ruby -W0
-# -*- encoding: utf-8 -*-
+#!/usr/bin/ruby
 
 $: << File.expand_path('../../lib', __FILE__)
 require 'biosphere'
@@ -9,19 +8,19 @@ Paths.biosphere_home = ENV['BIOSPHERE_HOME'] || File.expand_path('../../..', __F
 
 if Runtime.privileged?
   Log.error 'I refuse to run with superuser privileges.'.red
-  exit 99
+  exit Errors::SuperuserManiacError.new.code
 end
 
 begin
-  Action.perform Runtime.arguments.dup
+  Action.new(Runtime.arguments.dup).call
 
 rescue Interrupt => exception
   Log.separator
-  Log.info 'User interrupted...'.red
+  Log.error { 'User interrupted...'.red }
   Log.separator
   exit Errors::InterruptError.new.code
 
 rescue Errors::Error => exception
-  Log.debug "Exiting with status #{exception.code} defined by Error #{exception.class}"
+  Log.error { "Exiting with status #{exception.code} defined by Error #{exception.class}" }
   exit exception.code
 end

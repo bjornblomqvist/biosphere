@@ -1,5 +1,8 @@
 $LOAD_PATH << File.expand_path('../lib', File.dirname(__FILE__))
-require 'biosphere'
+
+require 'biosphere/log'
+require 'biosphere/paths'
+require 'biosphere/runtime'
 
 RSpec.configure do |config|
 
@@ -9,6 +12,7 @@ RSpec.configure do |config|
   config.order = :random
 
   config.before do
+    Biosphere::Runtime.env = :test
     Biosphere::Paths.biosphere_home = '/dev/null/biosphere'
   end
 

@@ -75,4 +75,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Activate
+Biosphere::Actions.register Biosphere::Actions::Activate

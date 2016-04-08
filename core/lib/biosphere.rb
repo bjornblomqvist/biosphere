@@ -1,12 +1,13 @@
 # General
 require 'biosphere/augmentations'
-require 'biosphere/error'
+require 'biosphere/errors'
 require 'biosphere/logger'
 require 'biosphere/log'
 require 'biosphere/paths'
 require 'biosphere/runtime'
 
 # Actions
+require 'biosphere/actions'
 require 'biosphere/actions/activate'
 require 'biosphere/actions/deactivate'
 require 'biosphere/actions/implode'
@@ -21,6 +22,3 @@ require 'biosphere/actions/help'
 require 'biosphere/managers/chefserver'
 require 'biosphere/managers/chefsolo'
 require 'biosphere/managers/manual'
-
-# Just making sure
-Biosphere::Errors.validate!

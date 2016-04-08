@@ -13,7 +13,7 @@ class ErrorSpecErrorThree < Biosphere::Errors::Error
   def code() 777 end
 end
 
-describe Biosphere::Errors::Error do
+RSpec.describe Biosphere::Errors::Error do
 
   context 'no conflicting error code definitions' do
     describe '.valid?' do

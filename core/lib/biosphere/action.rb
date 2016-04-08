@@ -1,27 +1,38 @@
-require 'biosphere/container'
 require 'biosphere/log'
+require 'biosphere/errors'
 
 module Biosphere
-  module Action
-    extend Container
+  class Action
 
-    def self.perform(args = [])
-      name = args.shift || 'help'
-      perform! name, args
+    def initialize(args = [])
+      @name = args.shift || 'help'
+      @arguments = args
+    end
+
+    def call
+      action ? load : cancel
     end
 
     private
 
-    def self.perform!(name, args)
-      if action = find(name)
-        Log.debug "Loading action #{name.inspect} with arguments: #{args.join(' ')}"
-        action.new(args).perform
-      else
-        Log.separator
-        Log.error "  Unknown action: #{name}".red
-        Log.error "  Try ".cyan + "bio help".bold
-        Log.separator
-      end
+    attr_reader :name, :arguments
+
+    def load
+      Log.debug { "Loading action #{name.inspect} with arguments: #{arguments.join(' ').inspect}" }
+      action.new(arguments).call
+    end
+
+    def cancel
+      Log.separator
+      Log.error { "  Unknown action: #{name}".red }
+      Log.error { '  Try '.cyan + 'bio help'.bold }
+      Log.separator
+
+      raise Errors::UnknownActionError
+    end
+
+    def action
+      @action ||= Actions.find(name)
     end
 
   end

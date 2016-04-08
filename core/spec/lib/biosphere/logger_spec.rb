@@ -48,6 +48,25 @@ RSpec.describe Biosphere::Logger do
     end
   end
 
+  describe '.warn' do
+    context 'normal mode' do
+      it 'outputs a raw message' do
+        logger = described_class.new
+        expect(logger).to receive(:output).with 'Could be dangerous'
+        logger.warn { 'Could be dangerous' }
+      end
+    end
+
+    context 'debug mode' do
+      it 'outputs a message with level prefix' do
+        allow(Biosphere::Runtime).to receive(:debug_mode?).and_return true
+        logger = described_class.new
+        expect(logger).to receive(:output).with 'WARN : '.yellow + 'Could be dangerous'
+        logger.warn { 'Could be dangerous' }
+      end
+    end
+  end
+
   describe '.error' do
     context 'normal mode' do
       it 'outputs a raw message' do

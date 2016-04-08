@@ -44,4 +44,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Manager
+Biosphere::Actions.register Biosphere::Actions::Manager

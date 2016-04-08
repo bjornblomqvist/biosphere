@@ -1,3 +1,5 @@
+require 'biosphere/log'
+
 module Biosphere
   module Container
     extend self
@@ -6,7 +8,7 @@ module Biosphere
 
     def register(object)
       object_name = object_to_name(object)
-      Log.debug { "Registering #{self} #{object_name.inspect}..." }
+      Log.debug { "Registering #{object_to_name(self)} #{object_name.inspect}..." }
       store[object_name] = object
     end
 
@@ -25,7 +27,8 @@ module Biosphere
     end
 
     def object_to_name(object)
-      object.name.underscore.split('/').last
+      name = object.name || 'Anonymous Class'
+      name.underscore.split('/').last
     end
 
     # Useful for testing

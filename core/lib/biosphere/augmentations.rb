@@ -1,5 +1,5 @@
 require 'biosphere/resources/file'
-require 'biosphere/error'
+require 'biosphere/errors'
 require 'pathname'
 
 module Biosphere

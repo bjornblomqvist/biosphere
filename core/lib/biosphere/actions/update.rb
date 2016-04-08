@@ -101,4 +101,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Update
+Biosphere::Actions.register Biosphere::Actions::Update

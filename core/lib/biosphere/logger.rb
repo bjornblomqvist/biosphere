@@ -5,12 +5,17 @@ module Biosphere
   class Logger
 
     def debug(&block)
+      # puts block.call
       return unless Runtime.debug_mode?
       say :debug, &block
     end
 
     def info(&block)
       say :info, &block
+    end
+
+    def warn(&block)
+      say :warn, &block
     end
 
     def error(&block)
@@ -39,11 +44,13 @@ module Biosphere
       case level
       when :debug then 'DEBUG: '.blue
       when :info  then 'INFO : '
+      when :warn  then 'WARN : '.yellow
       when :error then 'ERROR: '.red
       end
     end
 
     def output(message = nil)
+      return if Runtime.env.test?
       puts message
     end
 

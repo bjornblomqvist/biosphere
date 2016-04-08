@@ -45,4 +45,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Implode
+Biosphere::Actions.register Biosphere::Actions::Implode

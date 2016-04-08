@@ -37,4 +37,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Deactivate
+Biosphere::Actions.register Biosphere::Actions::Deactivate

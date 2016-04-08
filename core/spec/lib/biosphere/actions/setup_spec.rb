@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'biosphere/error'
+require 'biosphere/errors'
 require 'biosphere/actions/setup'
 require 'biosphere/resources/file'
 

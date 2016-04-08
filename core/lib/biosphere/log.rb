@@ -1,3 +1,5 @@
+require 'biosphere/logger'
+
 module Biosphere
   module Log
 
@@ -9,15 +11,22 @@ module Biosphere
       logger.info(&block)
     end
 
+    def self.warn(&block)
+      logger.warn(&block)
+    end
+
     def self.error(&block)
       logger.error(&block)
     end
 
-    private
+    def self.separator
+      logger.separator
+    end
 
     def self.logger
       @logger ||= Logger.new
     end
+    private_class_method :logger
 
   end
 end

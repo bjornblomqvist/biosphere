@@ -1,4 +1,4 @@
-require 'biosphere/error'
+require 'biosphere/errors'
 require 'biosphere/log'
 require 'biosphere/manager'
 require 'biosphere/paths'

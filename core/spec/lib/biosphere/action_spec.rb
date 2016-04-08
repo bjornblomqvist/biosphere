@@ -1,35 +1,41 @@
 require 'spec_helper'
 require 'biosphere/action'
+require 'biosphere/actions/help'
+require 'biosphere/actions/version'
 
-describe Biosphere::Action do
-  let(:arguments)    { %w{ my_action ready set --go } }
-  let(:logger)       { Biosphere::Log }
-  let(:action)       { double(:action) }
-  let(:action_class) { double(:action_class, :name => 'Biosphere::Actions::MyAction') }
+RSpec.describe Biosphere::Action do
 
-  let(:dispatcher) { Biosphere::Action }
+  describe '.call' do
 
-  describe '.perform' do
-    context 'there is no action' do
-      it 'logs an error but does not raise anything' do
-        allow(logger).to receive(:error)
-        dispatcher.perform arguments
+    context 'no action specified' do
+      it 'loads the help and does not raise any errors' do
+        instance = described_class.new
+        expect(instance.send(:action)).to eq Biosphere::Actions::Help
+        instance.call
+      end
+
+      it 'instantiates the help class with the correct arguments' do
+        instance = described_class.new
+        action_instance = Biosphere::Actions::Help.new([])
+        expect(Biosphere::Actions::Help).to receive(:new).with([]).and_return action_instance
+        expect(action_instance).to receive(:call)
+        instance.call
       end
     end
 
-    context 'the action is registered' do
-      before do
-        dispatcher.register action_class
+    context 'just the action name provided' do
+      it 'loads that action' do
+        instance = described_class.new ['version']
+        expect(instance.send(:action)).to eq Biosphere::Actions::Version
+        instance.call
       end
+    end
 
-      after do
-        dispatcher.send :unregister, action_class
-      end
-
-      it 'executes the action with parameters relevant for the action' do
-        expect(action_class).to receive(:new).with(%w{ ready set --go }).and_return action
-        expect(action).to receive(:perform)
-        dispatcher.perform arguments
+    context 'the action name is unknown' do
+      it 'raises an Error' do
+        instance = described_class.new ['definitely_not_this']
+        expect(instance.send(:action)).to be_nil
+        expect { instance.call }.to raise_error Biosphere::Errors::UnknownActionError
       end
     end
   end

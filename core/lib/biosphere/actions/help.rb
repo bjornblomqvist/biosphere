@@ -1,8 +1,8 @@
 require 'optparse'
-require 'biosphere/error'
+require 'biosphere/errors'
 require 'biosphere/extensions/ostruct'
 require 'biosphere/extensions/json'
-require 'biosphere/action'
+require 'biosphere/actions'
 require 'biosphere/version'
 
 module Biosphere
@@ -15,17 +15,18 @@ module Biosphere
         @args = args
       end
 
-      def perform
-        return help if Runtime.help_mode?
+      def call
+        return help #if Runtime.help_mode?
 
-        Log.info "Biosphere Version #{VERSION} Help"
+        #Log.info { "Biosphere Version #{VERSION}" }
       end
 
       private
 
       def help
         Log.separator
-        Log.error 'Do you need help for... the help command?'
+        Log.info { 'Overview...' }
+       # Log.error { 'Do you need help for... the help command?' }
         Log.separator
       end
 
@@ -42,4 +43,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Help
+Biosphere::Actions.register Biosphere::Actions::Help

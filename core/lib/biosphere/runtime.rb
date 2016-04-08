@@ -1,6 +1,16 @@
+require 'biosphere/vendor/string_inquirer'
+
 module Biosphere
   module Runtime
     extend self
+
+    def env=(environment)
+      @env = environment
+    end
+
+    def env
+      StringInquirer.new(@env.to_s || 'production')
+    end
 
     def privileged?
       Process.uid == 0
@@ -9,16 +19,6 @@ module Biosphere
     def debug_mode?
       load unless loaded?
       @debug_mode
-    end
-
-    def silent_mode?
-      load unless loaded?
-      @silent_mode
-    end
-
-    def batch_mode?
-      load unless loaded?
-      @batch_mode
     end
 
     def help_mode?
@@ -36,8 +36,6 @@ module Biosphere
     def load
       @arguments = ARGV.dup
       @debug_mode  = !!@arguments.delete('--debug')
-      @silent_mode = !!@arguments.delete('--silent')
-      @batch_mode  = !!@arguments.delete('--batch')
       @help_mode   = !!@arguments.delete('--help')
       @arguments.freeze
     end

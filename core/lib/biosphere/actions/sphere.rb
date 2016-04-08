@@ -142,4 +142,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Sphere
+Biosphere::Actions.register Biosphere::Actions::Sphere

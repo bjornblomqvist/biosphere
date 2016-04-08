@@ -148,4 +148,4 @@ module Biosphere
   end
 end
 
-Biosphere::Action.register Biosphere::Actions::Setup
+Biosphere::Actions.register Biosphere::Actions::Setup

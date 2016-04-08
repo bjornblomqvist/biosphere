@@ -3,12 +3,12 @@ require 'biosphere/vendor/string_inquirer'
 module Biosphere
   module Runtime
 
-    def self.env=(environment)
-      @env = environment
-    end
-
     def self.env
       StringInquirer.new(@env.to_s || 'production')
+    end
+
+    def self.env=(environment)
+      @env = environment
     end
 
     def self.privileged?
@@ -16,44 +16,24 @@ module Biosphere
     end
 
     def self.debug_mode?
-      load unless loaded?
-      @debug_mode
+      command_line_arguments.delete '--debug'
     end
 
     def self.help_mode?
-      load unless loaded?
-      @help_mode
+      command_line_arguments.delete '--help'
     end
 
     def self.version_mode?
-      load unless loaded?
-      @version_mode
+      command_line_arguments.delete('--version') || command_line_arguments.delete('-v')
     end
 
     def self.arguments
-      load unless loaded?
-      @arguments
+      command_line_arguments - %w(--debug --help --version -v)
     end
 
-    def self.load
-      @arguments = ARGV.dup
-      @debug_mode   = @arguments.delete('--debug')   ? true : false
-      @help_mode    = @arguments.delete('--help')    ? true : false
-      @version_mode = @arguments.delete('--version') || @arguments.delete('-v') ? true : false
-      @arguments.freeze
+    def self.command_line_arguments
+      ARGV.dup
     end
-    private_class_method :load
-
-    def self.loaded?
-      @arguments
-    end
-    private_class_method :loaded?
-
-    # Useful for testing
-    def self.reset!
-      @arguments = nil
-    end
-    private_class_method :reset!
 
   end
 end

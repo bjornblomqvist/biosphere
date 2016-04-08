@@ -17,8 +17,4 @@ RSpec.configure do |config|
     Biosphere::Paths.biosphere_home = '/dev/null/biosphere'
   end
 
-  config.after do
-    Biosphere::Runtime.send :reset!
-  end
-
 end

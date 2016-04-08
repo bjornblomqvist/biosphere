@@ -31,6 +31,24 @@ RSpec.describe Biosphere::Action do
       end
     end
 
+    context 'minimal version flag provided' do
+      it 'loads the version action' do
+        allow(Biosphere::Runtime).to receive(:command_line_arguments).and_return ['-v']
+        instance = described_class.new ['anything']
+        expect(instance.send(:action)).to eq Biosphere::Actions::Version
+        instance.call
+      end
+    end
+
+    context 'version flag provided' do
+      it 'loads the version action' do
+        allow(Biosphere::Runtime).to receive(:command_line_arguments).and_return ['--version']
+        instance = described_class.new ['anything']
+        expect(instance.send(:action)).to eq Biosphere::Actions::Version
+        instance.call
+      end
+    end
+
     context 'the action name is unknown' do
       it 'raises an Error' do
         instance = described_class.new ['definitely_not_this']

@@ -24,6 +24,8 @@ require 'biosphere/log'
 require 'biosphere/paths'
 require 'biosphere/runtime'
 
+Dir[File.expand_path('../spec/support/**/*.rb', File.dirname(__FILE__))].each { |f| require f }
+
 RSpec.configure do |config|
 
   config.disable_monkey_patching!

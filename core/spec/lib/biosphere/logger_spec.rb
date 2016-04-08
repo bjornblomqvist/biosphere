@@ -96,4 +96,15 @@ RSpec.describe Biosphere::Logger do
     end
   end
 
+  describe '.output' do
+    context 'in production' do
+      it 'simply puts the string' do
+        Biosphere::Runtime.env = :production
+        logger = described_class.new
+        expect(logger).to receive(:puts).with('Show me')
+        logger.send(:output, 'Show me')
+      end
+    end
+  end
+
 end

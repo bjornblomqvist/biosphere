@@ -1,13 +1,8 @@
-require 'biosphere/log'
+require 'biosphere/errors'
 
-class ErrorCodeAnalyizer
-  extend self
+class ErrorCodeAnalyzer
 
-  class ErrorCodesAssignmentError < Error
-    def code() 255 end
-  end
-
-  def validate!
+  def self.validate!
     return if valid?
     duplicate_codes = codes.select { |code| codes.rindex(code) != codes.index(code) }
     conflicting_instances = instances.select { |instance| duplicate_codes.include?(instance.code) }
@@ -15,23 +10,23 @@ class ErrorCodeAnalyizer
     raise ErrorCodesAssignmentError.new, "There are multiple Error Classes with the same error codes: #{conflicts.join(', ')}"
   end
 
-  def valid?
+  def self.valid?
     codes.size == codes.uniq.size
   end
 
   private
 
-  def codes
+  def self.codes
     instances.map &:code
   end
 
-  def instances
+  def self.instances
     names.map do |name|
       const_get(name).new
     end
   end
 
-  def names
+  def self.names
     constants - %w{ Error }
   end
 

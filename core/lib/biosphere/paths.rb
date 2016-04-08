@@ -4,89 +4,67 @@ require 'biosphere/extensions/pathname'
 
 module Biosphere
   module Paths
-    extend self
-
-    BiosphereHomeNotSetError = Class.new(Errors::Error)
 
     # ––––––––
     # Settings
     # ––––––––
 
-    def biosphere_home=(path)
+    def self.biosphere_home=(path)
       @biosphere_home = path
     end
 
-    def biosphere_home
-      raise BiosphereHomeNotSetError unless @biosphere_home
+    def self.biosphere_home
+      raise Errors::BiosphereHomeNotSetError unless @biosphere_home
       Pathname.new @biosphere_home
     end
 
-    # –––––––––––––
-    # Derived Paths
-    # –––––––––––––
+    # –––––––––––––––
+    # Biosphere Paths
+    # –––––––––––––––
 
-    def augmentations
+    def self.augmentations
       biosphere_home.join 'augmentations'
     end
-    
-    def shell_augmentation
+
+    def self.shell_augmentation
       augmentations.join 'shell'
     end
 
-    def spheres
+    def self.ssh_config_augmentation
+      augmentations.join 'ssh_config'
+    end
+
+    def self.spheres
       biosphere_home.join 'spheres'
     end
 
-    def core
-      biosphere_home.join 'core'
+    def self.core_bin
+      biosphere_home.join 'core/bin'
     end
 
-    def vendor
-      biosphere_home.join 'vendor'
+    def self.vendor_gems
+      biosphere_home.join "vendor/gems/#{RUBY_VERSION}"
     end
 
-    def core_lib
-      core.join 'lib'
-    end
+    # ––––––––––––
+    # System Paths
+    # ––––––––––––
 
-    def core_bin
-      core.join 'bin'
-    end
-
-    def vendor_gems
-      vendor.join "gems/#{RUBY_VERSION}"
-    end
-
-    # –––––––––––––––––––
-    # Static System Paths
-    # –––––––––––––––––––
-
-    def bash_profile
+    def self.bash_profile
       Pathname.home_path.join('.bash_profile')
     end
 
-    def zshenv
+    def self.zshenv
       Pathname.home_path.join('.zshenv')
     end
 
-    def ruby_executable
-      # return unless ruby_path
-      ruby_path.join '/usr/bin/ruby'
+    def self.ruby_executable
+      Pathname.new '/usr/bin/ruby'
     end
 
-    def gem_executable
-      # return unless ruby_path
-      ruby_path.join '/usr/bin/gem'
+    def self.gem_executable
+      Pathname.new '/usr/bin/gem'
     end
-
-    private
-
-    #def ruby_path
-    #  %w{ 2.1 2.0 }.each do |version|
-    #    path = Pathname.new "/System/Library/Frameworks/Ruby.framework/Versions/#{version}"
-    #    return path if path.exist?
-    #  end
-    #end
 
   end
 end

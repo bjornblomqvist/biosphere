@@ -1,5 +1,4 @@
 require 'ostruct'
-require 'biosphere/extensions/json'
 require 'biosphere/extensions/hash'
 
 module Biosphere
@@ -16,10 +15,6 @@ module Biosphere
 
       def to_h
         @table.deep_stringify_keys.dup
-      end
-
-      def to_json
-        to_h.to_json
       end
 
     end

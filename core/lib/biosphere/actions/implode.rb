@@ -10,6 +10,7 @@ module Biosphere
 
       def perform
         return help if Runtime.help_mode?
+
         Log.separator
         deactivate_all
         implode
@@ -37,8 +38,7 @@ module Biosphere
       end
 
       def implode_bash_profile
-        Action.perform %w{ setup --implode-bash-profile }
-        Action.perform %w{ setup --implode-zshenv }
+        # TODO
       end
 
     end

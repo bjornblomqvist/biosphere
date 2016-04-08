@@ -3,7 +3,6 @@ require 'biosphere/action'
 require 'biosphere/log'
 require 'biosphere/extensions/option_parser'
 require 'biosphere/extensions/ostruct'
-require 'biosphere/extensions/json'
 require 'biosphere/runtime'
 require 'biosphere/resources/sphere'
 
@@ -28,7 +27,7 @@ module Biosphere
         @args = args
       end
 
-      def perform
+      def call
         return help if Runtime.help_mode?
         case subcommand
         when 'create'    then create
@@ -60,7 +59,6 @@ module Biosphere
 
       def list
         Log.separator
-        Log.batch Resources::Sphere.all.sort.map(&:as_json).to_json
         Resources::Sphere.all.sort.reverse.each do |sphere|
           name = sphere.name.ljust(15)
           name = name.bold if sphere.activated?
@@ -75,9 +73,7 @@ module Biosphere
         Log.info "#{name} - #{key} - #{new_value}"
         if new_value
           sphere.set_config_value(key, new_value)
-          Log.batch({ :status => 'saved', :value => sphere.config_value(key) }.as_json.to_json)
         elsif value = sphere.config_value(key)
-          Log.batch({ :status => 'found', :value => value }.as_json.to_json)
           Log.info value.inspect
         else
           message = "Key #{key.inspect} not found."
@@ -88,7 +84,6 @@ module Biosphere
 
       def show
         sphere = find_sphere!
-        Log.batch sphere.as_json.to_json
       end
 
       def create
@@ -100,8 +95,6 @@ module Biosphere
         name = parameters.first
         if options.remove_config
           Resources::Sphere.new(name).configure
-        else
-          Resources::Sphere.new(name).configure :from_json => options.from_json
         end
       end
 
@@ -124,10 +117,6 @@ module Biosphere
         @options ||= begin
           result = {}
           OptionParser.new do |parser|
-
-            parser.on("--from-json JSON") do |value|
-              result[:from_json] = value
-            end
 
             parser.on("--remove-config") do |value|
               result[:remove_config] = value

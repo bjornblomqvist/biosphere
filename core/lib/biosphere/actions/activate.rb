@@ -1,4 +1,4 @@
-require 'biosphere/action'
+require 'biosphere/actions'
 require 'biosphere/resources/sphere'
 require 'biosphere/augmentations'
 
@@ -10,7 +10,7 @@ module Biosphere
         @args = args
       end
 
-      def perform
+      def call
         return help if Runtime.help_mode?
         activate
         augment

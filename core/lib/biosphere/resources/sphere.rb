@@ -2,7 +2,6 @@ require 'biosphere/errors'
 require 'biosphere/log'
 require 'biosphere/manager'
 require 'biosphere/paths'
-require 'biosphere/extensions/json'
 require 'biosphere/resources/sphere/activatable'
 require 'biosphere/resources/sphere/augmentable'
 require 'biosphere/resources/sphere/configurable'
@@ -12,7 +11,6 @@ require 'biosphere/resources/file'
 require 'biosphere/extensions/ostruct'
 require 'biosphere/extensions/string'
 require 'biosphere/extensions/hash'
-require 'biosphere/extensions/json'
 require 'pathname'
 require 'yaml'
 
@@ -71,10 +69,6 @@ module Biosphere
 
       def path
         Paths.spheres.join(name)
-      end
-
-      def as_json
-        { :identifier => name, :manager => manager.as_json, :activated => activated?, :activation_order => activation_order }
       end
 
       def <=>(other)

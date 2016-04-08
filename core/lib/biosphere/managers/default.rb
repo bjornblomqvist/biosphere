@@ -25,10 +25,6 @@ module Biosphere
         ''
       end
 
-      def as_json
-        { :identifier => identifier, :description => description, :name => name, :config => config.as_json }
-      end
-
       private
 
       def default_env_vars

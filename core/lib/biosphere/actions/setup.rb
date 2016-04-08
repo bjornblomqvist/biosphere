@@ -99,9 +99,10 @@ module Biosphere
       def warn_about_conflicting_bash_profiles
         return unless Pathname.home_path.join('.bash_profile').exist?
         return unless Pathname.home_path.join('.profile').exist?
-        Log.warn { "  Biosphere detected ~/.profile".red }
-        Log.warn { "  ~/.bash_profile takes precedence over ~/.profile".red }
-        Log.warn { "  If your ~/.profile has any content it will have no impact".red }
+
+        Log.warn { "  Biosphere detected ~/.profile".yellow }
+        Log.warn { "  ~/.bash_profile takes precedence over ~/.profile".yellow }
+        Log.warn { "  If your ~/.profile has any content it will have no impact".yellow }
       end
 
     end

@@ -36,7 +36,6 @@ module Biosphere
           Log.info "   #{instance}"
           instance
         end
-        Log.batch instances.map!(&:as_json).as_json.to_json
         Log.separator
       end
 

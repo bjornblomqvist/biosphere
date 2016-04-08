@@ -1,7 +1,6 @@
 require 'optparse'
 require 'biosphere/errors'
 require 'biosphere/extensions/ostruct'
-require 'biosphere/extensions/json'
 require 'biosphere/actions'
 require 'biosphere/version'
 

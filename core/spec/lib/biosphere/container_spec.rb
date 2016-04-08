@@ -1,22 +1,24 @@
 require 'spec_helper'
-require 'biosphere/container'
+require 'uri'
 
-describe Biosphere::Container do
-  let(:container) { Biosphere::Container }
-  let(:object) { double(:object, :name => 'Im::Some::Bird') }
+RSpec.describe Biosphere::Container do
 
-  after do
-    container.send :reset!
+  describe '.register' do
+    context 'a Class' do
+      it 'registers the Class without namespace' do
+        klass = Class.new { extend Biosphere::Container }
+        klass.register URI::FTP
+        expect(klass.find(:ftp)).to eq URI::FTP
+      end
+    end
   end
 
-  describe '.find' do
-    it 'finds a registered object' do
-      container.register object
-      expect(container.find('bird')).to be object
-    end
-
-    it 'is nil if the object was never registered' do
-      expect(container.find(:bird)).to be_nil
+  describe '.all' do
+    context 'no registrations' do
+      it 'is an empty Array' do
+        klass = Class.new { extend Biosphere::Container }
+        expect(klass.all).to eq []
+      end
     end
   end
 

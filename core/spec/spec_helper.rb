@@ -1,8 +1,5 @@
-$: << File.expand_path('../lib', File.dirname(__FILE__))
-
-require 'biosphere/log'
-require 'biosphere/paths'
-require 'biosphere/runtime'
+$LOAD_PATH << File.expand_path('../lib', File.dirname(__FILE__))
+require 'biosphere'
 
 RSpec.configure do |config|
 

@@ -38,6 +38,14 @@ RSpec.describe Biosphere::Logger do
         logger.info { 'Just for your info' }
       end
     end
+
+    context 'nil as message' do
+      it 'outputs an empty message with level prefix' do
+        logger = described_class.new
+        expect(logger).to receive(:output).with nil
+        logger.info { }
+      end
+    end
   end
 
   describe '.error' do

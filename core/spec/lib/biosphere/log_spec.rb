@@ -3,8 +3,56 @@ require 'spec_helper'
 RSpec.describe Biosphere::Log do
 
   describe '.debug' do
-    it 'does something' do
-      described_class.debug { 'Wow' }
+    context 'message as string' do
+      it 'demands a block' do
+        expect { described_class.debug('My Message') }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'message as block' do
+      it 'delegates to the logger' do
+        expect(described_class.send(:logger)).to receive(:debug) do |*args, &block|
+          expect(args).to be_empty
+          expect(block.call).to eq 'Hello World'
+        end
+        described_class.debug { 'Hello World' }
+      end
+    end
+  end
+
+  describe '.info' do
+    context 'message as string' do
+      it 'demands a block' do
+        expect { described_class.info('My Message') }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'message as block' do
+      it 'delegates to the logger' do
+        expect(described_class.send(:logger)).to receive(:info) do |*args, &block|
+          expect(args).to be_empty
+          expect(block.call).to eq 'Hello World'
+        end
+        described_class.info { 'Hello World' }
+      end
+    end
+  end
+
+  describe '.error' do
+    context 'message as string' do
+      it 'demands a block' do
+        expect { described_class.error('My Message') }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'message as block' do
+      it 'delegates to the logger' do
+        expect(described_class.send(:logger)).to receive(:error) do |*args, &block|
+          expect(args).to be_empty
+          expect(block.call).to eq 'Hello World'
+        end
+        described_class.error { 'Hello World' }
+      end
     end
   end
 

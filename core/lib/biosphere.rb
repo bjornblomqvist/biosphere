@@ -1,7 +1,9 @@
 # General
 require 'biosphere/augmentations'
 require 'biosphere/error'
+require 'biosphere/logger'
 require 'biosphere/log'
+require 'biosphere/paths'
 require 'biosphere/runtime'
 
 # Actions

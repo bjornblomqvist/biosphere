@@ -1,5 +1,3 @@
-require 'biosphere/logger'
-
 module Biosphere
   module Log
 
@@ -11,16 +9,8 @@ module Biosphere
       logger.info(&block)
     end
 
-    def self.warn(&block)
-      logger.warn(&block)
-    end
-
     def self.error(&block)
       logger.error(&block)
-    end
-
-    def self.fatal(&block)
-      logger.fatal(&block)
     end
 
     private

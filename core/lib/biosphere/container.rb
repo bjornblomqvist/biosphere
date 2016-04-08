@@ -1,7 +1,3 @@
-require 'biosphere/extensions/string'
-require 'biosphere/log'
-require 'singleton'
-
 module Biosphere
   module Container
     extend self
@@ -10,16 +6,12 @@ module Biosphere
 
     def register(object)
       object_name = object_to_name(object)
-      Log.debug "Registering #{self} #{object_name.inspect}..."
+      Log.debug { "Registering #{self} #{object_name.inspect}..." }
       store[object_name] = object
     end
 
     def find(name)
       store[name.to_s]
-    end
-
-    def object_to_name(object)
-      object.name.underscore.split('/').last
     end
 
     def all
@@ -32,9 +24,8 @@ module Biosphere
       @store ||= {}
     end
 
-    # Useful for testing
-    def unregister(object)
-      store.delete object_to_name(object)
+    def object_to_name(object)
+      object.name.underscore.split('/').last
     end
 
     # Useful for testing

@@ -21,6 +21,6 @@ rescue Interrupt => exception
   exit Errors::InterruptError.new.code
 
 rescue Errors::Error => exception
-  Log.error { "Exiting with status #{exception.code} defined by Error #{exception.class}" }
+  Log.debug { "Exiting with status #{exception.code} defined by Error #{exception.class}" }
   exit exception.code
 end

@@ -6,6 +6,7 @@ module Biosphere
 
     def initialize(args = [])
       @name = args.shift || 'help'
+      @name = 'version' if Runtime.version_mode?
       @arguments = args
     end
 
@@ -25,7 +26,7 @@ module Biosphere
     def cancel
       Log.separator
       Log.error { "  Unknown action: #{name}".red }
-      Log.error { '  Try '.cyan + 'bio help'.bold }
+      Log.error { '  Try '.cyan + 'bio --help'.bold }
       Log.separator
 
       raise Errors::UnknownActionError

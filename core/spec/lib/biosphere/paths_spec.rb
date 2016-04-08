@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'biosphere/paths'
 
-describe Biosphere::Paths do
+RSpec.describe Biosphere::Paths do
   let(:paths) { Biosphere::Paths }
 
   it 'returns the correct path' do

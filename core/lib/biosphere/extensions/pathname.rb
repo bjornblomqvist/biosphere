@@ -7,21 +7,21 @@ module Biosphere
 
       module ClassMethods
         def home_path
-          new home_env
+          new(@home_path || ENV['HOME'])
         end
 
-        def home_env
-          ENV['HOME']
+        def home_path=(path)
+          @home_path = path
         end
       end
 
       def unexpand_path
-        return self unless self.to_s =~ /^#{self.class.home_path}/
-        self.class.new('~').join relative_path_from(self.class.home_path)
+        return self unless to_s =~ /^#{self.class.home_path}/
+        self.class.new('$HOME').join relative_path_from(self.class.home_path)
       end
 
       def augment(content = nil)
-        Tools::Augmentor.new(:file => self, :content => content).perform
+        Tools::Augmentor.new(file: self, content: content).perform
       end
 
     end

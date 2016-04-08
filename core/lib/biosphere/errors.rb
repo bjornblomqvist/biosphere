@@ -31,5 +31,12 @@ module Biosphere
       end
     end
 
+    # Bio setup was unable to write to .bash_profile or .zshenv
+    class CouldNotAugmentProfile < Error
+      def code
+        60
+      end
+    end
+
   end
 end

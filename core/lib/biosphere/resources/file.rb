@@ -25,12 +25,12 @@ module Biosphere
       private
 
       def create!
-        Log.debug "Creating file #{path}"
+        Log.debug { "Creating file #{path}" }
         path.open('a')
       end
 
       def delete!
-        Log.debug "Deleting file #{path}"
+        Log.debug { "Deleting file #{path}" }
         path.delete
       end
 

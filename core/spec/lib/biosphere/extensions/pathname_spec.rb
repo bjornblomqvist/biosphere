@@ -1,15 +1,11 @@
 require 'spec_helper'
 require 'biosphere/extensions/pathname'
 
-describe Biosphere::Extensions::PathnameExtensions do
-
-  before do
-    allow(Pathname).to receive(:home_env).and_return '/Users/bob'
-  end
+RSpec.describe Biosphere::Extensions::PathnameExtensions do
 
   describe '.home_path' do
     it 'is the home path' do
-      expect(Pathname.home_path.to_s).to eq('/Users/bob')
+      expect(Pathname.home_path.to_s).to eq('/dev/null/home')
     end
   end
 
@@ -25,11 +21,11 @@ describe Biosphere::Extensions::PathnameExtensions do
   end
 
   context 'under the home directory' do
-    let(:pathname) { Pathname.new('/Users/bob/some/pathname') }
-
     describe '#unexpand_path' do
-      it 'replaces the home path with tilde' do
-        expect(pathname.unexpand_path.to_s).to eq('~/some/pathname')
+      it 'replaces the home path with the ENV variable' do
+        ::Pathname.home_path = '/Users/bob'
+        path = Pathname.new('/Users/bob/some/pathname')
+        expect(path.unexpand_path.to_s).to eq('$HOME/some/pathname')
       end
     end
   end

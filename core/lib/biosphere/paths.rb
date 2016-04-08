@@ -1,10 +1,12 @@
 require 'pathname'
+require 'biosphere/errors'
+require 'biosphere/extensions/pathname'
 
 module Biosphere
   module Paths
     extend self
 
-    BiosphereHomeNotSetError = Class.new(StandardError)
+    BiosphereHomeNotSetError = Class.new(Errors::Error)
 
     # ––––––––
     # Settings
@@ -25,6 +27,10 @@ module Biosphere
 
     def augmentations
       biosphere_home.join 'augmentations'
+    end
+    
+    def shell_augmentation
+      augmentations.join 'shell'
     end
 
     def spheres
@@ -55,24 +61,32 @@ module Biosphere
     # Static System Paths
     # –––––––––––––––––––
 
+    def bash_profile
+      Pathname.home_path.join('.bash_profile')
+    end
+
+    def zshenv
+      Pathname.home_path.join('.zshenv')
+    end
+
     def ruby_executable
-      return unless ruby_path
-      ruby_path.join 'usr/bin/ruby'
+      # return unless ruby_path
+      ruby_path.join '/usr/bin/ruby'
     end
 
     def gem_executable
-      return unless ruby_path
-      ruby_path.join 'usr/bin/gem'
+      # return unless ruby_path
+      ruby_path.join '/usr/bin/gem'
     end
 
     private
 
-    def ruby_path
-      %w{ 2.1 2.0 1.9 1.8 }.each do |version|
-        path = Pathname.new "/System/Library/Frameworks/Ruby.framework/Versions/#{version}"
-        return path if path.exist?
-      end
-    end
+    #def ruby_path
+    #  %w{ 2.1 2.0 }.each do |version|
+    #    path = Pathname.new "/System/Library/Frameworks/Ruby.framework/Versions/#{version}"
+    #    return path if path.exist?
+    #  end
+    #end
 
   end
 end

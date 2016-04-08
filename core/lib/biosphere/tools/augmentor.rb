@@ -33,6 +33,10 @@ module Biosphere
         def success?
           !!@success
         end
+
+        def failure?
+          !success?
+        end
       end
 
       attr_reader :file, :content

@@ -12,6 +12,7 @@ RSpec.configure do |config|
   config.order = :random
 
   config.before do
+    Pathname.home_path = '/dev/null/home'
     Biosphere::Runtime.env = :test
     Biosphere::Paths.biosphere_home = '/dev/null/biosphere'
   end

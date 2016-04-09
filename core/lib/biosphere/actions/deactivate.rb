@@ -30,7 +30,7 @@ module Biosphere
       end
 
       def augment
-        Augmentations.perform
+        Augmentations.call
       end
 
     end

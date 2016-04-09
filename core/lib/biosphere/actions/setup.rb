@@ -8,8 +8,7 @@ module Biosphere
   module Actions
     class Setup
 
-      def initialize(args)
-        @args = args
+      def initialize(_)
       end
 
       def call
@@ -30,8 +29,6 @@ module Biosphere
         Log.info { "  bio setup".bold }
         Log.separator
         Log.info { "  Allows you to setup Biosphere fundamentals." }
-        Log.separator
-        Log.info { "  Examples:".cyan }
         Log.separator
         Log.info { "  bio setup  ".bold + "Prepares your ~/.bash_profile for Biosphere.".cyan }
         Log.separator

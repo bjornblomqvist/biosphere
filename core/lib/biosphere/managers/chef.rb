@@ -11,7 +11,7 @@ module Biosphere
   module Managers
     class Chef < Default
 
-      def perform
+      def call
         Log.debug { "Manager #{name.bold} will now update Sphere #{sphere.name.bold}..." }
         Log.info { "Updating Sphere #{sphere.name.bold}..." }
         ensure_chef &&

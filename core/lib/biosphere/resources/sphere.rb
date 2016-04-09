@@ -1,66 +1,59 @@
 require 'biosphere/errors'
+require 'biosphere/extensions/string'
 require 'biosphere/log'
-require 'biosphere/manager'
-require 'biosphere/paths'
-require 'biosphere/resources/sphere/activatable'
-require 'biosphere/resources/sphere/augmentable'
-require 'biosphere/resources/sphere/configurable'
-require 'biosphere/resources/sphere/managable'
 require 'biosphere/resources/directory'
 require 'biosphere/resources/file'
-require 'biosphere/extensions/ostruct'
-require 'biosphere/extensions/string'
-require 'biosphere/extensions/hash'
+require 'biosphere/resources/spheres/config'
+require 'biosphere/resources/spheres/name'
 require 'pathname'
-require 'yaml'
-
-module Biosphere
-  module Errors
-    class InvalidSphereName < Error
-      def code() 4 end
-    end
-  end
-end
 
 module Biosphere
   module Resources
     class Sphere
 
-      include Configurable
-      include Augmentable
-      include Activatable
-      include Managable
-
       attr_reader :name
 
       def initialize(name)
-        @name = name.to_s
+        @raw_name = name
         ensure_valid_name!
       end
 
-      def self.all
-        sphere_paths.sort.map { |sphere_path| new(sphere_path.basename) }
+      def name
+        Spheres::Name.new(raw_name).call
       end
 
-      def self.find(name_or_names)
-        if name_or_names.is_a?(Array)
-          name_or_names.map do |name|
-            find name
-          end.compact
-        else
-          all.detect { |sphere| sphere.name == name_or_names }
+      def create!
+        create_directory!
+        create_config_file!
+        self
+      end
+
+      def activated?
+        activated_file_path.exist?
+      end
+
+      def activate!
+        Resources::File.write activated_file_path
+      end
+
+      def deactivate!
+        Resources::File.delete activated_file_path
+      end
+
+      def manager
+        manager = Manager.find(manager_name)
+        unless manager
+          message = %{The sphere #{name.to_s.inspect} has defined the manager #{manager_name.inspect} in its config file (#{config_file_path}). But that manager could not be found by Biosphere::Manager.}.red
+          Log.error message
+          raise Errors::InvalidSphereName, message
         end
-      end
 
-      def create
-        ensure_path
-        ensure_config_file
-        augmentations_path
+        manager.new sphere: self, config: manager_config
       end
 
       def update
         Log.debug "Initializing update of sphere #{name}..."
-        manager.perform
+        manager.call
       end
 
       def cache_path
@@ -77,31 +70,122 @@ module Biosphere
         other.name  <=> self.name
       end
 
+      def augmentations_path
+        result = path.join('augmentations')
+        Directory.create result
+        result
+      end
+
+      def augmentation(identifier)
+        path = augmentations_path.join(identifier.to_s)
+        path.exist? ? path.read : nil
+      end
+
       private
 
-      def ensure_path
+      attr_reader :raw_name
+
+      def ensure_valid_name!
+        return if sphere.name
+        Log.error { %(The sphere name #{raw_name.to_s.inspect} is invalid. (It has to be lower-case. E.g. "my_sphere".)).red }
+        raise Errors::InvalidSphereName
+      end
+
+      def create_path!
         if path.exist?
-          Log.info "Sphere #{name.inspect} already exists at #{path}".yellow
+          Log.info { "  Sphere #{name.inspect} already exists at ".yellow + path.to_s.yellow.bold }
         else
-          Log.info "Creating new sphere #{name.inspect} at #{path}".green
+          Log.info { "  Creating new Sphere #{name.inspect} at ".green + path.to_s.green.bold }
           Resources::Directory.create path
         end
       end
 
-      def ensure_valid_name!
-        unless valid_name?
-          message = %{The sphere name #{name.to_s.inspect} is invalid. It has to follow the same convention as a local ruby variable and has to be lower-case. E.g. "my_sphere". Location: #{path.to_s.inspect}}.red
-          Log.error message
-          raise Errors::InvalidSphereName, message
+      def create_config_file!
+        if config_file_path.exist?
+          Log.debug { '  Config file already exists at '.yellow + config_file_path.to_s.yellow.bold }
+        else
+          Log.info { '  Creating new example config file at '.green + config_file_path.to_s.green.bold }
+          Resources::File.write config_file_path, config_file_template
         end
       end
 
-      def valid_name?
-        name.to_s.match(/^[a-z][a-z0-9_]+[^_]$/) && !name.to_s.match(/__/)
+      def activated_file_path
+        path.join 'active'
       end
 
-      def self.sphere_paths
-        Pathname.glob Paths.spheres.join('*')
+      def config_file_path
+        path.join('sphere.yml')
+      end
+
+      def config
+        if config_file_path.readable?
+          ::YAML.load(config_file_path.read) || {}
+        else
+          Log.debug { "There is no config file located at #{path}." }
+          {}
+        end
+
+      rescue ArgumentError
+        Log.error { "The configuration file #{path} has an invalid YAML syntax." }
+        raise Errors::InvalidConfigYaml
+      end
+
+
+      def manager_config
+        OpenStruct.new config.fetch('manager', {}).fetch()
+        if manager_name == 'manual'
+          Manager::Config.new
+        else
+          Manager::Config.new config['manager'][manager_name]
+        end
+      end
+
+      def manager_name
+       # config.fetch 'manager'
+        return 'manual' unless config['manager']
+
+        unless config[:manager].is_a?(Hash)
+          message = %{You specified a "manager" key in your configuration at #{config_file_path} but that key has to be a Hash.}.red
+          Log.error message
+          raise Errors::InvalidManagerConfiguration, message
+        end
+
+        if config[:manager].keys.size > 1
+          message = %{In your configuration at #{config_file_path} you specified multiple managers (#{config[:manager].keys.join(', ')}) but currently biosphere only supports one manager per Spehre}.red
+          Log.error message
+          raise Errors::InvalidManagerConfiguration, message
+        else
+          config[:manager].keys.first.to_s
+        end
+      end
+
+      def config_file_template
+        <<-END.undent
+          # In this YAML file you can configure how this sphere is updated.
+          # To manage this file manually, simply leave this file empty or delete it.
+          #
+          # To have a chef server manage this sphere, uncomment the following lines.
+          # They are essentialy passed on to knife, see http://docs.opscode.com/config_rb_client.html
+          # Important: Make sure that the validation.pem key is located inside the sphere directory!
+          #            Alternatively you can specify the "validation_key_path" option to specify the path.
+          #
+          # manager:
+          #   chefserver:
+          #     chef_server_url: https://chefserver.example.com
+          #     node_name: bobs_macbook.biosphere
+          #     env_vars:
+          #       ssh_key_name: id_rsa
+          #     # override_runlist: "role[biosphere]"  # Uncomment this one to override the runlist assigned to you by the chef server.
+          #
+          # This following one uses chef-solo.
+          # It has pretty much the same options as chefserver (except validation_key, chef_server_url, and override_runlist)
+          #
+          # manager:
+          #   chefsolo:
+          #     cookbooks_path: "~/Documents/my_cookbooks"
+          #     # runlist: "recipe[biosphere]"  # Uncomment this line to change the default run list
+          #
+        END
       end
 
     end

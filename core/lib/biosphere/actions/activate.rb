@@ -12,6 +12,7 @@ module Biosphere
 
       def call
         return help if Runtime.help_mode?
+
         activate
         augment
       end
@@ -20,9 +21,9 @@ module Biosphere
 
       def help
         Log.separator
-        Log.info "  bio activate SPHERE1 SPHERE2...".bold
+        Log.info "  bio activate SPHERE".bold
         Log.separator
-        Log.info "  Activates Spheres by updating the augmentations."
+        Log.info "  Activates a Sphere by updating its augmentations."
         Log.separator
         Log.info "  Examples:".cyan
         Log.separator
@@ -50,7 +51,7 @@ module Biosphere
       end
 
       def augment
-        Augmentations.perform :spheres => spheres_to_activate
+        Augmentations.call spheres: spheres_to_activate
       end
 
       def sphere_names

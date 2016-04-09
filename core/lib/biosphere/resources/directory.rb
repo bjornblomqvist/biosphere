@@ -7,8 +7,8 @@ module Biosphere
       private
 
       def create!
-        Log.debug "Creating directory #{path}"
-        path.mkdir
+        Log.debug { "Creating directory #{path}" }
+        path.mkpath
       end
 
     end

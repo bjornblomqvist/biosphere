@@ -1,41 +1,27 @@
-require 'optparse'
-require 'biosphere/errors'
-require 'biosphere/extensions/ostruct'
-require 'biosphere/actions'
-require 'biosphere/version'
+require 'biosphere/log'
 
 module Biosphere
   module Actions
     class Help
 
-      Options = Class.new(OpenStruct)
-
-      def initialize(args)
-        @args = args
+      def initialize(_)
       end
 
       def call
-        return help #if Runtime.help_mode?
-
-        #Log.info { "Biosphere Version #{VERSION}" }
-      end
-
-      private
-
-      def help
         Log.separator
-        Log.info { 'Overview...' }
-       # Log.error { 'Do you need help for... the help command?' }
+        Log.info { "  bio setup".bold }
         Log.separator
-      end
-
-      def options
-        @options ||= begin
-          result = {}
-          OptionParser.new do |parser|
-          end.parse!(@args)
-          Options.new result
-        end
+        Log.info { "  Examples:".cyan }
+        Log.separator
+        Log.info { "  bio setup                   ".bold + "".cyan }
+        Log.info { "  bio create myproject         ".bold + "".cyan }
+        Log.info { "  bio list                  ".bold + "".cyan }
+        Log.info { "  bio activate myproject                  ".bold + "".cyan }
+        Log.info { "  bio update                  ".bold + "".cyan }
+        Log.info { "  bio deactivate                  ".bold + "".cyan }
+        Log.info { "  bio implode                  ".bold + "".cyan }
+        Log.info { "  bio version                  ".bold + "".cyan }
+        Log.separator
       end
 
     end

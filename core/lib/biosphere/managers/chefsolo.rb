@@ -137,4 +137,4 @@ module Biosphere
 end
 
 
-Biosphere::Manager.register Biosphere::Managers::Chefsolo
+Biosphere::Managers.register Biosphere::Managers::Chefsolo

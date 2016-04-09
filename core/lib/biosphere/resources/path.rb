@@ -43,16 +43,6 @@ module Biosphere
         path.to_s
       end
 
-      private
-
-      def create!
-        raise NotImplementedError
-      end
-
-      def delete!
-        raise NotImplementedError
-      end
-
     end
   end
 end

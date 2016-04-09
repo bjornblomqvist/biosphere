@@ -45,5 +45,36 @@ module Biosphere
       end
     end
 
+    # Creation of Spheres requires some naming conventions.
+    class InvalidSphereName < Error
+      def code
+        30
+      end
+    end
+
+    class SphereNotFound < Error
+      def code
+        30
+      end
+    end
+
+    class ConfigKeyNotFound < Error
+      def code
+        31
+      end
+    end
+
+    class InvalidConfigYaml < Error
+      def code
+        36
+      end
+    end
+
+    class ConfigFileNotWritable < Error
+      def code
+        37
+      end
+    end
+
   end
 end

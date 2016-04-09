@@ -7,7 +7,7 @@ module Biosphere
         @config = options[:config]
       end
 
-      def perform
+      def call
         Log.info "Not updating sphere #{sphere.name.bold} because #{self.class.name} does not implement anything useful."
       end
 

@@ -5,7 +5,7 @@ module Biosphere
   module Managers
     class Manual < Default
 
-      def perform
+      def call
         Log.info "Not updating sphere #{sphere.name.bold} because it is handled manually."
       end
 
@@ -21,4 +21,4 @@ module Biosphere
   end
 end
 
-Biosphere::Manager.register Biosphere::Managers::Manual
+Biosphere::Managers.register Biosphere::Managers::Manual

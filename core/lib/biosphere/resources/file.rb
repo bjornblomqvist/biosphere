@@ -15,6 +15,7 @@ module Biosphere
       end
 
       def write(content = nil)
+        Log.debug { "Overwriting content of file #{path}" }
         path.open('w') { |io| io.write content }
       end
 

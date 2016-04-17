@@ -28,6 +28,7 @@ RSpec.describe Biosphere::Tools::Augmentor do
           Merry Christmas
 
           ### BIOSPHERE MANAGED STOP ###
+
           END
       end
     end
@@ -49,6 +50,7 @@ RSpec.describe Biosphere::Tools::Augmentor do
           Be happy
 
           ### BIOSPHERE MANAGED STOP ###
+
           END
       end
     end

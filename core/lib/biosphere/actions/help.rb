@@ -1,4 +1,5 @@
 require 'biosphere/log'
+require 'biosphere/actions'
 
 module Biosphere
   module Actions

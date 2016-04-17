@@ -48,7 +48,7 @@ module Biosphere
     # Creation of Spheres requires some naming conventions.
     class InvalidSphereName < Error
       def code
-        30
+        25
       end
     end
 
@@ -70,11 +70,31 @@ module Biosphere
       end
     end
 
-    class ConfigFileNotWritable < Error
+    # The syntax of the "manager" configuration in the sphere.yml file is invalid.
+    class UnknownManagerError < Error
       def code
-        37
+        57
       end
     end
 
+    class InvalidManagerConfigurationError < Error
+      def code
+        58
+      end
+    end
+
+    # Bio setup could not generate a sphere.yml example file
+    class ConfigFileNotWritable < Error
+      def code
+        38
+      end
+    end
+
+    class CouldNotUpdateBiosphere < Error
+      def code
+        40
+      end
+    end
+    
   end
 end

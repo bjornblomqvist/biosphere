@@ -3,14 +3,7 @@ require 'biosphere/actions/activate'
 require 'biosphere/paths'
 require 'biosphere/resources/sphere'
 require 'biosphere/augmentations'
-
-module Biosphere
-  module Errors
-    class CouldNotUpdateBiosphere < Error
-      def code() 40 end
-    end
-  end
-end
+require 'ostruct'
 
 module Biosphere
   module Actions
@@ -24,6 +17,7 @@ module Biosphere
 
       def perform
         return help if Runtime.help_mode?
+
         Log.separator
         if options.system
           update_system

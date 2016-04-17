@@ -1,11 +1,12 @@
 require 'biosphere/errors'
+require 'biosphere/managers'
 require 'biosphere/extensions/string'
 require 'biosphere/log'
 require 'biosphere/resources/directory'
 require 'biosphere/resources/file'
-require 'biosphere/resources/spheres/config'
 require 'biosphere/resources/spheres/name'
 require 'pathname'
+require 'yaml'
 
 module Biosphere
   module Resources
@@ -41,11 +42,11 @@ module Biosphere
       end
 
       def manager
-        manager = Manager.find(manager_name)
+        manager = Managers.find(manager_name)
+
         unless manager
-          message = %{The sphere #{name.to_s.inspect} has defined the manager #{manager_name.inspect} in its config file (#{config_file_path}). But that manager could not be found by Biosphere::Manager.}.red
-          Log.error message
-          raise Errors::InvalidSphereName, message
+          Log.error { %{The sphere #{name.to_s.inspect} has defined the manager #{manager_name.inspect} in its config file (#{config_file_path}). But that manager could not be found by Biosphere::Manager.}.red }
+          raise Errors::UnknownManagerError
         end
 
         manager.new sphere: self, config: manager_config
@@ -66,7 +67,6 @@ module Biosphere
 
       def <=>(other)
         return self.activated?.to_s   <=> other.activated?.to_s if (self.activated?.to_s   <=> other.activated?.to_s) != 0
-        return other.activation_order <=> self.activation_order if (other.activation_order <=> self.activation_order) != 0
         other.name  <=> self.name
       end
 
@@ -86,12 +86,12 @@ module Biosphere
       attr_reader :raw_name
 
       def ensure_valid_name!
-        return if sphere.name
+        return if name
         Log.error { %(The sphere name #{raw_name.to_s.inspect} is invalid. (It has to be lower-case. E.g. "my_sphere".)).red }
         raise Errors::InvalidSphereName
       end
 
-      def create_path!
+      def create_directory!
         if path.exist?
           Log.info { "  Sphere #{name.inspect} already exists at ".yellow + path.to_s.yellow.bold }
         else
@@ -132,30 +132,22 @@ module Biosphere
 
 
       def manager_config
-        OpenStruct.new config.fetch('manager', {}).fetch()
-        if manager_name == 'manual'
-          Manager::Config.new
-        else
-          Manager::Config.new config['manager'][manager_name]
-        end
+        OpenStruct.new config.fetch('manager', {}).fetch(manager_name, 'manual')
       end
 
       def manager_name
-       # config.fetch 'manager'
         return 'manual' unless config['manager']
 
-        unless config[:manager].is_a?(Hash)
-          message = %{You specified a "manager" key in your configuration at #{config_file_path} but that key has to be a Hash.}.red
-          Log.error message
-          raise Errors::InvalidManagerConfiguration, message
+        unless config['manager'].is_a?(Hash)
+          Log.error { %{You specified a "manager" key in your configuration at #{config_file_path} but that key has to be a Hash.}.red }
+          raise Errors::InvalidManagerConfigurationError
         end
 
-        if config[:manager].keys.size > 1
-          message = %{In your configuration at #{config_file_path} you specified multiple managers (#{config[:manager].keys.join(', ')}) but currently biosphere only supports one manager per Spehre}.red
-          Log.error message
-          raise Errors::InvalidManagerConfiguration, message
+        if config['manager'].keys.size > 1
+          Log.error { %{In your configuration at #{config_file_path} you specified multiple managers (#{config[:manager].keys.join(', ')}) but currently biosphere only supports one manager per Spehre}.red }
+          raise Errors::InvalidManagerConfigurationError
         else
-          config[:manager].keys.first.to_s
+          config['manager'].keys.first.to_s
         end
       end
 

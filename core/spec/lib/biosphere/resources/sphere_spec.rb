@@ -20,6 +20,29 @@ RSpec.describe Biosphere::Resources::Sphere do
     end
   end
 
+  describe '#create!' do
+    context 'valid name' do
+      it 'creates the sphere directory' do
+        Biosphere::Paths.biosphere_home = Dir.mktmpdir
+        sphere = described_class.new('work')
+        expect(sphere.path).to_not exist
+        sphere.create!
+        expect(sphere.path).to exist
+      end
+    end
+
+    context 'valid name' do
+      it 'creates an example configuration' do
+        Biosphere::Paths.biosphere_home = Dir.mktmpdir
+        sphere = described_class.new('myproject')
+        expect(sphere.path.join('sphere.yml')).to_not exist
+        sphere.create!
+        expect(sphere.path.join('sphere.yml')).to exist
+        expect(sphere.path.join('sphere.yml').read).to include 'configure how'
+      end
+    end
+  end
+
   describe '#activate!' do
     context 'no parameter' do
       it 'activates the sphere' do

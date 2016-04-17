@@ -1,10 +1,6 @@
-#require 'optparse'
-#require 'biosphere/action'
 require 'biosphere/log'
-#require 'biosphere/extensions/option_parser'
-#require 'biosphere/extensions/ostruct'
-require 'biosphere/runtime'
 require 'biosphere/resources/sphere'
+require 'biosphere/runtime'
 
 module Biosphere
   module Actions
@@ -15,9 +11,10 @@ module Biosphere
       end
 
       def call
-        return help if Runtime.help_mode? || !sphere_name
+        return help if Runtime.help_mode? || args.empty?
 
         Log.separator
+        create!
         Log.separator
       end
 
@@ -27,16 +24,12 @@ module Biosphere
 
       def help
         Log.separator
-        Log.info { "    bio create my_sphere".bold + "     Creates a sphere".cyan }
+        Log.info { '    bio create myproject'.bold + '     Creates a sphere'.cyan }
         Log.separator
       end
 
       def create!
-        Resources::Sphere.new(sphere_name).create!
-      end
-
-      def sphere_name
-        Spheres::Name.new(args.first).call
+        Resources::Sphere.new(args.first).create!
       end
 
     end

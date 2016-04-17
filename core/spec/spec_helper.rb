@@ -20,6 +20,7 @@ if ENV['COVERAGE']
   end
 end
 
+require 'tmpdir'
 require 'biosphere/log'
 require 'biosphere/paths'
 require 'biosphere/runtime'
@@ -34,9 +35,19 @@ RSpec.configure do |config|
   config.order = :random
 
   config.before do
-    Pathname.home_path = '/dev/null/home'
+   # Pathname.home_path = '/dev/null/home'
     Biosphere::Runtime.env = :test
-    Biosphere::Paths.biosphere_home = '/dev/null/biosphere'
+    #Biosphere::Paths.biosphere_home = '/dev/null/biosphere'
+  end
+
+  config.around :each do |example|
+    Dir.mktmpdir do |home_dir|
+      Dir.mktmpdir do |biosphere_home|
+        Pathname.home_path = home_dir
+        Biosphere::Paths.biosphere_home = biosphere_home
+        example.run
+      end
+    end
   end
 
 end

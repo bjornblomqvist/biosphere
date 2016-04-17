@@ -58,6 +58,10 @@ module Biosphere
       Pathname.home_path.join('.zshenv')
     end
 
+    def self.ssh_config
+      Pathname.home_path.join('.ssh/config')
+    end
+
     def self.ruby_executable
       Pathname.new '/usr/bin/ruby'
     end

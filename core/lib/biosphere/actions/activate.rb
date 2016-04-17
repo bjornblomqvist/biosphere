@@ -1,12 +1,13 @@
 require 'biosphere/actions'
 require 'biosphere/resources/sphere'
+require 'biosphere/spheres'
 require 'biosphere/augmentations'
 
 module Biosphere
   module Actions
     class Activate
 
-      def initialize(args)
+      def initialize(args = [])
         @args = args
       end
 
@@ -21,55 +22,52 @@ module Biosphere
 
       def help
         Log.separator
-        Log.info "  bio activate SPHERE".bold
+        Log.info { "  bio activate SPHERE".bold }
         Log.separator
-        Log.info "  Activates a Sphere by updating its augmentations."
+        Log.info { "  Activates a Sphere by updating its augmentations." }
         Log.separator
-        Log.info "  Examples:".cyan
+        Log.info { "  Examples:".cyan }
         Log.separator
-        Log.info "  bio activate                   ".bold + "Reactivate all currently activated Spheres.".cyan
-        Log.info "  bio activate myproject         ".bold + "Activate only Sphere myproject.".cyan
-        Log.info "  bio activate work myproject    ".bold + "Activate work as primary Sphere and myprojcet as secondary.".cyan
+        Log.info { "  bio activate             ".bold + "Reactivate the currently activated Sphere.".cyan }
+        Log.info { "  bio activate myproject   ".bold + "Activate the Sphere myproject.".cyan }
         Log.separator
       end
 
       def activate
-        if spheres_to_activate.empty?
-          Log.info "No Spheres to (re-)activate."
+        unless sphere_to_activate
+          Log.info { "No Sphere to (re-)activate." }
           return
         end
 
         unless spheres_to_deactivate.empty?
-          Log.info "Deactivating spheres #{spheres_to_deactivate.map(&:name).join(', ')}..."
+          Log.info { "Deactivating Spheres #{spheres_to_deactivate.map(&:name).join(', ')}..." }
           spheres_to_deactivate.each(&:deactivate!)
         end
 
-        Log.info "Activating spheres #{spheres_to_activate.map(&:name).join(', ')}..."
-        spheres_to_activate.each_with_index do |sphere, index|
-          sphere.activate! index
+        if sphere_to_activate
+          Log.info { "Activating Sphere #{sphere_to_activate.map(&:name).join(', ')}..." }
+          sphere_to_activate.activate!
         end
       end
 
       def augment
-        Augmentations.call spheres: spheres_to_activate
+        Augmentations.new(sphere: sphere_to_activate).call
       end
 
-      def sphere_names
-        @args
+      def sphere_name
+        @args.first
       end
 
-      def spheres_to_activate
-        @spheres_to_activate ||= begin
-          if sphere_names.empty?
-            Resources::Sphere.all.select(&:activated?).sort_by(&:activation_order)
-          else
-            Resources::Sphere.find sphere_names
-          end
+      def sphere_to_activate
+        if sphere_name
+          Spheres.find sphere_name
+        else
+          Spheres.activated.first
         end
       end
 
       def spheres_to_deactivate
-        Resources::Sphere.find Resources::Sphere.all.select(&:activated?).map(&:name) - spheres_to_activate.map(&:name)
+        Spheres.activated - [sphere_to_activate]
       end
 
     end

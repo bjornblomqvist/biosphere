@@ -1,88 +1,87 @@
 require 'biosphere/resources/file'
 require 'biosphere/errors'
+require 'biosphere/paths'
 require 'pathname'
-
-module Biosphere
-  module Errors
-    class CannotWriteGatheredAugmentations < Error
-      def code() 100 end
-    end
-  end
-end
 
 module Biosphere
   class Augmentations
 
-    attr_reader :spheres
-
-    def initialize(options = {})
-      @spheres = options[:spheres] || []
+    def initialize(sphere: nil)
+      @sphere = sphere
     end
 
-    def self.perform(*args)
-      new(*args).perform
+    # Convenience Wrapper
+    def self.implode
+      new.implode
     end
 
-    def self.implode(*args)
-      new(*args).implode
-    end
-
-    def perform
-      update
-      apply
-    end
-
-    def implode
+    def call
       clear
-      Resources::Sphere.augmentation_identifiers.each do |identifier|
-        destination = destination_path(identifier)
-        next unless destination && destination.exist?
-        Log.debug { "Imploding augmentation for #{destination}" }
-        Resources::File.augment destination
-      end
+      clear_ssh_config
+      harvest
+      harvest_ssh_config
     end
+
+    #def implode
+    #  clear
+    #  Resources::Sphere.augmentation_identifiers.each do |identifier|
+    #    destination = destination_path(identifier)
+    #    next unless destination && destination.exist?
+    #    Log.debug { "Imploding augmentation for #{destination}" }
+    #    Resources::File.augment destination
+    #  end
+    #end
 
     private
 
-    def update
-      clear
-      harvest
-    end
+    attr_reader :sphere
 
     def clear
-      Log.debug { "Clearing cached augmentations..." }
-      Resources::Sphere.augmentation_identifiers.each do |identifier|
-        Resources::File.delete Paths.augmentations.join(identifier.to_s)
-      end
+      Log.debug { 'Clearing cached augmentations...' }
+      Resources::Directory.new(Paths.augmentations).clear
+    end
+
+    def clear_ssh_config
+      Paths.ssh_config.augment
     end
 
     def harvest
-      Resources::Sphere.augmentations.each do |identifier, content|
-        path = Paths.augmentations.join(identifier.to_s)
-        if content.empty?
-          Log.debug { "Removing cached augmentation for #{identifier}..." }
-          Resources::File.delete path
-        else
-          Log.debug { "Caching augmentation for #{identifier}..." }
-          Resources::File.write path, content
-        end
+      Log.debug { "Applying augmentations of sphere #{sphere.name.inspect}..." }
+
+      sphere.augmentations_path.children.select(&:file?).each do |child|
+        target = Paths.augmentations.join(child.basename)
+        Resources::File.write target, child.read
       end
     end
 
-    def apply
-      Resources::Sphere.augmentation_identifiers.each do |identifier|
-        source = Paths.augmentations.join(identifier.to_s)
-        next unless source.file?
-        next unless destination = destination_path(identifier)
-        Resources::File.augment destination, source.read
+    def harvest_ssh_config
+      unless Paths.ssh_config_augmentation.exist?
+        Log.debug { "No need to apply a SSH config because there is no #{Paths.ssh_config_augmentation}..." }
+        return
       end
+
+      Log.debug { "Applying SSH config of sphere #{sphere.name.inspect} (outside of the sandbox!)..." }
+      ensure_ssh_config_directory
+      ensure_ssh_config_file
+
+      augmentation = Paths.ssh_config.augment Paths.ssh_config_augmentation.read
+      Log.debug { augmentation.inspect }
     end
 
-    def destination_path(identifier)
-      result = case identifier
-      when :ssh_config   then '~/.ssh/config'
-      end
-      result ? Pathname.new(result).expand_path : nil
+    def ensure_ssh_config_directory
+      return if Paths.ssh_config.dirname.exist?
+
+      Log.info { "  Allow me to create your ssh directory at #{Paths.ssh_config.dirname} with permissions 0700...".yellow }
+      Resources::Directory.create Paths.ssh_config.dirname
+      Paths.ssh_config.dirname.chmod 0700
+    end
+
+    def ensure_ssh_config_file
+      return if Paths.ssh_config.exist?
+
+      Log.info { "  Allow me to create your ssh config file at #{Paths.ssh_config} with permissions 0600...".yellow }
+      Resources::File.create Paths.ssh_config
+      Paths.ssh_config.chmod 0600
     end
 
   end

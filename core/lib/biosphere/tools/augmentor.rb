@@ -1,43 +1,10 @@
 require 'pathname'
+require 'biosphere/tools/augmentor/snippet'
+require 'biosphere/tools/augmentor/result'
 
 module Biosphere
   module Tools
     class Augmentor
-
-      class Snippet
-        attr_reader :content, :start_tag, :end_tag
-
-        def initialize(content, options={})
-          @content = content
-          @start_tag = options[:stat_tag] || '### BIOSPHERE MANAGED START ###'
-          @end_tag = options[:end_tag] || '### BIOSPHERE MANAGED STOP ###'
-        end
-
-        def to_s
-          [start_tag, content, end_tag].compact.join("\n\n")
-        end
-
-        def regexp
-          /#{start_tag}(.*)#{end_tag}/m
-        end
-      end
-
-      class Result
-        attr_reader :status
-
-        def initialize(options={})
-          @success = options[:success]
-          @status = options[:status]
-        end
-
-        def success?
-          !!@success
-        end
-
-        def failure?
-          !success?
-        end
-      end
 
       attr_reader :file, :content
 
@@ -66,7 +33,7 @@ module Biosphere
         return result(true, :file_not_found) unless exists?
         return result(false, :file_not_readable) unless readable?
         return result(true, :file_not_augmented) unless augmented?
-        replace snippet.regexp
+        replace snippet.removal_regexp
       end
 
       def replace(this, that='')

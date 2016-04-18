@@ -5,6 +5,7 @@ RSpec.describe Biosphere::Extensions::PathnameExtensions do
 
   describe '.home_path' do
     it 'is the home path' do
+      Pathname.home_path = '/dev/null/home'
       expect(Pathname.home_path.to_s).to eq('/dev/null/home')
     end
   end

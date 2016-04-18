@@ -32,7 +32,7 @@ RSpec.configure do |config|
   config.disable_monkey_patching!
   config.raise_errors_for_deprecations!
   config.color = true
-  config.order = :random
+  #config.order = :random
 
   config.before do
    # Pathname.home_path = '/dev/null/home'

@@ -5,7 +5,9 @@ require 'biosphere/log'
 require 'biosphere/resources/directory'
 require 'biosphere/resources/file'
 require 'biosphere/resources/spheres/name'
+require 'biosphere/resources/spheres/config'
 require 'pathname'
+require 'ostruct'
 require 'yaml'
 
 module Biosphere
@@ -42,23 +44,16 @@ module Biosphere
       end
 
       def manager
-        manager = Managers.find(manager_name)
-
-        unless manager
-          Log.error { %{The sphere #{name.to_s.inspect} has defined the manager #{manager_name.inspect} in its config file (#{config_file_path}). But that manager could not be found by Biosphere::Manager.}.red }
-          raise Errors::UnknownManagerError
-        end
-
-        manager.new sphere: self, config: manager_config
+        @manager ||= manager!
       end
 
       def update
-        Log.debug "Initializing update of sphere #{name}..."
+        Log.debug { "Initializing update of sphere #{name}..." }
         manager.call
       end
 
       def cache_path
-        Directory.create path.join('cache')
+        Directory.create(path.join('cache')).path
       end
 
       def path
@@ -66,19 +61,11 @@ module Biosphere
       end
 
       def <=>(other)
-        return self.activated?.to_s   <=> other.activated?.to_s if (self.activated?.to_s   <=> other.activated?.to_s) != 0
-        other.name  <=> self.name
+        other.name <=> name
       end
 
       def augmentations_path
-        result = path.join('augmentations')
-        Directory.create result
-        result
-      end
-
-      def augmentation(identifier)
-        path = augmentations_path.join(identifier.to_s)
-        path.exist? ? path.read : nil
+        Directory.create(path.join('augmentations')).path
       end
 
       private
@@ -105,7 +92,7 @@ module Biosphere
           Log.debug { '  Config file already exists at '.yellow + config_file_path.to_s.yellow.bold }
         else
           Log.info { '  Creating new example config file at '.green + config_file_path.to_s.green.bold }
-          Resources::File.write config_file_path, config_file_template
+          Resources::File.write config_file_path, Spheres::Config.template
         end
       end
 
@@ -125,14 +112,13 @@ module Biosphere
           {}
         end
 
-      rescue ArgumentError
+      rescue Psych::SyntaxError
         Log.error { "The configuration file #{path} has an invalid YAML syntax." }
         raise Errors::InvalidConfigYaml
       end
 
-
       def manager_config
-        OpenStruct.new config.fetch('manager', {}).fetch(manager_name, 'manual')
+        OpenStruct.new config.fetch('manager', {}).fetch(manager_name, {})
       end
 
       def manager_name
@@ -144,40 +130,22 @@ module Biosphere
         end
 
         if config['manager'].keys.size > 1
-          Log.error { %{In your configuration at #{config_file_path} you specified multiple managers (#{config[:manager].keys.join(', ')}) but currently biosphere only supports one manager per Spehre}.red }
+          Log.error { %{In your configuration at #{config_file_path} you specified multiple managers (#{config['manager'].keys.join(', ')}) but Biosphere only supports one manager per Spehre}.red }
           raise Errors::InvalidManagerConfigurationError
         else
           config['manager'].keys.first.to_s
         end
       end
 
-      def config_file_template
-        <<-END.undent
-          # In this YAML file you can configure how this sphere is updated.
-          # To manage this file manually, simply leave this file empty or delete it.
-          #
-          # To have a chef server manage this sphere, uncomment the following lines.
-          # They are essentialy passed on to knife, see http://docs.opscode.com/config_rb_client.html
-          # Important: Make sure that the validation.pem key is located inside the sphere directory!
-          #            Alternatively you can specify the "validation_key_path" option to specify the path.
-          #
-          # manager:
-          #   chefserver:
-          #     chef_server_url: https://chefserver.example.com
-          #     node_name: bobs_macbook.biosphere
-          #     env_vars:
-          #       ssh_key_name: id_rsa
-          #     # override_runlist: "role[biosphere]"  # Uncomment this one to override the runlist assigned to you by the chef server.
-          #
-          # This following one uses chef-solo.
-          # It has pretty much the same options as chefserver (except validation_key, chef_server_url, and override_runlist)
-          #
-          # manager:
-          #   chefsolo:
-          #     cookbooks_path: "~/Documents/my_cookbooks"
-          #     # runlist: "recipe[biosphere]"  # Uncomment this line to change the default run list
-          #
-        END
+      def manager!
+        manager = Managers.find(manager_name)
+
+        unless manager
+          Log.error { %{The sphere #{name.to_s.inspect} has defined the manager #{manager_name.inspect} in its config file (#{config_file_path}). But that manager could not be found by Biosphere::Manager.}.red }
+          raise Errors::UnknownManagerError
+        end
+
+        manager.new sphere: self, config: manager_config
       end
 
     end

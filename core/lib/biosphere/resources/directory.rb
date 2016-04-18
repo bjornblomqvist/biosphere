@@ -31,6 +31,7 @@ module Biosphere
       end
 
       def files
+        return [] unless path.exist?
         path.children.select(&:file?)
       end
 

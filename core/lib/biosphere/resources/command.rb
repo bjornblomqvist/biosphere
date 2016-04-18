@@ -9,11 +9,6 @@ module Biosphere
 
       attr_reader :working_directory, :executable, :show_output, :indent
 
-      # Convenience wrapper
-      def self.call(*args)
-        self.new(*args).call
-      end
-
       def initialize(working_directory: '/tmp', executable: 'whoami', arguments: [], env_vars: {}, show_output: false, indent: 4)
         @working_directory = working_directory
         @executable        = executable
@@ -30,7 +25,7 @@ module Biosphere
       def env_vars
         result = []
         @env_vars.each do |key, value|
-          result << %{#{key.to_s.upcase}="#{value.to_s.gsub('"', '\"')}"}
+          result << %(#{key.to_s.upcase}="#{value.to_s.gsub('"', '\"')}")
         end
         result.empty? ? nil : result.join(' ')
       end
@@ -61,7 +56,7 @@ module Biosphere
         stderr_lines = []
         Log.debug { "Running command: #{command}" }
 
-        status = Open4::popen4(command) do |pid, stdin, stdout, stderr|
+        status = Open4.popen4(command) do |pid, _, stdout, stderr|
           Log.debug { "Command runs with PID #{pid}" }
           stdout.sync = true
           stderr.sync = true
@@ -71,7 +66,7 @@ module Biosphere
               if Runtime.debug_mode?
                 Log.debug { "  STDOUT: #{stdout_line}" }
               elsif show_output
-                Log.info indentation + stdout_line.strip.faint
+                Log.info { indentation + stdout_line.strip.faint }
               end
               stdout_lines << stdout_line
             end
@@ -82,7 +77,7 @@ module Biosphere
               if Runtime.debug_mode?
                 Log.debug { "  STDERR: #{stderr_line}" }
               elsif show_output
-                Log.info indentation + stderr_line.strip.faint
+                Log.info { indentation + stderr_line.strip.faint }
               end
               stderr_lines << stderr_line
             end
@@ -94,7 +89,7 @@ module Biosphere
         result.stdout = stdout_lines.join("\n")
         result.stderr = stderr_lines.join("\n")
         result.raw_status = status
-        Log.debug { "Command exited with status #{result.raw_status}" }
+        Log.debug { "Command exited with #{result.raw_status}" }
         result
 
       rescue Errno::ENOENT

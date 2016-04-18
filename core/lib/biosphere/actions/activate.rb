@@ -51,6 +51,7 @@ module Biosphere
       end
 
       def augment
+        return unless sphere_to_activate
         Augmentations.new(sphere: sphere_to_activate).call
       end
 
@@ -62,6 +63,7 @@ module Biosphere
         if sphere_name
           Spheres.find sphere_name
         else
+          # Re-activation
           Spheres.activated.first
         end
       end

@@ -16,7 +16,7 @@ module Biosphere
         end
 
         def to_s
-          "#<Biosphere::Command::Result command=#{command.inspect} status=#{status.inspect} stdout.size=#{stdout.size.inspect}, stderr.size=#{stderr.size.inspect}>"
+          "#<Biosphere::Command::Result command=#{command.inspect} status=#{status.inspect} stdout.size=#{stdout.to_s.size.inspect}, stderr.size=#{stderr.to_s.size.inspect}>"
         end
 
       end

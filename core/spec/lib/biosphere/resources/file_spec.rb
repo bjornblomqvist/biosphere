@@ -1,20 +1,17 @@
 require 'spec_helper'
 require 'biosphere/resources/file'
+require 'tempfile'
+require 'tmpdir'
 
 RSpec.describe Biosphere::Resources::File do
 
-  let(:io)       { double(:io) }
-  let(:pathname) { double(:pathname, :exist? => false)}
-  let(:file)     { Biosphere::Resources::File.new '/tmp/some/file' }
-
-  before do
-    allow(Pathname).to receive(:new).and_return pathname
-  end
-
   describe 'create' do
     it 'creates the file' do
-      expect(pathname).to receive(:open).with('a')
-      file.create
+      workdir = Pathname.new Dir.mktmpdir
+      path = workdir.join 'some_file'
+      expect(path).to_not exist
+      described_class.new(path.to_s).create
+      expect(path).to exist
     end
   end
 
@@ -37,23 +34,48 @@ RSpec.describe Biosphere::Resources::File do
   end
 
   describe '#write' do
-    it 'opens the file in overwrite mode and writes the contents' do
-      expect(io).to receive(:write).with('content')
-      expect(pathname).to receive(:open).with('w').and_yield io
-      file.write 'content'
+    context 'with content' do
+      it 'opens the file in overwrite mode and writes the contents' do
+        workdir = Pathname.new Dir.mktmpdir
+        path = workdir.join 'some_file'
+        expect(path).to_not exist
+        described_class.new(path.to_s).write 'something'
+        expect(path).to exist
+        expect(path.read).to eq 'something'
+      end
     end
 
-    it 'does not require an argument' do
-      expect(io).to receive(:write).with(nil)
-      expect(pathname).to receive(:open).with('w').and_yield io
-      file.write
+    context 'without content' do
+      it 'does not require an argument' do
+        workdir = Pathname.new Dir.mktmpdir
+        path = workdir.join 'some_file'
+        expect(path).to_not exist
+        described_class.new(path.to_s).write
+        expect(path).to exist
+        expect(path.read).to eq ''
+      end
     end
   end
 
   describe '#augment' do
-    it 'opens the file in overwrite mode and writes the contents' do
-      expect(pathname).to receive(:augment).with('content')
-      file.augment 'content'
+    context 'file exists' do
+      it 'opens the file in overwrite mode and writes the contents' do
+        path = Pathname.new Tempfile.new('some_file')
+        expect(path).to exist
+        described_class.new(path).augment 'content'
+        expect(path.read).to include 'BIOSPHERE'
+      end
+    end
+  end
+
+  describe '#delete' do
+    context 'file exists' do
+      it 'deletes the file' do
+        path = Pathname.new Tempfile.new('some_file')
+        expect(path).to exist
+        described_class.new(path).delete
+        expect(path).to_not exist
+      end
     end
   end
 

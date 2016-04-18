@@ -16,21 +16,15 @@ module Biosphere
     end
 
     def call
-      clear
-      clear_ssh_config
-      harvest
+      implode if sphere
+      harvest if sphere
       harvest_ssh_config
     end
 
-    #def implode
-    #  clear
-    #  Resources::Sphere.augmentation_identifiers.each do |identifier|
-    #    destination = destination_path(identifier)
-    #    next unless destination && destination.exist?
-    #    Log.debug { "Imploding augmentation for #{destination}" }
-    #    Resources::File.augment destination
-    #  end
-    #end
+    def implode
+      clear
+      clear_ssh_config
+    end
 
     private
 
@@ -38,7 +32,7 @@ module Biosphere
 
     def clear
       Log.debug { 'Clearing cached augmentations...' }
-      Resources::Directory.new(Paths.augmentations).clear
+      Resources::Directory.clear Paths.augmentations
     end
 
     def clear_ssh_config
@@ -46,6 +40,7 @@ module Biosphere
     end
 
     def harvest
+      return unless sphere
       Log.debug { "Applying augmentations of sphere #{sphere.name.inspect}..." }
 
       sphere.augmentations_path.children.select(&:file?).each do |child|
@@ -60,7 +55,7 @@ module Biosphere
         return
       end
 
-      Log.debug { "Applying SSH config of sphere #{sphere.name.inspect} (outside of the sandbox!)..." }
+      Log.debug { "Applying SSH config #{Paths.ssh_config_augmentation} (outside of the sandbox!)..." }
       ensure_ssh_config_directory
       ensure_ssh_config_file
 

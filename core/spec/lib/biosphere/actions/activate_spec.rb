@@ -11,7 +11,11 @@ RSpec.describe Biosphere::Actions::Activate do
           expect(block.call).to eq "No Sphere to (re-)activate."
         end
 
-        action = described_class.new
+        #Biosphere::Paths.biosphere_home = Dir.mktmpdir
+        #sphere = Biosphere::Resources::Sphere.new('work')
+        #sphere.create!
+
+        action = described_class.new #sphere: sphere
         action.call
       end
     end

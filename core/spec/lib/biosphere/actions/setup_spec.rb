@@ -8,8 +8,8 @@ RSpec.describe Biosphere::Actions::Setup do
   describe '.call' do
     context 'no arguments' do
       it 'creates the bash profile file' do
+        Biosphere::Paths.biosphere_home = '/dev/null/biosphere'
         Pathname.home_path = Dir.mktmpdir
-        puts Pathname.home_path.inspect
         expect(Biosphere::Paths.bash_profile.exist?).to be false
         described_class.new([]).call
         expect(Biosphere::Paths.bash_profile.exist?).to be true

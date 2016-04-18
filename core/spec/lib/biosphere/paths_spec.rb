@@ -1,7 +1,13 @@
 require 'spec_helper'
 require 'biosphere/paths'
+require 'biosphere/extensions/pathname'
 
 RSpec.describe Biosphere::Paths do
+
+  before do
+    described_class.biosphere_home = '/dev/null/biosphere'
+    Pathname.home_path = '/dev/null/home'
+  end
 
   describe '.biosphere_home' do
     context 'the path is unknown' do

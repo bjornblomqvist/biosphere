@@ -11,7 +11,7 @@ module Biosphere
   module Actions
     class List
 
-      def initialize(_)
+      def initialize(_ = nil)
       end
 
       def call
@@ -38,10 +38,6 @@ module Biosphere
 
           Log.info { "  #{name}" + " Managed by #{sphere.manager.to_s.bold}".cyan }
         end
-      end
-
-      def show
-        sphere = find_sphere!
       end
 
     end

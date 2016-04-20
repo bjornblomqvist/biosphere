@@ -78,7 +78,7 @@ module Biosphere
         if args.empty?
           Spheres.all
         else
-          Resources::Sphere.find(args.first)
+          Resources::Sphere.find(name)
         end
       end
 

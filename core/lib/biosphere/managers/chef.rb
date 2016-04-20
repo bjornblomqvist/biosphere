@@ -104,6 +104,8 @@ module Biosphere
       end
 
       def ensure_chef
+        # chef-zero is a dependency of chef. This is the last version to support Ruby 2.0.0
+        Resources::Gem.new(name: 'chef-zero', version: '4.5.0').ensure_installed
         chef_gem.ensure_installed
       end
 
@@ -115,8 +117,9 @@ module Biosphere
         config.chef_version || default_chef_version
       end
 
+      # Make sure it's compatible with the minimal Ruby version that Biosphere itself requires.
       def default_chef_version
-        '12.9.38'
+        '12.8.1'
       end
 
     end

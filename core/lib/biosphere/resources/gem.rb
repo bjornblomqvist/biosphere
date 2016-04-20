@@ -34,16 +34,8 @@ module Biosphere
       end
 
       def install
-        arguments = %W{ install #{name} --install-dir #{self.class.rubygems_path} --no-document --source https://rubygems.org}
-        if version
-          arguments << '--version'
-          arguments << version
-        end
-        if Runtime.debug_mode?
-          arguments << '--verbose'
-        end
-        env_vars = { GEM_PATH: Paths.vendor_gems }
-        result = Resources::Command.new(env_vars: env_vars, executable: Paths.gem_executable, arguments: arguments).call
+        result = command.call
+
         if result.success?
           Log.debug { "Successfully installed gem #{name.to_s.bold} version #{version.bold}" }
         else
@@ -56,12 +48,28 @@ module Biosphere
         result
       end
 
-      def name_and_version
-        "#{name}-#{version}"
+      def command
+        Resources::Command.new env_vars: env_vars, executable: Paths.gem_executable, arguments: arguments
       end
 
-      def self.rubygems_path
-        Paths.vendor_gems
+      def arguments
+        arguments = %W{ install #{name} --install-dir #{Paths.vendor_gems} --no-document --source https://rubygems.org}
+        if version
+          arguments << '--version'
+          arguments << version
+        end
+        if Runtime.debug_mode?
+          arguments << '--verbose'
+        end
+        arguments
+      end
+
+      def env_vars
+        { GEM_PATH: Paths.vendor_gems }
+      end
+
+      def name_and_version
+        "#{name}-#{version}"
       end
 
       def self.gems_path

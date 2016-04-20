@@ -39,19 +39,21 @@ module Biosphere
       end
 
       def update_system
-        work_tree = Paths.biosphere_home
-        git_dir = work_tree.join('.git')
-        arguments = %W(--work-tree #{work_tree} --git-dir #{git_dir} pull origin master)
-        result = Resources::Command.new(executable: 'git', arguments: arguments, show_output: true).call
-
+        result = update_command.call
         if result.success?
           Log.info { '  Biosphere was updated.' }
         else
           Log.separator
-          Log.error { "  Could not update Biosphere at #{work_tree} \n#{result.indented_output}".red }
+          Log.error { "  Could not update Biosphere at #{Paths.biosphere_home} \n#{result.indented_output}".red }
           Log.separator
           raise Errors::CouldNotUpdateBiosphere
         end
+      end
+
+      def update_command
+        git_dir = Paths.biosphere_home.join('.git')
+        arguments = %W(--work-tree #{Paths.biosphere_home} --git-dir #{git_dir} pull origin master)
+        Resources::Command.new executable: 'git', arguments: arguments, show_output: true
       end
 
       def update

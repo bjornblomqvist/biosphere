@@ -104,5 +104,12 @@ module Biosphere
       end
     end
 
+    # Could not install gem into vendor directory.
+    class GemInstallationFailed < Error
+      def code
+        45
+      end
+    end
+
   end
 end

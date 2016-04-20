@@ -1,5 +1,6 @@
 require 'pathname'
 require 'biosphere/resources/command'
+require 'biosphere/errors'
 
 module Biosphere
   module Resources
@@ -14,6 +15,7 @@ module Biosphere
       def ensure_installed
         return true if exists?
         Log.info { "Installing gem #{name.to_s.bold} version #{version.bold}..." }
+        Log.info { 'This may take a while...' }
         install.success?
       end
 
@@ -32,7 +34,7 @@ module Biosphere
       end
 
       def install
-        arguments = %W{ install #{name} --install-dir #{self.class.rubygems_path} --no-ri --no-rdoc --source https://rubygems.org }
+        arguments = %W{ install #{name} --install-dir #{self.class.rubygems_path} --no-document --source https://rubygems.org}
         if version
           arguments << '--version'
           arguments << version
@@ -40,11 +42,16 @@ module Biosphere
         if Runtime.debug_mode?
           arguments << '--verbose'
         end
-        result = Resources::Command.new(executable: Paths.gem_executable, arguments: arguments).call
+        env_vars = { GEM_PATH: Paths.vendor_gems }
+        result = Resources::Command.new(env_vars: env_vars, executable: Paths.gem_executable, arguments: arguments).call
         if result.success?
           Log.debug { "Successfully installed gem #{name.to_s.bold} version #{version.bold}" }
         else
-          Log.error { "Could not install gem #{name.to_s.bold}".red + ' version '.red + version.bold.red + '. Are you online?'.red }
+          Log.separator
+          Log.error { "  Could not install gem #{name.to_s.bold}".red + ' version '.red + version.bold.red + '. Are you online?'.red }
+          Log.error { '  Please try to run this command with the'.red + ' --debug '.bold.red + 'flag for more details.'.red }
+          Log.separator
+          raise Errors::GemInstallationFailed
         end
         result
       end

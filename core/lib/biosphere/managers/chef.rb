@@ -116,7 +116,7 @@ module Biosphere
       end
 
       def default_chef_version
-        '12.8.1'
+        '12.9.38'
       end
 
     end

@@ -71,13 +71,15 @@ RSpec.describe Biosphere::Resources::Command do
     context 'in debug mode' do
       it 'logs stdout and stderror as debug messages' do
         allow(Biosphere::Runtime).to receive(:debug_mode?).and_return true
-        command = described_class.new executable: '/bin/bash', arguments: ['-c', %('echo 'hi' 2> printf' && doesnotexist)]
+        arguments = ['-c', %('echo 'hi' 2> printf' && sleep 0.05 && doesnotexist)]
+        command = described_class.new executable: '/bin/bash', arguments: arguments
         lines = []
         allow(Biosphere::Log).to receive(:debug) do |*args, &block|
           expect(args).to be_empty
           lines << block.call
           expect(lines.last).to eq 'Switching working directory to: /tmp' if lines.size == 1
-          expect(lines.last).to eq %(Running command: /bin/bash -c 'echo 'hi' 2> printf' && doesnotexist) if lines.size == 2
+          expected_command = %(/bin/bash -c 'echo 'hi' 2> printf' && sleep 0.05 && doesnotexist)
+          expect(lines.last).to eq %(Running command: #{expected_command}) if lines.size == 2
           expect(lines.last).to include 'Command runs with PID ' if lines.size == 3
           expect(lines.last).to eq "  STDOUT: hi\n" if lines.size == 4
           expect(lines.last).to eq "  STDERR: sh: doesnotexist: command not found\n" if lines.size == 5

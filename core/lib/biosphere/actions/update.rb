@@ -1,6 +1,8 @@
 require 'biosphere/action'
 require 'biosphere/actions/activate'
 require 'biosphere/paths'
+require 'biosphere/resources/command'
+require 'biosphere/spheres'
 require 'biosphere/resources/sphere'
 require 'biosphere/augmentations'
 require 'ostruct'
@@ -11,11 +13,11 @@ module Biosphere
 
       Options = Class.new(OpenStruct)
 
-      def initialize(args)
+      def initialize(args = [])
         @args = args
       end
 
-      def perform
+      def call
         return help if Runtime.help_mode?
 
         Log.separator
@@ -30,6 +32,8 @@ module Biosphere
 
       private
 
+      attr_reader :args
+
       def help
         'Coming soon ...'
       end
@@ -37,27 +41,16 @@ module Biosphere
       def update_system
         work_tree = Paths.biosphere_home
         git_dir = work_tree.join('.git')
-        result = Resources::Command.run :executable => 'git', :arguments => %W{ --work-tree #{work_tree} --git-dir #{git_dir} pull origin master }, :show_output => true
+        arguments = %W(--work-tree #{work_tree} --git-dir #{git_dir} pull origin master)
+        result = Resources::Command.new(executable: 'git', arguments: arguments, show_output: true).call
+
         if result.success?
-          Log.info "Biosphere was updated."
+          Log.info { '  Biosphere was updated.' }
         else
-          message = "Could not update Biosphere: #{result.stdout.strip} #{result.stderr.strip}"
-          Log.error message
-          raise Errors::CouldNotUpdateBiosphere, message
-        end
-      end
-
-      def reactivate
-        Action.perform %w{ activate }
-      end
-
-      def relevant_spheres
-        if @args.empty?
-          Resources::Sphere.all
-        else
-          @args.map do |name|
-            Resources::Sphere.find(name)
-          end.compact
+          Log.separator
+          Log.error { "  Could not update Biosphere at #{work_tree} \n#{result.indented_output}".red }
+          Log.separator
+          raise Errors::CouldNotUpdateBiosphere
         end
       end
 
@@ -66,14 +59,26 @@ module Biosphere
           result = sphere.update
           if result
             if result.success?
-              Log.info "Successfully updated Sphere #{sphere.name.bold}"
+              Log.info { "Successfully updated Sphere #{sphere.name.bold}" }
             else
-              Log.error "There were problems updating the Sphere #{sphere.name.bold}".red
+              Log.error { "There were problems updating the Sphere #{sphere.name.bold}".red }
             end
             Log.separator
           else
             # Sphere is handled manually
           end
+        end
+      end
+
+      def reactivate
+        Action.new(['activate']).call
+      end
+
+      def relevant_spheres
+        if args.empty?
+          Spheres.all
+        else
+          Resources::Sphere.find(args.first)
         end
       end
 
@@ -86,7 +91,7 @@ module Biosphere
               result[:system] = value
             end
 
-          end.parse!(@args)
+          end.parse!(args)
           Options.new result
         end
       end

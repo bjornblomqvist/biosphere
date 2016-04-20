@@ -10,7 +10,7 @@ module Biosphere
 
       Options = Class.new(OpenStruct)
 
-      def initialize(args)
+      def initialize(args = [])
         @args = args
       end
 
@@ -37,7 +37,7 @@ module Biosphere
         @options ||= begin
           result = {}
           OptionParser.new do |parser|
-            parser.on("--short") { |v| result[:short] = v }
+            parser.on('--short') { |v| result[:short] = v }
           end.parse!(@args)
           Options.new result
         end

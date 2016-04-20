@@ -23,6 +23,16 @@ module Biosphere
         Log.separator
         if options.system
           update_system
+        elsif relevant_spheres.empty?
+          if args.empty?
+            Log.info { '  You have no Spheres. '.yellow }
+            Log.info { '  Try '.yellow + 'bio create --help'.bold.cyan + ' for instructions.'.yellow }
+          else
+            Log.info { '  The Sphere '.red + args.first.to_s.bold.red + ' does not exist.'.red }
+            Log.info { '  Try '.red + 'bio list'.bold.cyan + ' to see your Spheres.'.red }
+            Log.separator
+            raise Errors::SphereNotFound
+          end
         else
           update
           reactivate
@@ -40,10 +50,11 @@ module Biosphere
 
       def update_system
         result = update_command.call
+        Log.separator
         if result.success?
-          Log.info { '  Biosphere was updated.' }
-        else
+          Log.info { '  Biosphere was updated.'.green }
           Log.separator
+        else
           Log.error { "  Could not update Biosphere at #{Paths.biosphere_home} \n#{result.indented_output}".red }
           Log.separator
           raise Errors::CouldNotUpdateBiosphere
@@ -59,16 +70,13 @@ module Biosphere
       def update
         relevant_spheres.each do |sphere|
           result = sphere.update
-          if result
-            if result.success?
-              Log.info { "Successfully updated Sphere #{sphere.name.bold}" }
-            else
-              Log.error { "There were problems updating the Sphere #{sphere.name.bold}".red }
-            end
-            Log.separator
+          next unless result
+          if result.success?
+            Log.info { "  Successfully updated Sphere #{sphere.name.bold}".green }
           else
-            # Sphere is handled manually
+            Log.error { "  There were problems updating the Sphere #{sphere.name.bold}".red }
           end
+          Log.separator
         end
       end
 
@@ -80,7 +88,7 @@ module Biosphere
         if args.empty?
           Spheres.all
         else
-          Resources::Sphere.find(name)
+          [Spheres.find(args.first)].compact
         end
       end
 

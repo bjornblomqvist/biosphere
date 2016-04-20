@@ -18,7 +18,12 @@ module Biosphere
         return help if Runtime.help_mode?
 
         Log.separator
-        list
+        if spheres.empty?
+          Log.info { '  You have no Spheres. '.yellow }
+          Log.info { '  Try '.yellow + 'bio create --help'.bold.cyan + ' for instructions.'.yellow }
+        else
+          list
+        end
         Log.separator
       end
 
@@ -33,11 +38,15 @@ module Biosphere
       end
 
       def list
-        Spheres.all.sort.reverse.each do |sphere|
+        spheres.each do |sphere|
           name = sphere.name.ljust(15)
 
           Log.info { "  #{name}" + " Managed by #{sphere.manager.to_s.bold}".cyan }
         end
+      end
+
+      def spheres
+        Spheres.all.sort.reverse
       end
 
     end

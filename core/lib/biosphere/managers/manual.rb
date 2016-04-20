@@ -6,7 +6,7 @@ module Biosphere
     class Manual < Default
 
       def call
-        Log.info { "Not updating sphere #{sphere.name.bold} because it is handled manually." }
+        Log.info { "  Not updating sphere #{sphere.name.bold}".yellow + " because it is handled manually.".yellow }
       end
 
       def name

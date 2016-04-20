@@ -90,11 +90,19 @@ module Biosphere
       end
     end
 
+    # The git command to update the biosphere core failed.
     class CouldNotUpdateBiosphere < Error
       def code
         40
       end
     end
-    
+
+    # Cannot update or activate a sphere that does not exist.
+    class SphereNotFound < Error
+      def code
+        42
+      end
+    end
+
   end
 end

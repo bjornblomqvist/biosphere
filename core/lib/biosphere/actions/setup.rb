@@ -54,7 +54,7 @@ module Biosphere
         if Paths.zshenv.exist?
           augment_zshenv!
         else
-          Log.debug { '  There is no '.yellow + Paths.zshenv.to_s.yellow.bold + ' so I think you do not use z-shell.'.yellow }
+          Log.debug { 'There is no '.yellow + Paths.zshenv.to_s.yellow.bold + ' so I think you do not use z-shell.'.yellow }
         end
       end
 

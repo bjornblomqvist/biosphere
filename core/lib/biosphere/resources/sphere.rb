@@ -80,7 +80,7 @@ module Biosphere
 
       def create_directory!
         if path.exist?
-          Log.info { "  Sphere #{name.inspect} already exists at ".yellow + path.to_s.yellow.bold }
+          Log.info { "  Sphere #{name.bold}".yellow + " already exists at ".yellow + path.to_s.yellow.bold }
         else
           Log.info { "  Creating new Sphere #{name.inspect} at ".green + path.to_s.green.bold }
           Resources::Directory.create path
@@ -89,7 +89,7 @@ module Biosphere
 
       def create_config_file!
         if config_file_path.exist?
-          Log.debug { '  Config file already exists at '.yellow + config_file_path.to_s.yellow.bold }
+          Log.debug { 'Config file already exists at '.yellow + config_file_path.to_s.yellow.bold }
         else
           Log.info { '  Creating new example config file at '.green + config_file_path.to_s.green.bold }
           Resources::File.write config_file_path, Spheres::Config.template

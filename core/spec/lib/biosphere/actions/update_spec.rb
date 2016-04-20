@@ -4,7 +4,7 @@ require 'biosphere/actions/update'
 RSpec.describe Biosphere::Actions::Update do
 
   describe 'call' do
-    context 'updating the biosphere system core' do
+    context 'updating biosphere core fails' do
       it 'uses git to update the repository' do
         system %(cd #{Biosphere::Paths.biosphere_home} && git init > /dev/null)
         system %(cd #{Biosphere::Paths.biosphere_home} && git remote add origin remote.example.com)
@@ -13,16 +13,36 @@ RSpec.describe Biosphere::Actions::Update do
         allow(Biosphere::Log).to receive(:info) do |*args, &block|
           expect(args).to be_empty
           lines << block.call
-          expect(lines.last).to include %(does not appear to be a git repository) if lines.size == 1
+          expect(lines.last).to include %(remote.example.com' does not appear to be a git repository) if lines.size == 1
         end
 
         expect { described_class.new(['--system']).call }.to raise_error Biosphere::Errors::CouldNotUpdateBiosphere
       end
     end
 
-    context 'updating the sphere' do
+    context 'updating biosphere core succeeds' do
+      it 'succeeds' do
+        action = described_class.new(['--system'])
+        dummy_command = Biosphere::Resources::Command.new executable: 'whoami'
+        allow(action).to receive(:update_command).and_return dummy_command
+
+        lines = []
+        allow(Biosphere::Log).to receive(:info) do |*args, &block|
+          expect(args).to be_empty
+          lines << block.call
+          expect(lines.last).to include %(Biosphere was updated) if lines.size == 1
+        end
+
+        action.call
+      end
+    end
+
+    context 'updating a specific sphere' do
       it '' do
-        described_class.new.call
+        sphere = Biosphere::Resources::Sphere.new('test1').create!
+        sphere = Biosphere::Resources::Sphere.new('test2').create!
+
+        described_class.new(['test1']).call
       end
     end
 

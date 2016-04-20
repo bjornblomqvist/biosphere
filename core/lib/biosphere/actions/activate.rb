@@ -35,17 +35,17 @@ module Biosphere
 
       def activate
         unless sphere_to_activate
-          Log.info { "No Sphere to (re-)activate." }
+          Log.info { "  No Sphere to activate.".yellow }
           return
         end
 
         unless spheres_to_deactivate.empty?
-          Log.info { "Deactivating Spheres #{spheres_to_deactivate.map(&:name).join(', ')}..." }
+          Log.info { "  Deactivating Spheres #{spheres_to_deactivate.map(&:name).join(', ').bold}".green + ".".green }
           spheres_to_deactivate.each(&:deactivate!)
         end
 
         if sphere_to_activate
-          Log.info { "Activating Sphere #{sphere_to_activate.map(&:name).join(', ')}..." }
+          Log.info { "  Activating Sphere #{sphere_to_activate.name.bold}".green + ".".green }
           sphere_to_activate.activate!
         end
       end

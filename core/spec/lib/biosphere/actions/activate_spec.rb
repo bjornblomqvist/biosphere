@@ -8,7 +8,7 @@ RSpec.describe Biosphere::Actions::Activate do
       it 'does nothing' do
         expect(Biosphere::Log).to receive(:info) do |*args, &block|
           expect(args).to be_empty
-          expect(block.call).to eq "No Sphere to (re-)activate."
+          expect(block.call).to include "No Sphere to activate."
         end
 
         #Biosphere::Paths.biosphere_home = Dir.mktmpdir

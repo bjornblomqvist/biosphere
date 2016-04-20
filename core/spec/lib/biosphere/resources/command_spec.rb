@@ -82,7 +82,8 @@ RSpec.describe Biosphere::Resources::Command do
           expect(lines.last).to eq %(Running command: #{expected_command}) if lines.size == 2
           expect(lines.last).to include 'Command runs with PID ' if lines.size == 3
           expect(lines.last).to eq "  STDOUT: hi\n" if lines.size == 4
-          expect(lines.last).to eq "  STDERR: sh: doesnotexist: command not found\n" if lines.size == 5
+          expect(lines.last).to include '  STDERR: sh: ' if lines.size == 5
+          expect(lines.last).to include "doesnotexist: command not found\n" if lines.size == 5
           expect(lines.last).to include 'Command exited with pid' if lines.size == 6
           expect(lines.last).to include 'exit 0' if lines.size == 7
         end

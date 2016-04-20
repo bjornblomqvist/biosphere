@@ -13,7 +13,7 @@ module Biosphere
 
       def ensure_installed
         return true if exists?
-        Log.info "Installing gem #{name.to_s.bold} version #{version.bold}..."
+        Log.info { "Installing gem #{name.to_s.bold} version #{version.bold}..." }
         install.success?
       end
 
@@ -40,11 +40,11 @@ module Biosphere
         if Runtime.debug_mode?
           arguments << '--verbose'
         end
-        result = Resources::Command.run :executable => Paths.gem_executable, :arguments => arguments
+        result = Resources::Command.new(executable: Paths.gem_executable, arguments: arguments).call
         if result.success?
-          Log.debug "Successfully installed gem #{name.to_s.bold} version #{version.bold}"
+          Log.debug { "Successfully installed gem #{name.to_s.bold} version #{version.bold}" }
         else
-          Log.error "Could not install gem #{name.to_s.bold}".red + ' version '.red + version.bold.red + '. Are you online?'.red
+          Log.error { "Could not install gem #{name.to_s.bold}".red + ' version '.red + version.bold.red + '. Are you online?'.red }
         end
         result
       end

@@ -29,7 +29,7 @@ module Biosphere
 
       def chef_command
         arguments = [chef_solo_executable_path, '--config', chef_knife_config_path, '--json-attributes', chef_json_path]
-        Resources::Command.new :show_output => true, :indent => 4, :env_vars => default_env_vars, :executable => Paths.ruby_executable, :arguments => arguments
+        Resources::Command.new :show_output => true, :env_vars => default_env_vars, :executable => Paths.ruby_executable, :arguments => arguments
       end
 
       def ensure_knife_config
@@ -48,18 +48,18 @@ module Biosphere
       end
 
       def clone_cookbooks
-        Log.info "Cloning remote cookbooks from #{cookbooks_repo}"
-        Log.info "Cloning into #{cookbooks_repo_path}"
-        result = Resources::Command.run :executable => 'git', :arguments => %W{ clone #{cookbooks_repo} #{cookbooks_repo_path} }
+        Log.info { "Cloning remote cookbooks from #{cookbooks_repo}" }
+        Log.info { "Cloning into #{cookbooks_repo_path}" }
+        result = Resources::Command.new(:executable => 'git', :arguments => %W{ clone #{cookbooks_repo} #{cookbooks_repo_path} }).call
       end
 
       def update_cookbooks
-        Log.info "Updating remote cookbooks from #{cookbooks_repo}"
+        Log.info { "Updating remote cookbooks from #{cookbooks_repo}" }
         work_tree = cookbooks_repo_path
         git_dir = cookbooks_repo_path.join('.git')
-        result = Resources::Command.run :executable => 'git', :arguments => %W{ --work-tree #{work_tree} --git-dir #{git_dir} pull origin master }
+        result = Resources::Command.new(:executable => 'git', :arguments => %W{ --work-tree #{work_tree} --git-dir #{git_dir} pull origin master }).call
         if result.success?
-          Log.info "Cookbooks were updated."
+          Log.info { "Cookbooks were updated." }
         else
           message = "Could not update cookbooks: #{result.stdout.strip} #{result.stderr.strip}"
           Log.error message
@@ -71,7 +71,7 @@ module Biosphere
         return unless config.cookbooks_repo
         @cookbooks_repo ||= begin
           result = Pathname.new config.cookbooks_repo
-          Log.debug "The remote cookbooks repository is located at #{result}"
+          Log.debug { "The remote cookbooks repository is located at #{result}" }
           result
         end
       end
@@ -79,7 +79,7 @@ module Biosphere
       def cookbooks_repo_name
         @cookbooks_repo_name ||= begin
           result = File.basename cookbooks_repo.to_s.split('/').last, '.*'
-          Log.debug "The cookbooks repository name is #{result}"
+          Log.debug { "The cookbooks repository name is #{result}" }
           result
         end
       end
@@ -91,14 +91,14 @@ module Biosphere
       def cookbooks_path
         @cookbooks_path ||= begin
           paths = Array(knife_config[:cookbooks_path])
-          Log.debug "sphere.yml specified the following cookbooks_path: #{paths.inspect}"
+          Log.debug { "sphere.yml specified the following cookbooks_path: #{paths.inspect}" }
           if cookbooks_repo.to_s == ""
             paths = paths.map { |path| File.expand_path(path) }
             result = paths.join(' ')
           else
             result = cookbooks_repo_path.join paths.first
           end
-          Log.debug "Using cookbooks located at #{result}"
+          Log.debug { "Using cookbooks located at #{result}" }
           result
         end
       end
@@ -106,7 +106,7 @@ module Biosphere
       def cookbooks_container_path
         @cookbooks_container_path ||= begin
           result = sphere.path.join('cookbooks')
-          Log.debug "The cookbooks container is located at #{result.to_s}"
+          Log.debug { "The cookbooks container is located at #{result.to_s}" }
           result
         end
       end

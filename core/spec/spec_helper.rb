@@ -45,7 +45,7 @@ RSpec.configure do |config|
       Dir.mktmpdir do |biosphere_home|
         Pathname.home_path = home_dir
         Biosphere::Paths.biosphere_home = biosphere_home
-        example.run
+        example.call
       end
     end
   end

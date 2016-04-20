@@ -36,9 +36,9 @@ module Biosphere
       end
 
       def run_chef
-        Log.info "Running chef to update sphere #{sphere.name.bold}..."
+        Log.info { "Running chef to update sphere #{sphere.name.bold}..." }
         Log.separator
-        result = chef_command.run
+        result = chef_command.call
         Log.separator
         result
       end
@@ -49,11 +49,11 @@ module Biosphere
 
       def knife_config
         {
-          :chef_server_url  => 'localhost',
-          :validation_key   => nil,
-          :node_name        => 'default_node_name.biosphere',
-          :log_level        => (Runtime.debug_mode? ? :debug : :info),
-          :verbose_logging  => (Runtime.debug_mode? ? true : false),
+          chef_server_url:  'http://localhost',
+          validation_key:   nil,
+          node_name:        'default_node_name.biosphere',
+          log_level:        (Runtime.debug_mode? ? :debug : :info),
+          verbose_logging:  (Runtime.debug_mode? ? true : false),
         }.merge(config.to_h.symbolize_keys)
       end
 
@@ -76,19 +76,27 @@ module Biosphere
       end
 
       def chef_client_key_path
-        workdir_path.join('client_keys').create
+        result = workdir_path.join('client_keys')
+        result.mkpath
+        result
       end
 
       def chef_checksums_path
-        chef_workdir_path.join('checksums').create
+        result = chef_workdir_path.join('checksums')
+        result.mkpath
+        result
       end
 
       def chef_cache_path
-        chef_workdir_path.join('cache').create
+        result = chef_workdir_path.join('cache')
+        result.mkpath
+        result
       end
 
       def chef_backups_path
-       chef_workdir_path.join('backups').create
+       result = chef_workdir_path.join('backups')
+       result.mkpath
+       result
       end
 
       def chef_knife_config_path
@@ -96,11 +104,15 @@ module Biosphere
       end
 
       def chef_workdir_path
-        workdir_path.join('cache').create
+        result = workdir_path.join('cache')
+        result.mkpath
+        result
       end
 
       def workdir_path
-        sphere.cache_path.join('chef').create
+        result = sphere.cache_path.join('chef')
+        result.mkpath
+        result
       end
 
       def ensure_chef

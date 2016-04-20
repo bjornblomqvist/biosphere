@@ -20,7 +20,7 @@ module Biosphere
       def chef_command
         arguments = [chef_client_executable_path, '--config', chef_knife_config_path]
         arguments += ['--override-runlist', knife_config[:override_runlist]] if knife_config[:override_runlist]
-        Resources::Command.new :show_output => true, :indent => 4, :env_vars => default_env_vars, :executable => Paths.ruby_executable, :arguments => arguments
+        Resources::Command.new :show_output => true, :env_vars => default_env_vars, :executable => Paths.ruby_executable, :arguments => arguments
       end
 
       def chef_client_executable_path

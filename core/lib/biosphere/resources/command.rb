@@ -9,7 +9,7 @@ module Biosphere
 
       attr_reader :working_directory, :executable, :show_output, :indent
 
-      def initialize(working_directory: '/tmp', executable: 'whoami', arguments: [], env_vars: {}, show_output: false, indent: 4)
+      def initialize(working_directory: '/tmp', executable: 'whoami', arguments: [], env_vars: {}, show_output: false, indent: 2)
         @working_directory = working_directory
         @executable        = executable
         @arguments         = arguments

@@ -29,7 +29,7 @@ module Biosphere
 
       def default_env_vars
         {
-          'GEM_HOME'                            => Resources::Gem.rubygems_path,
+          'GEM_HOME'                            => Paths.vendor_gems,
           'BIOSPHERE_HOME'                      => Paths.biosphere_home,
           'BIOSPHERE_SPHERE_NAME'               => sphere.name,
           'BIOSPHERE_SPHERE_PATH'               => sphere.path,

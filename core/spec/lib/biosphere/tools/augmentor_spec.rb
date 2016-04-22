@@ -4,21 +4,12 @@ require 'biosphere/tools/augmentor'
 
 RSpec.describe Biosphere::Tools::Augmentor do
 
-  #let(:file)        {  }
-  #let(:path)        { Pathname.new(file.path) }
-  #let(:content)     { 'Merry Christmas' }
-  #let(:new_content) { 'Be happy' }
-  #let(:augmentor)   { Biosphere::Tools::Augmentor.new :file => path, :content => content }
-  #
-  #after do
-  #  file.close
-  #  file.unlink
-  #end
-
   describe '#perform' do
     context 'file is empty' do
       it 'inserts the content' do
-        path = Pathname.new Tempfile.new('target')
+        workdir = Pathname.new Dir.mktmpdir
+        path = workdir.join 'some_file'
+        path.open('w') { |io| io.write nil }
         augmentor = described_class.new file: path, content: 'Merry Christmas'
         expect(path.read).to be_empty  # Just making really sure
         augmentor.perform
@@ -37,7 +28,9 @@ RSpec.describe Biosphere::Tools::Augmentor do
 
     context 'file is augmented differently' do
       it 'modifies the augmentation' do
-        path = Pathname.new Tempfile.new('target')
+        workdir = Pathname.new Dir.mktmpdir
+        path = workdir.join 'some_file'
+        path.open('w') { |io| io.write nil }
         augmentor1 = described_class.new file: path, content: 'Merry Christmas'
         augmentor2 = described_class.new file: path, content: 'Be happy'
         augmentor1.perform

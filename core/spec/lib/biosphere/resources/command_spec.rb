@@ -55,12 +55,9 @@ RSpec.describe Biosphere::Resources::Command do
         allow(Biosphere::Log).to receive(:info) do |*args, &block|
           expect(args).to be_empty
           lines << block.call
-          sentences = [
-            # Tree spaces as indentation and fainted color
-            "   \e[2mindented\e[22m\e[0m",
-            "   \e[2msh: this_writes_to_stderr: command not found\e[22m\e[0m"
-          ]
-          expect(sentences).to include lines.last
+          expect(lines.last).to include 'indented' if lines.size == 2
+          expect(lines.last).to include 'this_writes_to_stderr' if lines.size == 3
+          expect(lines.last).to include 'not found' if lines.size == 3
         end
         result = command.call
         expect(result.stderr).to include 'command not found'

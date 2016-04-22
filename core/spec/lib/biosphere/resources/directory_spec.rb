@@ -17,17 +17,18 @@ RSpec.describe Biosphere::Resources::Directory do
 
   describe 'clear' do
     context 'directory is already empty' do
-      it 'deletes all files' do
+      it 'deletes all files, but not hidden ones' do
         workdir = Pathname.new Dir.mktmpdir
         workdir.join('file1').open('w') { |io| io.write nil }
         workdir.join('file2').open('w') { |io| io.write nil }
+        workdir.join('.i_am_hidden').open('w') { |io| io.write nil }
         workdir.join('subdir').mkdir
 
-        expect(workdir.children.size).to eq 3
+        expect(workdir.children.size).to eq 4
         directory = described_class.new workdir.to_s
         operation = directory.clear
         expect(operation).to be_instance_of described_class
-        expect(workdir.children.size).to eq 1
+        expect(workdir.children.size).to eq 2
       end
     end
   end

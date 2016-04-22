@@ -25,6 +25,7 @@ module Biosphere
         Log.debug { "Deleting all files in directory #{path}" }
 
         files.each do |file_path|
+          next if file_path.basename.to_s.start_with?('.')
           Log.debug { "Deleting #{file_path}" }
           file_path.delete
         end

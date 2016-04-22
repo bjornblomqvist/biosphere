@@ -52,12 +52,13 @@ RSpec.describe Biosphere::Resources::Command do
       it 'indents and strips the output' do
         command = described_class.new executable: '/bin/bash', arguments: ['-c', %('echo -n " indented "' && this_writes_to_stderr)], show_output: true, indent: 3
         lines = []
+        checks = 0
         allow(Biosphere::Log).to receive(:info) do |*args, &block|
           expect(args).to be_empty
-          lines << block.call
-          expect(lines.last).to include 'indented' if lines.size == 2
-          expect(lines.last).to include 'this_writes_to_stderr' if lines.size == 3
-          expect(lines.last).to include 'not found' if lines.size == 3
+          checks += 1 if block.call.include?('indented')
+          checks += 1 if block.call.include?('not found')
+          checks += 1 if block.call.include?('this_writes_to_stderr')
+          expect(checks).to eq 3 if lines.size == 2
         end
         result = command.call
         expect(result.stderr).to include 'command not found'

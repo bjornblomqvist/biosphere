@@ -61,7 +61,7 @@ RSpec.describe Biosphere::Resources::Command do
           expect(checks).to eq 3 if lines.size == 2
         end
         result = command.call
-        expect(result.stderr).to include 'command not found'
+        expect(result.stderr).to include 'not found'
         expect(result.stdout).to eq ' indented '
       end
     end

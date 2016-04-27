@@ -2,11 +2,11 @@ source 'https://rubygems.org'
 
 group :development, :test do
   gem 'rspec', '3.4.0'
-  gem 'rubocop', '0.38.0'
+  gem 'rubocop', '0.39.0'
 end
 
 group :development do
-  gem 'guard-rspec', '4.6.4'
+  gem 'guard-rspec', '4.6.5'
   gem 'rb-fsevent', '0.9.7'
   gem 'rb-readline', '0.5.3'
 end

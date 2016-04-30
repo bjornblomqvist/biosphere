@@ -111,5 +111,24 @@ module Biosphere
       end
     end
 
+    class CouldNotUpdateRemoteCookbooks < Error
+      def code
+        67
+      end
+    end
+
+    class NoCookbooksPathDefined < Error
+      def code
+        68
+      end
+    end
+
+    class CouldNotCloneRemoteCookbooks < Error
+      def code
+        69
+      end
+    end
+
+
   end
 end

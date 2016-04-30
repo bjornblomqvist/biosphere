@@ -70,13 +70,15 @@ module Biosphere
       def update
         relevant_spheres.each do |sphere|
           result = sphere.update
-          next unless result
-          if result.success?
-            Log.info { "  Successfully updated Sphere #{sphere.name.bold}".green }
+          if result
+            if result.success?
+              Log.info { "  Successfully updated Sphere #{sphere.name.bold}".green }
+            else
+              Log.error { "  There were problems updating the Sphere #{sphere.name.bold}".red }
+            end
           else
-            Log.error { "  There were problems updating the Sphere #{sphere.name.bold}".red }
+            Log.debug { "Sphere #{sphere.name} is not managed so it won't be updated." }
           end
-          Log.separator
         end
       end
 

@@ -21,11 +21,14 @@ if ENV['COVERAGE']
 end
 
 require 'tmpdir'
+require 'webmock'
 require 'biosphere/log'
 require 'biosphere/paths'
 require 'biosphere/runtime'
 
 Dir[File.expand_path('../spec/support/**/*.rb', File.dirname(__FILE__))].each { |f| require f }
+
+WebMock.disable_net_connect! # allow_localhost: true
 
 RSpec.configure do |config|
 
@@ -35,9 +38,7 @@ RSpec.configure do |config|
   #config.order = :random
 
   config.before do
-   # Pathname.home_path = '/dev/null/home'
     Biosphere::Runtime.env = :test
-    #Biosphere::Paths.biosphere_home = '/dev/null/biosphere'
   end
 
   config.around :each do |example|

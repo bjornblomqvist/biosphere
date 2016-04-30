@@ -22,6 +22,5 @@ require 'biosphere/actions/version'
 
 # Managers
 require 'biosphere/managers'
-require 'biosphere/managers/chefserver'
 require 'biosphere/managers/chefsolo'
 require 'biosphere/managers/manual'

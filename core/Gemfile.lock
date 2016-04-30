@@ -1,8 +1,11 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.4.0)
     ast (2.2.0)
     coderay (1.1.1)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     diff-lcs (1.2.5)
     docile (1.1.5)
     ffi (1.9.10)
@@ -21,6 +24,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    hashdiff (0.3.0)
     json (1.8.3)
     listen (3.0.6)
       rb-fsevent (>= 0.9.3)
@@ -63,6 +67,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.7.5)
+    safe_yaml (1.0.4)
     shellany (0.0.1)
     simplecov (0.11.2)
       docile (~> 1.1.0)
@@ -72,6 +77,10 @@ GEM
     slop (3.6.0)
     thor (0.19.1)
     unicode-display_width (1.0.3)
+    webmock (1.24.5)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
 
 PLATFORMS
   ruby
@@ -83,6 +92,7 @@ DEPENDENCIES
   rspec (= 3.4.0)
   rubocop (= 0.39.0)
   simplecov (= 0.11.2)
+  webmock (= 1.24.5)
 
 BUNDLED WITH
    1.12.0.rc

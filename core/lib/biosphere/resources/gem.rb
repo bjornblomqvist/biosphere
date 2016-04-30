@@ -12,7 +12,7 @@ module Biosphere
         @version = options[:version]
       end
 
-      def ensure_installed
+      def call
         return true if exists?
         Log.info { "Installing gem #{name.to_s.bold} version #{version.bold}..." }
         Log.info { 'This may take a while...' }

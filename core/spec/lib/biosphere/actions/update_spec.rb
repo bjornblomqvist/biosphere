@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'biosphere/actions/update'
+require 'biosphere/managers/chefsolo'
 
 RSpec.describe Biosphere::Actions::Update do
 
@@ -37,12 +38,25 @@ RSpec.describe Biosphere::Actions::Update do
       end
     end
 
-    context 'updating a specific sphere' do
-      it '' do
+    context 'updating a specific manual sphere' do
+      it 'does nothing' do
         sphere = Biosphere::Resources::Sphere.new('test1').create!
-        sphere = Biosphere::Resources::Sphere.new('test2').create!
 
         described_class.new(['test1']).call
+      end
+    end
+
+    context 'updating a specific sphere with remote cookbooks fail' do
+      it 'raises an error' do
+        sphere = Biosphere::Resources::Sphere.new('test1').create!
+        gem_installer = double(:gem_installer)
+        allow(gem_installer).to receive(:call).and_return true
+        allow(gem_installer).to receive(:executables_path).and_return Pathname.new('/dev/null/gems_executables')
+        allow(Biosphere::Resources::Gem).to receive(:new).and_return gem_installer
+        config_file = sphere.send(:config_file_path)
+        config_file.open('w') { |io| io.write "manager:\n  chefsolo:\n    cookbooks_repo: /dev/null/remote.git\n    cookbooks_path: example" }
+
+        expect { described_class.new(['test1']).call }.to raise_error Biosphere::Errors::CouldNotCloneRemoteCookbooks
       end
     end
 
@@ -52,37 +66,32 @@ RSpec.describe Biosphere::Actions::Update do
         described_class.new.call
       end
     end
+
+    context 'there are no spheres' do
+      it 'does nothing' do
+        lines = []
+        allow(Biosphere::Log).to receive(:info) do |*args, &block|
+          expect(args).to be_empty
+          lines << block.call
+          expect(lines.last).to include %(You have no Spheres) if lines.size == 1
+        end
+
+        described_class.new().call
+      end
+    end
+
+    context 'specified sphere does not exist' do
+      it 'raises an error' do
+        lines = []
+        allow(Biosphere::Log).to receive(:info) do |*args, &block|
+          expect(args).to be_empty
+          lines << block.call
+          expect(lines.last).to include %(does not exist) if lines.size == 1
+        end
+
+        expect { described_class.new(['notyou']).call }.to raise_error Biosphere::Errors::SphereNotFound
+      end
+    end
   end
-
-
-  #context 'no arguments' do
-  #  describe '.perform' do
-  #    it 'updates all spheres and triggers a global reactivation' do
-  #      expect(Biosphere::Resources::Sphere).to receive(:all).with(no_args()).and_return spheres
-  #      expect(sphere1).to receive(:update).with(no_args())
-  #      expect(sphere2).to receive(:update).with(no_args())
-  #      expect(sphere3).to receive(:update).with(no_args())
-  #      expect(Biosphere::Action).to receive(:perform).with(%w{ activate })
-  #      action.perform
-  #    end
-  #  end
-  #end
-
- #context 'with arguments' do
- #  before do
- #    @args = %w{ project work }
- #  end
- #
- #  describe '.perform' do
- #    it 'updates the specified spheres and triggers a global reactivation' do
- #      expect(Biosphere::Resources::Sphere).to receive(:find).with('work').and_return sphere1
- #      expect(Biosphere::Resources::Sphere).to receive(:find).with('project').and_return sphere3
- #      expect(sphere1).to receive(:update).with(no_args())
- #      expect(sphere3).to receive(:update).with(no_args())
- #      expect(Biosphere::Action).to receive(:perform).with(%w{ activate })
- #      action.perform
- #    end
- #  end
- #end
 
 end

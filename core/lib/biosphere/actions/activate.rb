@@ -69,7 +69,7 @@ module Biosphere
       end
 
       def spheres_to_deactivate
-        Spheres.activated - [sphere_to_activate]
+        Spheres.activated.reject { |sphere| sphere == sphere_to_activate }
       end
 
     end

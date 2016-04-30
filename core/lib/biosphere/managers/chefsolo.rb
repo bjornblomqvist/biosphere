@@ -42,10 +42,10 @@ module Biosphere
 
       def ensure_cookbooks
         if remote_cookbooks?
-          Log.error { 'You specified the `cookbooks_repo:` option in your sphere.yml so I will now sync with those remote cookbooks.' }
+          Log.debug { 'You specified the `cookbooks_repo:` option in your sphere.yml so I will now sync with those remote cookbooks.' }
           load_remote_cookbooks
         else
-          Log.error { 'You did not specify any `cookbooks_repo:` in your sphere.yml so there are no remote cookbooks to sync with.' }
+          Log.debug { 'You did not specify any `cookbooks_repo:` in your sphere.yml so there are no remote cookbooks to sync with.' }
           load_local_cookbooks
         end
       end

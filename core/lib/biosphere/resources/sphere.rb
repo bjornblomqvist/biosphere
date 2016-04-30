@@ -64,6 +64,10 @@ module Biosphere
         other.name <=> name
       end
 
+      def ==(other)
+        other.name == name
+      end
+
       def augmentations_path
         Directory.create(path.join('augmentations')).path
       end

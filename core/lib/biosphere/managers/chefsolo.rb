@@ -33,24 +33,40 @@ module Biosphere
       private
 
       def call!
-        chef_zero_gem.call
+        chef_zero_gem.call unless use_inbuilt_chef?
         chef_gem.call
-        load_remote_cookbooks
-        ensure_knife_config
         ensure_cookbooks
+        ensure_knife_config
         run_chef
       end
 
-      def load_remote_cookbooks
-        unless remote_cookbooks?
+      def ensure_cookbooks
+        if remote_cookbooks?
+          Log.error { 'You specified the `cookbooks_repo:` option in your sphere.yml so I will now sync with those remote cookbooks.' }
+          load_remote_cookbooks
+        else
           Log.error { 'You did not specify any `cookbooks_repo:` in your sphere.yml so there are no remote cookbooks to sync with.' }
-          return
+          load_local_cookbooks
         end
+      end
 
+      def load_remote_cookbooks
         if cookbooks_path.exist?
           update_cookbooks
         else
           clone_cookbooks
+        end
+      end
+
+      def load_local_cookbooks
+        if config.cookbooks_path.to_s == ''
+          Log.error { 'You did not specify any `cookbooks_path:` in your sphere.yml.' }
+          raise Errors::NoCookbooksPathDefined
+        elsif !cookbooks_path.exist?
+          Log.error { "Could not find any cookbooks at #{config.cookbooks_path.inspect} which you specified as `cookbooks_path:` in your sphere.yml" }
+          raise Errors::LocalCookbooksNotFound
+        else
+          Log.debug { "I found the local cookbooks #{config.cookbooks_path.inspect} you specified as `cookbooks_path:` in your sphere.yml" }
         end
       end
 
@@ -68,6 +84,23 @@ module Biosphere
         end
       end
 
+      def update_cookbooks
+        Log.info { "Updating remote cookbooks from #{cookbooks_repo}" }
+        result = update_cookbooks_command.call
+
+        if result.success?
+          Log.info { "Cookbooks were updated." }
+        else
+          Log.error { "Could not update cookbooks: #{result.stdout.strip} #{result.stderr.strip}" }
+          raise Errors::CouldNotUpdateRemoteCookbooks
+        end
+      end
+
+      def update_cookbooks_command
+        arguments = %W(--work-tree #{cookbooks_repo_path} --git-dir #{cookbooks_repo_path.join('.git')} pull origin master)
+        Resources::Command.new executable: :git, arguments: arguments
+      end
+
       def ensure_knife_config
         Resources::File.write chef_knife_config_path, knife_config_template
         Resources::File.write chef_json_path, chef_json_template
@@ -77,59 +110,29 @@ module Biosphere
         Log.info { "Running chef solo to update sphere #{sphere.name.bold}..." }
         Log.separator
         result = chef_command.call
+        if result.success?
+          Log.debug { "Chef solo ran successfully." }
+        else
+          Log.error { "Chef failed to run." }
+          raise Errors::ChefSoloRunFailed
+        end
         Log.separator
         result
-      end
-
-      def command_line_arguments
-        [chef_solo_executable_path, '--config', chef_knife_config_path, '--json-attributes', chef_json_path]
       end
 
       def chef_command
         Resources::Command.new show_output: true,
                                env_vars: env_vars,
                                executable: Paths.ruby_executable,
-                               arguments: command_line_arguments
+                               arguments: chef_arguments
+      end
+
+      def chef_arguments
+        [chef_solo_executable_path, '--config', chef_knife_config_path, '--json-attributes', chef_json_path]
       end
 
       def remote_cookbooks?
         config.cookbooks_repo.to_s != ''
-      end
-
-      #def local_cookbooks?
-      #  !remote_cookbooks?
-      #end
-
-      def ensure_cookbooks
-        if cookbooks_path && !cookbooks_path.exist?
-          Log.error { "You did not specify where to find the cookbooks by using `cookbooks_path: /some/path` in your sphere.yml." }
-        end
-      end
-
-
-      def update_cookbooks
-        return if @updated_cookbooks
-        if config.cookbooks_repo.to_s == ''
-          Log.info { 'Not updating cookbooks because there is no remote' }
-          return
-        end
-
-        Log.info { "Updating remote cookbooks from #{cookbooks_repo}" }
-        result = update_cookbooks_command.call
-
-        if result.success?
-          Log.info { "Cookbooks were updated." }
-          @updated_cookbooks = true
-        else
-          message = "Could not update cookbooks: #{result.stdout.strip} #{result.stderr.strip}"
-          Log.error message
-          raise Errors::CouldNotUpdateRemoteCookbooks, message
-        end
-      end
-
-      def update_cookbooks_command
-        arguments = %W(--work-tree #{cookbooks_repo_path} --git-dir #{cookbooks_repo_path.join('.git')} pull origin master)
-        Resources::Command.new executable: :git, arguments: arguments
       end
 
       def cookbooks_repo
@@ -165,13 +168,6 @@ module Biosphere
       end
 
       def cookbooks_path!
-        if config.cookbooks_path.to_s == ''
-          Log.error { "You did not specify any `cookbooks_path:` in your sphere.yml." }
-          raise Errors::NoCookbooksPathDefined
-        else
-          Log.debug { "sphere.yml specified the following cookbooks_path: #{config.cookbooks_path.inspect}" }
-        end
-
         if config.cookbooks_repo.to_s == ''
           result = Pathname.new File.expand_path(config.cookbooks_path)
         else
@@ -190,6 +186,10 @@ module Biosphere
         Log.debug { "The cookbooks container is located at #{result.to_s}" }
         result
       end
+
+      # ––––––––––––––––––
+      # Chef configuration
+      # ––––––––––––––––––
 
       def chef_json_template
         %{{ "run_list": "#{chef_run_list}" }}
@@ -273,17 +273,22 @@ module Biosphere
       # Gem definitions
       # –––––––––––––––
 
-      # chef-zero is a dependency of chef. This is the last version to support Ruby 2.0.0
+      # The gem `chef-zero` is a dependency of chef. This is the last version to support Ruby 2.0.0
+      # Without specifying this version, it will install one that is too new for Ruby 2.0.0
       def chef_zero_gem
-        Resources::Gem.new(name: 'chef-zero', version: '4.5.0')
+        Resources::Gem.new name: 'chef-zero', version: '4.5.0'
       end
 
       def chef_gem
-        Resources::Gem.new(name: :chef, version: chef_version)
+        Resources::Gem.new name: :chef, version: chef_version
       end
 
       def chef_version
         config.chef_version || default_chef_version
+      end
+
+      def use_inbuilt_chef?
+        chef_version == default_chef_version
       end
 
       # Make sure it's compatible with the minimal Ruby version that Biosphere itself requires.

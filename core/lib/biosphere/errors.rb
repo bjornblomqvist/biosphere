@@ -129,6 +129,18 @@ module Biosphere
       end
     end
 
+    class LocalCookbooksNotFound < Error
+      def code
+        70
+      end
+    end
+
+    class ChefSoloRunFailed < Error
+      def code
+        71
+      end
+    end
+
 
   end
 end

@@ -147,5 +147,11 @@ module Biosphere
       end
     end
 
+    class NoCookbooksDefined < Error
+      def code
+        73
+      end
+    end
+
   end
 end

@@ -9,7 +9,7 @@ module Biosphere
         end
 
         def call
-          if config.cookbooks_path.to_s == ''
+          unless applicable?
             Log.debug { 'Your sphere.yml does not specify `cookbooks_path:` so there are no local cookbooks to use.' }
             return
           end
@@ -17,9 +17,18 @@ module Biosphere
           call!
         end
 
+        def path
+          return unless applicable?
+          Pathname.new config.cookbooks_path
+        end
+
         private
 
         attr_reader :sphere, :config
+
+        def applicable?
+          config.cookbooks_path.to_s != ''
+        end
 
         def deprecations
           return if config.cookbooks_path.to_s == ''
@@ -37,10 +46,6 @@ module Biosphere
             Log.error { "Please verify that #{path.to_s.inspect} is correct.".red }
             raise Errors::LocalCookbooksNotFound
           end
-        end
-
-        def path
-          Pathname.new config.cookbooks_path
         end
 
       end

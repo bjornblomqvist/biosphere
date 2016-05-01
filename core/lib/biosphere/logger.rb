@@ -20,7 +20,7 @@ module Biosphere
     end
 
     def error(&block)
-      puts block.call
+      #puts block.call
       say :error, &block
     end
 

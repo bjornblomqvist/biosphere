@@ -11,23 +11,34 @@ module Biosphere
         end
 
         def call
-          if config.cookbooks_repo.to_s == ''
+          unless applicable?
             Log.debug { 'Your sphere.yml does not specify `cookbooks_repo:` so there are no remote cookbooks to sync with.' }
             return
           end
           call!
         end
 
+        def path
+          return unless applicable?
+          sphere.path.join('cookbooks').join repo_name
+        end
+
+        def cookbooks_path
+          return path if config.cookbooks_repo_subdir.to_s == ''
+          return unless path
+          path.join config.cookbooks_repo_subdir
+        end
+
         private
 
         attr_reader :sphere, :config
 
-        def call!
-          path.exist? ? update : clone
+        def applicable?
+          config.cookbooks_repo.to_s != ''
         end
 
-        def path
-          sphere.path.join('cookbooks').join repo_name
+        def call!
+          path.exist? ? update : clone
         end
 
         def repo_name

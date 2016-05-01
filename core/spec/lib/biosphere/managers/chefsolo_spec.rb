@@ -79,6 +79,7 @@ RSpec.describe Biosphere::Managers::Chefsolo do
         expect(Biosphere::Resources::Command).to receive(:new).with(clone_attributes).and_return command
 
         knife_config_path = Biosphere::Paths.biosphere_home.join('spheres/test1/cache/chef/knife.rb')
+        solo_json_path = Biosphere::Paths.biosphere_home.join('spheres/test1/cache/chef/solo.json')
 
         chef_env_vars = {
           GEM_HOME: Biosphere::Paths.biosphere_home.join('vendor/gems/2.0.0'),
@@ -89,7 +90,7 @@ RSpec.describe Biosphere::Managers::Chefsolo do
         }
         chef_arguments = [Pathname.new('/dev/null/gems/bin/chef-solo'),
                           '--config', knife_config_path,
-                          '--json-attributes', Biosphere::Paths.biosphere_home.join('spheres/test1/cache/chef/solo.json')]
+                          '--json-attributes', solo_json_path]
         chef_attributes = { show_output: true, env_vars: chef_env_vars,
                             executable: Pathname.new('/usr/bin/ruby'), arguments: chef_arguments }
         expect(Biosphere::Resources::Command).to receive(:new).with(chef_attributes).and_return command

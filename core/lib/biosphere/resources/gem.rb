@@ -5,47 +5,44 @@ require 'biosphere/errors'
 module Biosphere
   module Resources
     class Gem
-      attr_reader :name, :version
 
-      def initialize(options={})
-        @name = options[:name]
-        @version = options[:version]
+      def initialize(name: nil, version: nil)
+        @name = name.to_s
+        @version = version
       end
 
       def call
-        return true if exists?
-        Log.info { "Installing gem #{name.to_s.bold} version #{version.bold}..." }
-        Log.info { 'This may take a while...' }
-        install.success?
+        install unless exists?
       end
 
       def exists?
-        gem_path.exist?
+        path.exist?
       end
 
       def executables_path
-        gem_path.join 'bin'
+        path.join 'bin'
       end
 
       private
 
-      def gem_path
-        self.class.gems_path.join(name_and_version)
+      attr_reader :name, :version
+
+      def path
+        gems_path.join(name_and_version)
       end
 
       def install
-        result = command.call
-
-        if result.success?
-          Log.debug { "Successfully installed gem #{name.to_s.bold} version #{version.bold}" }
+        if install!.success?
+          Log.debug { "Successfully installed gem #{name.inspect}#{version_sentence}" }
         else
-          Log.separator
-          Log.error { "  Could not install gem #{name.to_s.bold}".red + ' version '.red + version.bold.red + '. Are you online?'.red }
-          Log.error { '  Please try to run this command with the'.red + ' --debug '.bold.red + 'flag for more details.'.red }
-          Log.separator
-          raise Errors::GemInstallationFailed
+          fail!
         end
-        result
+      end
+
+      def install!
+        Log.info { "Installing gem #{name.inspect}#{version_sentence}..." }
+        Log.info { 'This may take a while...' }
+        command.call
       end
 
       def command
@@ -53,15 +50,25 @@ module Biosphere
       end
 
       def arguments
-        arguments = %W{ install #{name} --install-dir #{Paths.vendor_gems} --no-document --source https://rubygems.org}
+        arguments = default_arguments
         if version
           arguments << '--version'
           arguments << version
         end
-        if Runtime.debug_mode?
-          arguments << '--verbose'
-        end
+        arguments.push('--verbose') if Runtime.debug_mode?
         arguments
+      end
+
+      def default_arguments
+        %W(install #{name} --install-dir #{Paths.vendor_gems} --no-document --source https://rubygems.org)
+      end
+
+      def fail!
+        Log.separator
+        Log.error { "Could not install gem #{name.inspect}#{version_sentence}. Are you online?".red }
+        Log.error { 'Please try to run this command with the --debug flag for more details.'.red }
+        Log.separator
+        raise Errors::GemInstallationFailed
       end
 
       def env_vars
@@ -72,7 +79,11 @@ module Biosphere
         "#{name}-#{version}"
       end
 
-      def self.gems_path
+      def version_sentence
+        " version #{version.inspect}" if version
+      end
+
+      def gems_path
         Paths.vendor_gems.join 'gems'
       end
 

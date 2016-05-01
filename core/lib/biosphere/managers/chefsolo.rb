@@ -33,8 +33,7 @@ module Biosphere
       private
 
       def call!
-        chef_zero_gem.call unless use_inbuilt_chef?
-        chef_gem.call
+        gems.call
         ensure_cookbooks
         ensure_knife_config
         run_chef
@@ -220,81 +219,6 @@ module Biosphere
       # –––––
       # Paths
       # –––––
-
-      def chef_solo_executable_path
-        chef_gem.executables_path.join('chef-solo')
-      end
-
-      def chef_json_path
-        workdir_path.join('solo.json')
-      end
-
-      def chef_client_key_path
-        result = workdir_path.join('client_keys')
-        result.mkpath
-        result
-      end
-
-      def chef_checksums_path
-        result = chef_workdir_path.join('checksums')
-        result.mkpath
-        result
-      end
-
-      def chef_cache_path
-        result = chef_workdir_path.join('cache')
-        result.mkpath
-        result
-      end
-
-      def chef_backups_path
-       result = chef_workdir_path.join('backups')
-       result.mkpath
-       result
-      end
-
-      def chef_knife_config_path
-        workdir_path.join('knife.rb')
-      end
-
-      def chef_workdir_path
-        result = workdir_path.join('cache')
-        result.mkpath
-        result
-      end
-
-      def workdir_path
-        result = sphere.cache_path.join('chef')
-        result.mkpath
-        result
-      end
-
-      # –––––––––––––––
-      # Gem definitions
-      # –––––––––––––––
-
-      # The gem `chef-zero` is a dependency of chef. This is the last version to support Ruby 2.0.0
-      # Without specifying this version, it will install one that is too new for Ruby 2.0.0
-      def chef_zero_gem
-        Resources::Gem.new name: 'chef-zero', version: '4.5.0'
-      end
-
-      def chef_gem
-        Resources::Gem.new name: :chef, version: chef_version
-      end
-
-      def chef_version
-        config.chef_version || default_chef_version
-      end
-
-      def use_inbuilt_chef?
-        chef_version == default_chef_version
-      end
-
-      # Make sure it's compatible with the minimal Ruby version that Biosphere itself requires.
-      def default_chef_version
-        '12.8.1'
-      end
 
     end
   end

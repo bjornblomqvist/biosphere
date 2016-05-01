@@ -5,13 +5,13 @@ module Biosphere
   class Logger
 
     def debug(&block)
-       puts block.call
+      # puts block.call
       return unless Runtime.debug_mode?
       say :debug, &block
     end
 
     def info(&block)
-       puts block.call
+      # puts block.call
       say :info, &block
     end
 

@@ -17,11 +17,9 @@ RSpec.describe Biosphere::Resources::Gem do
         expect(command).to receive(:call).and_return OpenStruct.new(success?: true)
         expect(Biosphere::Resources::Command).to receive(:new).with(attributes).and_return command
 
-        debugs = []
         expect(Biosphere::Log).to receive(:debug) do |*args, &block|
           expect(args).to be_empty
-          debugs << block.call
-          expect(debugs.last).to eq 'Successfully installed gem "gem-example"' if debugs.size == 1
+          expect(block.call).to eq 'Successfully installed gem "gem-example"'
         end
 
         infos = []
@@ -50,11 +48,9 @@ RSpec.describe Biosphere::Resources::Gem do
         expect(command).to receive(:call).and_return OpenStruct.new(success?: true)
         expect(Biosphere::Resources::Command).to receive(:new).with(attributes).and_return command
 
-        debugs = []
         expect(Biosphere::Log).to receive(:debug) do |*args, &block|
           expect(args).to be_empty
-          debugs << block.call
-          expect(debugs.last).to eq 'Successfully installed gem "gem-example" version "1.2.3"' if debugs.size == 1
+          expect(block.call).to eq 'Successfully installed gem "gem-example" version "1.2.3"'
         end
 
         infos = []

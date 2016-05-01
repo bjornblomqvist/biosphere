@@ -141,6 +141,11 @@ module Biosphere
       end
     end
 
+    class SphereConfigDeprecation < Error
+      def code
+        72
+      end
+    end
 
   end
 end

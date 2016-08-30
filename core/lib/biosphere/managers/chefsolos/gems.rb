@@ -13,6 +13,7 @@ module Biosphere
 
         def call
           chef_zero_gem.call if native?
+          ffi_yajl_gem.call if native?
           chef_gem.call
         end
 
@@ -36,8 +37,9 @@ module Biosphere
           Resources::Gem.new name: 'chef-zero', version: '4.5.0'
         end
 
-        def chef_gem
-          Resources::Gem.new name: :chef, version: version
+        # The same is true for ffi-yajl, version 2.2.3 is the last one to support Ruby 2.0.0.
+        def ffi_yajl_gem
+          Resources::Gem.new name: 'ffi-yajl', version: '2.2.3'
         end
 
         # Make sure it's compatible with the minimal Ruby version that Biosphere itself requires.

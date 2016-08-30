@@ -14,6 +14,7 @@ module Biosphere
         def call
           rack_gem.call if native?
           ffi_yajl_gem.call if native?
+          ohai_gem.call if native?
           chef_zero_gem.call if native?
           chef_gem.call
         end
@@ -48,9 +49,14 @@ module Biosphere
           Resources::Gem.new name: :rack, version: '1.6.4'
         end
 
+        # And another one.
+        def ohai_gem
+          Resources::Gem.new name: :ohai, version: '8.17.1'
+        end
+
         def chef_gem
-           Resources::Gem.new name: :chef, version: version
-         end
+          Resources::Gem.new name: :chef, version: version
+        end
 
         # Make sure it's compatible with the minimal Ruby version that Biosphere itself requires.
         def default_chef_version

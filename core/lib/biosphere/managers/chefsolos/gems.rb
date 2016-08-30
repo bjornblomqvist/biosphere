@@ -12,8 +12,8 @@ module Biosphere
         end
 
         def call
-          chef_zero_gem.call if native?
           ffi_yajl_gem.call if native?
+          chef_zero_gem.call if native?
           chef_gem.call
         end
 

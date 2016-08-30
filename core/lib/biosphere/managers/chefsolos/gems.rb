@@ -48,6 +48,10 @@ module Biosphere
           Resources::Gem.new name: :rack, version: '1.6.4'
         end
 
+        def chef_gem
+           Resources::Gem.new name: :chef, version: version
+         end
+
         # Make sure it's compatible with the minimal Ruby version that Biosphere itself requires.
         def default_chef_version
           '12.8.1'

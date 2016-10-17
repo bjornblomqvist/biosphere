@@ -32,7 +32,7 @@ module Biosphere
 
     def clear
       Log.debug { 'Clearing cached augmentations...' }
-      Resources::Directory.clear Paths.augmentations
+      # Resources::Directory.clear Paths.augmentations
     end
 
     def clear_ssh_config

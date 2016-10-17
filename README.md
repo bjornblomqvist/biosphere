@@ -6,55 +6,24 @@ Biosphere is a simple way to manage multiple development environments on your Ma
 
 Breathe in the beautiful design principles of Biosphere:
 
-- The *only* dependency is `Ruby 2.0.0-p0` or higher (e.g. OS X Yosemite, Ubuntu 15, Debian 8).
+- The *only* dependency is `Ruby 2.0.0-p0` or higher (e.g. OS X Yosemite).
 - It is entirely sandboxed so you can get rid of it by removing one single directory.
 - No superuser privileges needed.
 
 ## Installation
 
-The by far easiest way to install Biosphere is by using the [Biosphere Preference Pane](https://github.com/halo/BiospherePane). But let's walk through manually what the Preference Pane would do for you.
-
 ##### 1. Clone the repository from Github
-
-I recommend the following location in your home directory:
 
 ```bash
 git clone git://github.com/halo/biosphere.git ~/.biosphere
 ```
 
-##### 2. Enhance your bash profile
-
-Now we need to add something to your `~/.bash_profile` or `~/.zshenv` so that you have the `bio` executable available to you in the Terminal.
-
-Biosphere can do that for you if you like by using the following command. The `--relative` option makes sure that the snippet inserted into your profile uses `~` to refer to your home directory.
+##### 2. Add to your bash_profile
 
 ```bash
-~/.biosphere/core/bin/bio setup --augment-bash-profile --relative
+# Loading Biosphere
+[[ -s ~/.biosphere/bio.sh ]] && source ~/.biosphere/bio.sh
 ```
-
-Z-shell users might want to use the following command instead. Leave out the `--relative` option, because z-shell usually has difficulties expanding `~` to an absolute path.
-
-```bash
-~/.biosphere/core/bin/bio setup --augment-zshenv
-```
-
-Alternatively you can add the snippet all by yourself:
-
-```bash
-### BIOSPHERE MANAGED START ###
-
-# Adding the "bio" executable to your path.
-export PATH="~/.biosphere/core/bin:$PATH"
-
-# Loading Biosphere's bash_profile for easier de-/activation of spheres.
-[[ -s ~/.biosphere/augmentations/bash_profile ]] && source ~/.biosphere/augmentations/bash_profile
-
-### BIOSPHERE MANAGED STOP ###
-```
-
-Note that this won't have to change in the future. You can commit this into your dotfiles.
-
-Congratulations, now you're ready to use Biosphere!
 
 ## First steps
 
